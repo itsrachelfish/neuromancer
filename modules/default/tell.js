@@ -24,7 +24,7 @@ var tell = {
     // enable this and other read/write ops in tell and listner if your bot crashes a lot to help prevent database screwups
     //tell.core.read_db("tell");
     var args = message.split(' ');
-    var reciever = args[0].toLowerCase()
+    var reciever = args[0].toLowerCase();
 
     if (!tell.core.databases.tell[reciever]) {
       tell.core.databases.tell[reciever] = [];
@@ -105,5 +105,5 @@ module.exports = {
     delete tell;
   },
   
-  commands: tell.commands;
+  commands: tell.commands
 };
