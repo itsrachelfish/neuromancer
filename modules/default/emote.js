@@ -1,7 +1,7 @@
 var color = require("irc-colors");
 
 var emote = {
-  commands: ["dunno", "downy", "lv", "id", "ld"],
+  commands: ["dunno", "downy", "lv", "id", "ld", "intense"],
   client: false,
   core: false,
 
@@ -71,6 +71,10 @@ var emote = {
       emote.core.send("say", from, to, "\x03\x02legal drugs\x02");
     }
   },
+  
+  intense: function(from, to, message) {
+    emote.core.send("say", from, to, "\x03\x02[" + text + " intensifies]\x02");
+  }
 
   listener: function(from, to, message) {
     if (message == "xD" || message == "xd" || message == "XD" || message == "Xd") {
