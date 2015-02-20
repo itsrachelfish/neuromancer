@@ -41,10 +41,10 @@ var weather = {
       var data = JSON.parse(body).query;
       var locate = (data.count > 1) ? data.results.Result[0] : data.results.Result;
       if (forecast) {
-        request(weathAPI + 'forecast/daily?cnt=' + days + '&units=' + locale[0] + '&lat=' + locate.latitude + '&lon=' + locate.longitude, function(e, r, body) {
+        request(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + locale[0] + '&lat=' + locate.latitude + '&lon=' + locate.longitude, function(e, r, body) {
           var weather = JSON.parse(body);
 
-          bot.speak('Forecast for \u000310' + (locate.line2 || locate.country || locate.name) + '\u000f (\u000311' + weather.city.country + '\u000f)');
+          weather.core.send("say", from, to, 'Forecast for \u000310' + (locate.line2 || locate.country || locate.name) + '\u000f (\u000311' + weather.city.country + '\u000f)');
 
           weather.list.forEach(function(day, index) {
             // this is gross I know
@@ -54,7 +54,7 @@ var weather = {
           });
         });
       } else {
-        request(weathAPI + 'weather?units=' + locale[0] + '&lat=' + locate.latitude + '&lon=' + locate.longitude, function(e, r, body) {
+        request(weather.weathAPI + 'weather?units=' + locale[0] + '&lat=' + locate.latitude + '&lon=' + locate.longitude, function(e, r, body) {
           var weather = JSON.parse(body);
           var to_say = from + ': [\u000310' + (locate.line2 || locate.country || locate.name) + '\u000f (\u000311' + weather.sys.country + '\u000f)] [\u000304' + weather.main.temp + '°' + locale[1] + '\u000f (\u000307' + weather.main.humidity + '% humidity\u000f)] [\u000311Wind: ' + weather.wind.speed + ' ' + locale[2] + ' at ' + weather.wind.deg + '°\u000f] [\u000306' + weather.weather[0].description.charAt(0).toUpperCase() + weather.weather[0].description.slice(1) + '\u000f]';
           weather.core.send("say", from, to, to_say);
