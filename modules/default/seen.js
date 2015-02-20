@@ -108,5 +108,5 @@ module.exports = {
     delete seen;
   },
   
-  commands: seen.commands;
+  commands: seen.commands
 };
