@@ -1,3 +1,5 @@
+var color = require("irc-colors");
+
 var prefix = {
   commands: ["prefix"],
   client: false,
@@ -26,8 +28,8 @@ var prefix = {
   prefix: function(from, to, message) {
    prefix.core.config.prefix = message;
    if (prefix.core.config.prefix === message) {
-     prefix.core.send("say", from, to, "Prefix changed to: '" + prefix.core.config.prefix + "'");
-     console.log("[NOTE][CONFIG] Prefix changed to: '" + prefix.core.config.prefix + "'");
+     prefix.core.send("say", from, to, '[' + color.green("config") + "] Command prefix changed to: '" + prefix.core.config.prefix + "'");
+     console.log("[config] Prefix changed to: '" + prefix.core.config.prefix + "'");
    } 
   },
   

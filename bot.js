@@ -12,6 +12,8 @@ var server = require("./etc/server.js");
 // connect to the irc server
 var client = new irc.Client(server.server, server.name, server);
 
+client.setMaxListeners(0);
+
 // bring in core
 var core = require("./core.js");
 

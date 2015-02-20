@@ -1,3 +1,5 @@
+var color = require("irc-colors");
+
 var tell = {
   commands: ["tell"],
   client: false,
@@ -33,6 +35,7 @@ var tell = {
       mes: args.slice(1).join(' '),
       when: Date.now()
     });
+    tell.core.send("say", from, to, color.green("Okay"));
 
     //tell.core.write_db("tell");
   },
@@ -41,8 +44,7 @@ var tell = {
     var reciever = from.toLowerCase();
     if (tell.core.databases.tell[reciever]) {
       tell.core.databases.tell[reciever].forEach(function(entry) {
-        //TODO: make this prettier with irc-colors and such
-        var to_say = from + ": " + entry.mes + entry.from + tell.readable_time(Date.now() - entry.when);
+        var to_say = from + ": " + color.blue('"' + entry.mes + '"') + ' [' + color.red(entry.from) + '] ' + '[' + color.purple(tell.readable_time(Date.now() - entry.when)) + ']';
         tell.core.send("say", from, to, to_say);
       });
       delete tell.core.databases.tell[reciever];

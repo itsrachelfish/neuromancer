@@ -1,4 +1,5 @@
 var mathjs = require("mathjs");
+var color = require("irc-colors");
 
 var calc = {
   commands: ["c"],
@@ -28,17 +29,17 @@ var calc = {
     var parser = mathjs.parser();
 
     if (message.indexOf('!') + message.indexOf('factorial') != -2) {
-      bot.speak("Factorials disabled");
-      return 0;
+      calc.core.send("say", from, to, '[' + color.red("error") + "] Factorials disabled, use " + calc.core.config.prefix + "wa");
+      return;
     }
 
     try {
       var to_say = mathjs.format(parser.eval(message), {
         precision: 14
-      }).replace("undefined", "Error parsing input");
-      calc.core.send("say", from, to, to_say);
+      }).replace("undefined", color.red("Error parsing input"));
+      calc.core.send("say", from, to, color.blue(to_say));
     } catch (e) {
-      calc.core.send("say", from, to, "Error parsing input");
+      calc.core.send("say", from, to, color.red("Error parsing input"));
     }
   },
   
@@ -61,5 +62,7 @@ module.exports = {
   unload: function() {
     calc.unbind();
     delete calc;
-  }
+  },
+  
+  commands: calc.commands
 };

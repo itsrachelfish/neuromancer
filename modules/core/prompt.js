@@ -24,6 +24,7 @@ var prompt = {
     }
   },
 
+  // TODO: improve this
   parse_module: function(module) {
     module = module.split(' ');
     if (module[0] == 'core')

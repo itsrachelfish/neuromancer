@@ -1,6 +1,7 @@
+var color = require("irc-colors");
+
 var py = {
   commands: ["py", "python"],
-  db: false,
   client: false,
   core: false,
 
@@ -19,11 +20,15 @@ var py = {
       }
     }
   },
-
+  
   py: function(from, to, message) {
+    py.python(from, to, message);
+  }
+
+  python: function(from, to, message) {
     // make a call to an external server for this one
     request("http://tumbolia.appspot.com/py/" + text, function(e, r, body) {
-      var to_say = (body.length < 300) ? (body) : ("Bad Request")
+      var to_say = (body.length < 300) ? (color.blue(body)) : ('[' + color.red("error") + "] Bad request");
       py.core.send("say", from, to, to_say);
     });
   },
@@ -47,5 +52,7 @@ module.exports = {
   unload: function() {
     py.unbind();
     delete py;
-  }
+  },
+  
+  commands: py.commands
 };

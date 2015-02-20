@@ -1,3 +1,5 @@
+var color = require("irc-colors");
+
 var flip = {
   commands: ["flip"],
   client: false,
@@ -21,11 +23,11 @@ var flip = {
   flip: function(from, to, message) {
     rand = Math.random();
     if (rand > 0.5) {
-      flip.core.send("say", from, to, "Heads");
+      flip.core.send("say", from, to, color.blue("Heads"));
     } else if (rand < 0.5) {
-      flip.core.send("say", from, to, "Tails");
+      flip.core.send("say", from, to, color.red("Tails"));
     } else if (rand == 0.5) {
-      flip.core.send("say", from, to, "Edge");
+      flip.core.send("say", from, to, color.purple("Edge"));
     }
   },
 
@@ -51,5 +53,5 @@ module.exports = {
     delete flip;
   },
   
-  commands: flip.commands,
+  commands: flip.commands
 };
