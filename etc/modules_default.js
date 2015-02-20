@@ -1,0 +1,1 @@
+module.exports = ["admin", "away", "calc", "flip", "prefix", "py", "remind", "search", "tell", "wa", "weather"];

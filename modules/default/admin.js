@@ -26,25 +26,30 @@ var admin = {
     }
   },
 
+  // TODO: improve this
   parse_module: function(module) {
     module = module.split(' ');
-    if (module[0] == "core")
+    if (module[0] == 'core')
       return {
-        type: "core",
+        type: 'core',
         name: module[1]
       };
-    else if (module[1] == "module")
+    else if (module[0] == 'default')
       return {
-        type: "modules",
+        type: 'default',
+        name: module[1]
+      };
+    else if (module[1] == 'module')
+      return {
+        type: 'modules',
         name: module[1]
       };
     else
       return {
-        type: "modules",
+        type: 'modules',
         name: module[0]
       };
   },
-
   say: function(from, to, message) {
     admin.core.send("say", from, to, message);
   },
@@ -61,18 +66,18 @@ var admin = {
   load: function(from, to, module) {
     module = admin.parse_module(module);
     if (admin.core.load(module) == 0) {
-      admin.core.send("say", from, to, '[' + color.green("module") + "] '" + module.name + "' loaded");
+      admin.core.send("say", from, to, '[' + color.green("module") + "] '" + module.type + '.' + module.name + "' loaded");
     } else {
-      admin.core.send("say", from, to, '[' + color.red("error") + "] '" + module.name + "' could not be loaded");
+      admin.core.send("say", from, to, '[' + color.red("error") + "] '" + module.type + '.' + module.name + "' could not be loaded");
     }
   },
 
   unload: function(from, to, module) {
     module = admin.parse_module(module);
     if (admin.core.unload(module) == 0) {
-      admin.core.send("say", from, to, '[' + color.green("module") + "] '" + module.name + "' unloaded");
+      admin.core.send("say", from, to, '[' + color.green("module") + "] '" + module.type + '.' + module.name + "' unloaded");
     } else {
-      admin.core.send("say", from, to, '[' + color.red("error") + "] '" + module.name + "' could not be unloaded");
+      admin.core.send("say", from, to, '[' + color.red("error") + "] '" + module.type + '.' + module.name + "' could not be unloaded");
     }
   },
 
@@ -80,7 +85,7 @@ var admin = {
   reload: function(from, to, module) {
     module = admin.parse_module(module);
     admin.core.reload(module);
-    admin.core.send("say", from, to, '[' + color.blue("module") + "] '" + module.name + "' reloaded");
+    admin.core.send("say", from, to, '[' + color.blue("module") + "] '" + module.type + '.' + module.name + "' reloaded");
   },
 
   quit: function(from, to, module) {

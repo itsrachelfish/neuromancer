@@ -17,7 +17,7 @@ var core = {
     // get core modules
     var core_modules = require("./etc/modules_core.js");
     // get modules to load at init
-    var init_modules = require("./etc/modules.js");
+    var default_modules = require("./etc/modules_default.js");
 
     // now load the modules
     // TODO: make these 1-liners with foreach
@@ -28,10 +28,10 @@ var core = {
       });
     }
 
-    for (var i = 0; i < init_modules.length; i++) {
+    for (var i = 0; i < default_modules.length; i++) {
       core.modules.push({
-        type: 'modules',
-        name: init_modules[i]
+        type: 'default',
+        name: default_modules[i]
       });
     }
 

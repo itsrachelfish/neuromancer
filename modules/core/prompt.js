@@ -32,6 +32,11 @@ var prompt = {
         type: 'core',
         name: module[1]
       };
+    else if (module[0] == 'default')
+      return {
+        type: 'default',
+        name: module[1]
+      };
     else if (module[1] == 'module')
       return {
         type: 'modules',
@@ -77,7 +82,7 @@ var prompt = {
     module = prompt.parse_module(module);
     prompt.core.reload(module);
   }
-  
+
 };
 
 module.exports = {
