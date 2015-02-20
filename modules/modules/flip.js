@@ -1,6 +1,5 @@
 var flip = {
   commands: ["flip"],
-  db: false,
   client: false,
   core: false,
 
@@ -53,5 +52,4 @@ module.exports = {
   },
   
   commands: flip.commands,
-  db: flip.database
 };

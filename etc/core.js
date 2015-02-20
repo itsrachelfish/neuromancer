@@ -1,4 +1,4 @@
 module.exports = {
   prefix: '>',
-  admin: "Weazzy"
+  admin: "epers@localhost"
 }

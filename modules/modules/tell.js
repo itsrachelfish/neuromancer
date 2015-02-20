@@ -1,8 +1,5 @@
 var tell = {
   commands: ["tell"],
-  // tell core if we want a db
-  db: true,
-
   client: false,
   core: false,
 
@@ -104,5 +101,7 @@ module.exports = {
     // trigger for database write
     tell.core.write_db("tell");
     delete tell;
-  }
+  },
+  
+  commands: tell.commands
 };

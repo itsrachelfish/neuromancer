@@ -5,10 +5,8 @@ var admin = {
   core: false,
 
   message: function(from, to, message, details) {
-    //TODO: do this properly, it's nickbased for now for testing
-    //var userhost = details.nick + '@' + details.host;
-    var userhost = details.nick;
-    
+    var userhost = details.user + '@' + details.host;
+  
     // If this user appears in the admin list
     if (userhost == admin.core.config.admin) {
       if (message.charAt(0) == admin.core.config.prefix) {
@@ -102,4 +100,6 @@ module.exports = {
     admin.unbind();
     delete admin;
   },
-}
+  
+  commands: admin.commands
+};
