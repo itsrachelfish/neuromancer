@@ -5,6 +5,7 @@ var core = {
   loaded: {},
   modules: [],
   databases: {},
+  commands: {},
   config: require("./etc/core.js"),
   server: require("./etc/server.js"),
 
@@ -59,6 +60,7 @@ var core = {
       if (typeof core.loaded[module_id].load == "function") {
         // and run the load funciton
         core.loaded[module_id].load(core);
+        core.commands[module_id] = core.loaded[module_id].commands;
         console.log("[module] " + module.type + '.' + module.name + " loaded.");
         return 0;
       }
@@ -81,6 +83,7 @@ var core = {
       }
 
       delete core.databases[core.loaded[module_id].name];
+      delete core.commands[core.loaded[module_id]];
       delete core.loaded[module_id];
       delete require.cache[require.resolve("./modules/" + module.type + '/' + module.name + ".js")];
       console.log("[module] " + module.type + '.' + module.name + " unloaded.");

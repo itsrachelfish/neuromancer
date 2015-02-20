@@ -23,7 +23,7 @@ var py = {
   
   py: function(from, to, message) {
     py.python(from, to, message);
-  }
+  },
 
   python: function(from, to, message) {
     // make a call to an external server for this one
