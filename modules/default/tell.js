@@ -105,5 +105,5 @@ module.exports = {
     delete tell;
   },
   
-  commands: tell.commands
+  commands: tell.commands;
 };
