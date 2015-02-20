@@ -71,7 +71,7 @@ var remind = {
   
   unbind: function() {
     remind.client.removeListener("message", remind.message);
-  },
+  }
   
 };
 
