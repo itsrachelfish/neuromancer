@@ -31,7 +31,7 @@ var wa = {
         if (answer[0].indexOf("Couldn't grab") != -1 || answer == []) {
           wa.core.send("say", from, to, '[' + color.red("error") + "] Couldn't display answer");
         } else {
-          var to_say = '[' + color.blue("WolframAlpha") + ']' + color.green(answer[0]) + color.red(answer[1]);
+          var to_say = '[' + color.blue("WolframAlpha") + '] ' + color.green(answer[0]) + ' = ' + color.red(answer[1]);
         wa.core.send("say", from, to, to_say);
       }
     });
