@@ -78,7 +78,7 @@ var remind = {
 module.exports = {
   load: function(core) {
     remind.core = core;
-    remind.client = remind.core.client
+    remind.client = remind.core.client;
     
     remind.core.read_db("remind");
     remind.bind();
