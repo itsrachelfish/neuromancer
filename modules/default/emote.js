@@ -74,7 +74,7 @@ var emote = {
   
   intense: function(from, to, message) {
     emote.core.send("say", from, to, "\x03\x02[" + text + " intensifies]\x02");
-  }
+  },
 
   listener: function(from, to, message) {
     if (message == "xD" || message == "xd" || message == "XD" || message == "Xd") {

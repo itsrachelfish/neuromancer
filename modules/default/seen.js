@@ -1,6 +1,6 @@
 var color = require("irc-colors");
 
-var remind = {
+var seen = {
   commands: ["seen", "since"],
   client: false,
   core: false,
@@ -48,38 +48,34 @@ var remind = {
     var commands = message.split(' ');
     var last = false;
     if (commands[0] == "-l") {
-      commands.splice(0, 1)
-      last = true
+	commands.splice(0, 1);
+	last = true;
     }
     if (seen.core.databases.seen[commands[0].toLowerCase()]) {
       if (last && seen.core.databases.seen[commands[0].toLowerCase()].l) {
-        seen.core.send("say", from, to, "Last heard from \u000308" + commands[0] + '\u000f ' + readable_time(Date.now() - seen.core.databases.seen[commands[0].toLowerCase()].d) + ' ago with \u000312"' + seen.core.databases.seen[commands[0].toLowerCase()].l + '"')
+          seen.core.send("say", from, to, "Last heard from \u000308" + commands[0] + '\u000f ' + seen.readable_time(Date.now() - seen.core.databases.seen[commands[0].toLowerCase()].d) + ' ago with \u000312"' + seen.core.databases.seen[commands[0].toLowerCase()].l + '"');
       } else {
-        seen.core.send("say", from, to, "Last heard from \u000308" + commands[0] + '\u000f ' + readable_time(Date.now() - seen.core.databases.seen[commands[0].toLowerCase()].d) + ' ago');
+        seen.core.send("say", from, to, "Last heard from \u000308" + commands[0] + '\u000f ' + seen.readable_time(Date.now() - seen.core.databases.seen[commands[0].toLowerCase()].d) + ' ago');
       }
     } else {
-      seen.core.send("say", from, to, "Sorry, I haven't seen " + commands[0])
+	seen.core.send("say", from, to, "Sorry, I haven't seen " + commands[0]);
     }
   },
   
   since: function(from, to, message) {
-    var since = []
-    for (person in seen.core.databases.seen) {
-      if (people[person].d >= Date.now()-(((text>1440)?1440:text)*60000)) since.push(person)
-    }
-    
-    seen.core.databases.seen.forEach(function(entry) {
-      if (entry.d >= Date.now()-(((text>1440)?1440:text)*60000)){
-        since.push(entry);
+      var since = [];
+      for (var i in seen.core.databases.seen) {
+	  if (i.d >= Date.now()-(((message>1440)?1440:message)*60000)) {
+	      since.push(i);
+	  }
       }
-    });
-    seen.core.send("say", from, to, 'In the last ' + text + ' minutes, I\'ve seen ' + since.join(', '))
+      seen.core.send("say", from, to, 'In the last ' + message + ' minutes, I\'ve seen ' + since.join(', '));
   },
 
   listener: function(from, to, message) {
     seen.core.databases.seen[from.toLowerCase()] = {
       d: Date.now(),
-      l: text
+      l: message
     };
   },
   
