@@ -1,3 +1,5 @@
+var request = require("request");
+
 var search = {
   commands: ["g", "google"],
   client: false,
@@ -20,7 +22,7 @@ var search = {
 
   google: function(from, to, message) {
     request("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=1&safe=oss&q=" + message, function(e, r, body) {
-      search.core.reply("say", from, to, from + ": " + JSON.parse(body).responseData.results[0].unescapedUrl);
+      search.core.send("say", from, to, from + ": " + JSON.parse(body).responseData.results[0].unescapedUrl);
     });
   },
 

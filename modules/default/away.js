@@ -40,7 +40,7 @@ var away = {
       //listen for someone attempting to speak to someone who is away
       if (away.aways[message.split(' ')[0].replace(/[:,]/, '').toLowerCase()] != undefined) {
         var target = message.split(' ')[0].replace(/[:,]/, '')
-        var to_say = target + " is currently away " + (away.aways[target.toLowerCase()] ? "[ " + color.blue(away.aways[target.toLowerCase()]) + " ]" : color.blue("No reason specified"));
+          var to_say = target + " is currently away " + (away.aways[target.toLowerCase()] ? "[" + color.blue(away.aways[target.toLowerCase()]) + "]" : color.blue("No reason specified"));
         away.core.send("say", from, to, to_say);
         console.log(from + ' attempted to contact ' + message.split(' ')[0].replace(':', ''));
       }
