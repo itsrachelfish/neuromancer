@@ -1,1 +1,1 @@
-module.exports = ["admin", "away", "flip", "py", "tell"];
+module.exports = ["flip", "py", "away", "admin", "tell"];

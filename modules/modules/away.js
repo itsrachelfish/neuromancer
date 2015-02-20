@@ -1,20 +1,9 @@
 var away = {
   commands: ["away"],
+  db: false,
   client: false,
   core: false,
   aways: {},
-
-  //TODO: eventually make this and message a core function
-  reply: function(type, from, to, message) {
-    //determine if it's a channel message or a privmessage
-    if (to.charAt(0) == '#') {
-      away.client[type](to, message);
-      console.log('[' + to + ']' + core.config.server.name + ' ' + message);
-    } else {
-      away.client[type](from, message);
-      console.log('[' + from + ']' + core.config.server.name + ' ' + message);
-    }
-  },
 
   message: function(from, to, message, details) {
     if (message.charAt(0) == away.core.config.prefix) {
@@ -30,32 +19,37 @@ var away = {
       }
     }
   },
-  
-  away: function(from, to, message) { // TODO: fix
-    away.aways[from.toLowerCase()] = text;
-    console.log (from + " has gone away [" + text + ']');
+
+  away: function(from, to, message) {
+    away.aways[from.toLowerCase()] = message;
+    console.log(from + " has gone away [" + message + ']');
   },
-  
+
   listener: function(from, to, message) {
-    //check for an away-ee coming back
-    if (from.toLowerCase() in away.aways) {
-      delete away.aways[from.toLowerCase()]
-      console.log(from + ' has come back');
-    }
-    //check for someone attempting to speak to someone who is away
-    if (away.aways[text.split(' ')[0].replace(/[:,]/, '').toLowerCase()] != undefined) {
-      var target = text.split(' ')[0].replace(/[:,]/, '')
-      var to_say = target + ' is currently away' + (aways[target.toLowerCase()]?' [\u000310'+aways[target.toLowerCase()]+'\u000f]':'');
-      away.reply("say", from, to, to_say);
-      console.log(from + ' attempted to contact ' + text.split(' ')[0].replace(':', ''));
+    // one of the problems of async programing is that our listener sees the away-ee leaving
+    // this if statement makes it work by ignoring <prefix>away commands when listening for an away-ee's return
+    var awaycmd = away.core.config.prefix + "away";
+    if (message.split(' ')[0] != awaycmd) {
+      //listen for an away-ee coming back
+      if (from.toLowerCase() in away.aways) {
+        delete away.aways[from.toLowerCase()]
+        console.log(from + ' has come back');
+      }
+      //listen for someone attempting to speak to someone who is away
+      if (away.aways[message.split(' ')[0].replace(/[:,]/, '').toLowerCase()] != undefined) {
+        var target = message.split(' ')[0].replace(/[:,]/, '')
+        var to_say = target + ' is currently away' + (away.aways[target.toLowerCase()] ? ' [\u000310' + away.aways[target.toLowerCase()] + '\u000f]' : '');
+        away.core.send("say", from, to, to_say);
+        console.log(from + ' attempted to contact ' + message.split(' ')[0].replace(':', ''));
+      }
     }
   },
-  
+
   bind: function() {
     away.client.addListener("message", away.message);
     away.client.addListener("message", away.listener);
   },
-  
+
   unbind: function() {
     away.client.removeListener("message", away.message);
     away.client.removeListener("message", away.listener);
@@ -63,12 +57,12 @@ var away = {
 };
 
 module.exports = {
-  load: function(client, core) {
-    away.client = client;
+  load: function(core) {
     away.core = core;
+    away.client = away.core.client;
     away.bind();
   },
-  
+
   unload: function() {
     away.unbind();
     delete away;

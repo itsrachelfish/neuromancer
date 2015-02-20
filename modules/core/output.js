@@ -56,8 +56,8 @@ var output = {
 };
 
 module.exports = {
-  load: function(client) {
-    output.client = client;
+  load: function(core) {
+    output.client = core.client
     output.bind();
   },
 

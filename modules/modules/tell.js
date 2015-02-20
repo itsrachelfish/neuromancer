@@ -1,23 +1,10 @@
-var fs = require('fs');
-
 var tell = {
-  commands: ["tell", "ignore", "unignore"],
+  commands: ["tell"],
+  // tell core if we want a db
+  db: true,
+
   client: false,
   core: false,
-  tells: {},
-  ignores: {},
-
-  //TODO: eventually make this and message a core function
-  reply: function(type, from, to, message) {
-    //determine if it's a channel message or a privmessage
-    if (to.charAt(0) == '#') {
-      tell.client[type](to, message);
-      console.log('[' + to + ']' + core.config.server.name + ' ' + message);
-    } else {
-      tell.client[type](from, message);
-      console.log('[' + from + ']' + core.config.server.name + ' ' + message);
-    }
-  },
 
   message: function(from, to, message, details) {
     if (message.charAt(0) == tell.core.config.prefix) {
@@ -35,73 +22,34 @@ var tell = {
   },
 
   tell: function(from, to, message) {
-    core.check_db("tell");
-    var args = text.split(' ');
+    // enable this and other read/write ops in tell and listner if your bot crashes a lot to help prevent database screwups
+    //tell.core.read_db("tell");
+    var args = message.split(' ');
+    var reciever = args[0].toLowerCase()
 
-    //check to see if the reciever is ignoring the other person's .tells
-    if (tell.ignores[from] && tell.ignores[from].indexOf(args[0]) != -1) {
-      var to_say = from + ": " + args[0] + " is ignoring " + tell.core.config.prefix + "tell's from you";
-      tell.reply("say", from, to, to_say);
+    if (!tell.core.databases.tell[reciever]) {
+      tell.core.databases.tell[reciever] = [];
     }
 
-    if (tell.tells[args[0].toLowerCase()]) {
-      tell.tells[args[0].toLowerCase()].push({
-        from: from,
-        mes: args.slice(1).join(' '),
-        when: Date.now()
-      })
-    } else {
-      tell.tells[args[0].toLowerCase()] = [{
-        from: from,
-        mes: args.slice(1).join(' '),
-        when: Date.now()
-      }]
-    }
-    fs.writeFileSync("./db/tell.json", JSON.stringify(tell.tells));
-  },
+    tell.core.databases.tell[reciever].push({
+      from: from,
+      mes: args.slice(1).join(' '),
+      when: Date.now()
+    });
 
-  ignore: function(from, to, message) {
-    core.check_db("tell_ignores");
-    var ignored = message.replace(' ', '');
-    tells.ignores[ignored] = tell.ignores[ignored] || [];
-    if (tells.ignores[ignored].indexOf(from) == -1) {
-      tell.ignores[ignored].push(from);
-      var to_say = from + " is now ignoring " + ignored
-      tell.reply("say", from, to, to_say);
-    } else {
-      var to_say = from + ": You were already ignoring " + ignored;
-      tell.reply("say", from, to, to_say);
-    }
-    fs.writeFile("./db/tell_ignores.json", JSON.stringify(tell.ignores));
-  },
-
-  unignore: function(from, to, message) {
-    core.check_db("tell_ignores");
-    var unignored = text.replace(' ', '')
-    if (tell.ignores[unignored] && tell.ignores[unignored].indexOf(from) != -1) {
-      tell.ignores[unignored].splice(tell.ignores[unignored].indexOf(from), 1);
-      if (tell.ignores[unignored] == '') {
-        delete tell.ignores[unignored];
-      }
-      fs.writeFile('./db/tell_ignores.json', JSON.stringify(bot.ignore));
-      var to_say = from + " is no longer ignoring " + unignored;
-      tell.reply("say", from, to, to_say);
-    } else {
-      var to_say = from + ": You were not ignoring " + unignored;
-      tell.reply("say", from, to, to_say);
-    }
-    fs.writeFile("./db/tell_ignores.json", JSON.stringify(tell.ignores));
+    //tell.core.write_db("tell");
   },
 
   listener: function(from, to, message) {
-    if (tell.tells[from.toLowerCase()]) {
-      for (var i in tell.tells[from.toLowerCase()]) {
-        var to_say = from + ": " + irc.colors.wrap("cyan", tell.tells[from.toLowerCase()][i].mes) + irc.colors.wrap("yellow", ' (' + tell.tells[from.toLowerCase()][i].from + ') ') + irc.colors.wrap("light_blue", '[' + tell.readableTime(Date.now() - tell.tells[from.toLowerCase()][i].when) + ']');
-
-        tell.say("say", from, to, to_say);
-        delete tell.tells[from.toLowerCase()];
-        fs.writeFileSync("./db/tell.json", JSON.stringify(tell.tells));
-      }
+    var reciever = from.toLowerCase();
+    if (tell.core.databases.tell[reciever]) {
+      tell.core.databases.tell[reciever].forEach(function(entry) {
+        //TODO: make this prettier with irc-colors and such
+        var to_say = from + ": " + entry.mes + entry.from + tell.readable_time(Date.now() - entry.when);
+        tell.core.send("say", from, to, to_say);
+      });
+      delete tell.core.databases.tell[reciever];
+      //tell.core.write_db("tell");
     }
   },
 
@@ -142,20 +90,19 @@ var tell = {
 };
 
 module.exports = {
-  load: function(client, core) {
-    tell.client = client;
+  load: function(core) {
     tell.core = core;
-    core.check_db("tell");
-    tell.tells = JSON.parse(fs.readFileSync("./db/tell.json", "utf8"));
-    core.check_db("tell_ignores");
-    tell.ignores = JSON.parse(fs.readFileSync("./db/tell_ignores.json", "utf8"));
+    tell.client = tell.core.client;
+    
+    // trigger for database read
+    tell.core.read_db("tell");
     tell.bind();
   },
 
   unload: function() {
     tell.unbind();
-    fs.writeFileSync("./db/tell.json", JSON.stringify(tell.tells));
-    fs.writeFileSync("./db/tell_ignores.json", JSON.stringify(tell.ignores));
+    // trigger for database write
+    tell.core.write_db("tell");
     delete tell;
   }
 };

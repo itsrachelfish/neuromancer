@@ -1,27 +1,16 @@
 var admin = {
   commands: ["say", "ctcp", "load", "unload", "reload", "quit"],
+  db: false,
   client: false,
   core: false,
 
-  //TODO: eventually make this and message a core function
-  reply: function(type, from, to, message) {
-    //determine if it's a channel message or a privmessage
-    if (to.charAt(0) == '#') {
-      admin.client[type](to, message);
-      console.log('[' + to + ']' + core.config.server.name + ' ' + message);
-    } else {
-      admin.client[type](from, message);
-      console.log('[' + from + ']' + core.config.server.name + ' ' + message);
-    }
-  },
-
   message: function(from, to, message, details) {
-    //TODO: do this properly
+    //TODO: do this properly, it's nickbased for now for testing
     //var userhost = details.nick + '@' + details.host;
     var userhost = details.nick;
-
+    
     // If this user appears in the admin list
-    if (userhost != admin.core.config.admin) {
+    if (userhost == admin.core.config.admin) {
       if (message.charAt(0) == admin.core.config.prefix) {
         message = message.substr(1);
         message = message.split(' ');
@@ -37,28 +26,27 @@ var admin = {
     }
   },
 
-  //this should be a core function too...
   parse_module: function(module) {
     module = module.split(' ');
-    if (module[0] == 'core')
+    if (module[0] == "core")
       return {
-        type: 'core',
+        type: "core",
         name: module[1]
       };
-    else if (module[1] == 'module')
+    else if (module[1] == "module")
       return {
-        type: 'modules',
+        type: "modules",
         name: module[1]
       };
     else
       return {
-        type: 'modules',
+        type: "modules",
         name: module[0]
       };
   },
 
   say: function(from, to, message) {
-    admin.reply("say", from, to, message);
+    admin.core.send("say", from, to, message);
   },
 
   ctcp: function(from, to, message) {
@@ -73,23 +61,23 @@ var admin = {
   load: function(from, to, module) {
     module = admin.parse_module(module);
     admin.core.load(module);
-    admin.reply("say", from, to, "[module] " + module.name + " loaded");
+    admin.core.send("say", from, to, "[module] " + module.name + " loaded");
   },
 
   unload: function(from, to, module) {
     module = admin.parse_module(module);
     admin.core.unload(module);
-    admin.reply("say", from, to, "[module] " + module.name + " unloaded");
+    admin.core.send("say", from, to, "[module] " + module.name + " unloaded");
   },
 
   reload: function(from, to, module) {
     module = admin.parse_module(module);
     admin.core.reload(module);
-    admin.reply("say", from, to, "[module] " + module.name + " reloaded");
+    admin.core.send("say", from, to, "[module] " + module.name + " reloaded");
   },
 
   quit: function(from, to, module) {
-    admin.reply('say', from, to, 'Bye bye!');
+    admin.core.send('say', from, to, 'Bye bye!');
     require('process').exit();
   },
 
@@ -104,9 +92,9 @@ var admin = {
 }
 
 module.exports = {
-  load: function(client, core) {
-    admin.client = client;
+  load: function(core) {
     admin.core = core;
+    admin.client = admin.core.client;
     admin.bind();
   },
 

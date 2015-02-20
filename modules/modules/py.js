@@ -1,20 +1,10 @@
 var py = {
   commands: ["py", "python"],
+  db: false,
   client: false,
   core: false,
 
-  //TODO: eventually make this and message a core function
-  reply: function(type, from, to, message) {
-    //determine if it's a channel message or a privmessage
-    if (to.charAt(0) == '#') {
-      py.client[type](to, message);
-      console.log('[' + to + ']' + core.config.server.name + ' ' + message);
-    } else {
-      py.client[type](from, message);
-      console.log('[' + from + ']' + core.config.server.name + ' ' + message);
-    }
-  },
-
+  // boilerplate woo
   message: function(from, to, message, details) {
     if (message.charAt(0) == py.core.config.prefix) {
       message = message.substr(1);
@@ -23,7 +13,7 @@ var py = {
       var command = message.shift();
 
       // If this command is valid
-      if (flip.commands.indexOf(command) > -1) {
+      if (py.commands.indexOf(command) > -1) {
         message = message.join(' ');
         py[command](from, to, message);
       }
@@ -31,28 +21,29 @@ var py = {
   },
 
   py: function(from, to, message) {
+    // make a call to an external server for this one
     request("http://tumbolia.appspot.com/py/" + text, function(e, r, body) {
-      var to_say = (body.length < 300) ? ('\u000310' + body) : ('\u000304Bad Request')
-      py.reply("say", from, to, to_say);
+      var to_say = (body.length < 300) ? (body) : ("Bad Request")
+      py.core.send("say", from, to, to_say);
     });
   },
-  
+
   bind: function() {
     py.client.addListener("message", py.message);
   },
-  
+
   unbind: function() {
     py.client.removeListener("message", py.message);
   }
 };
 
 module.exports = {
-  load: function(client, core) {
-    py.client = client;
+  load: function(core) {
     py.core = core;
+    py.client = py.core.client;
     py.bind();
   },
-  
+
   unload: function() {
     py.unbind();
     delete py;
