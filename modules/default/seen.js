@@ -48,28 +48,28 @@ var seen = {
     var commands = message.split(' ');
     var last = false;
     if (commands[0] == "-l") {
-	commands.splice(0, 1);
-	last = true;
+      commands.splice(0, 1);
+      last = true;
     }
     if (seen.core.databases.seen[commands[0].toLowerCase()]) {
       if (last && seen.core.databases.seen[commands[0].toLowerCase()].l) {
-          seen.core.send("say", from, to, "Last heard from \u000308" + commands[0] + '\u000f ' + seen.readable_time(Date.now() - seen.core.databases.seen[commands[0].toLowerCase()].d) + ' ago with \u000312"' + seen.core.databases.seen[commands[0].toLowerCase()].l + '"');
+        seen.core.send("say", from, to, "Last heard from \u000308" + commands[0] + '\u000f ' + seen.readable_time(Date.now() - seen.core.databases.seen[commands[0].toLowerCase()].d) + ' ago with \u000312"' + seen.core.databases.seen[commands[0].toLowerCase()].l + '"');
       } else {
         seen.core.send("say", from, to, "Last heard from \u000308" + commands[0] + '\u000f ' + seen.readable_time(Date.now() - seen.core.databases.seen[commands[0].toLowerCase()].d) + ' ago');
       }
     } else {
-	seen.core.send("say", from, to, "Sorry, I haven't seen " + commands[0]);
+      seen.core.send("say", from, to, "Sorry, I haven't seen " + commands[0]);
     }
   },
-  
+
   since: function(from, to, message) {
-      var since = [];
-      for (var i in seen.core.databases.seen) {
-	  if (i.d >= Date.now()-(((message>1440)?1440:message)*60000)) {
-	      since.push(i);
-	  }
+    var since = [];
+    for (var i in seen.core.databases.seen) {
+      if (i.d >= Date.now() - (((message > 1440) ? 1440 : message) * 60000)) {
+        since.push(i);
       }
-      seen.core.send("say", from, to, 'In the last ' + message + ' minutes, I\'ve seen ' + since.join(', '));
+    }
+    seen.core.send("say", from, to, 'In the last ' + message + ' minutes, I\'ve seen ' + since.join(', '));
   },
 
   listener: function(from, to, message) {
@@ -78,12 +78,12 @@ var seen = {
       l: message
     };
   },
-  
+
   bind: function(from, to, message) {
     seen.client.addListener("message", seen.message);
     seen.client.addListener("message", seen.listener);
   },
-  
+
   unbind: function(from, to, message) {
     seen.client.removeListener("message", seen.message);
     seen.client.removeListener("message", seen.listener);
@@ -97,12 +97,12 @@ module.exports = {
     seen.core.read_db("seen");
     seen.bind();
   },
-  
+
   unload: function() {
     seen.unbind();
     seen.core.write_db("seen");
     delete seen;
   },
-  
+
   commands: seen.commands
 };

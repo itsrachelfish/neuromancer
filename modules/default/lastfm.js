@@ -1,4 +1,5 @@
 var color = require("irc-colors");
+var request = require("request");
 
 var lastfm = {
   commands: ["lastfm", "fm", "np"],
@@ -26,7 +27,7 @@ var lastfm = {
       lastfm.core.send("say", from, to, from + ' associated with lastfm user ' + message)
     } else {
       if (lastfm.core.databases.lastfm[from]) {
-        request('http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=' + lastfm.core.databaseslastfm[from] + '&api_key=1d234424fd93e18d503758bf2714859e&format=json', function(e, r, body) {
+        request('http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=' + lastfm.core.databases.lastfm[from] + '&api_key=1d234424fd93e18d503758bf2714859e&format=json', function(e, r, body) {
           try {
             var track = JSON.parse(body)['recenttracks']['track'][0]
             lastfm.core.send("say", from, to, from + ' is listening to: \u000310' + track.artist['#text'] + '\u000f - \u000304' + track.name + ((track.album['#text'])?('\u000f (\u000307' + track.album['#text']+ '\u000f)'):''))

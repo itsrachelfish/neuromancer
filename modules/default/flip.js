@@ -34,11 +34,11 @@ var flip = {
   bind: function() {
     flip.client.addListener("message", flip.message);
   },
-  
+
   unbind: function() {
     flip.client.removeListener("message", flip.message);
   }
-  
+
 };
 
 module.exports = {
@@ -47,11 +47,11 @@ module.exports = {
     flip.client = flip.core.client;
     flip.bind();
   },
-  
+
   unload: function() {
     flip.unbind();
     delete flip;
   },
-  
+
   commands: flip.commands
 };

@@ -9,8 +9,8 @@ var admin = {
   message: function(from, to, message, details) {
     var userhost = details.user + '@' + details.host;
 
-    // If this user appears in the admin list
-    if (userhost == admin.core.config.admin) {
+    // If this user is the owner of the bot
+    if (userhost == admin.core.config.owner) {
       if (message.charAt(0) == admin.core.config.prefix) {
         message = message.substr(1);
         message = message.split(' ');
@@ -80,7 +80,6 @@ var admin = {
       admin.core.send("say", from, to, '[' + color.red("error") + "] '" + module.type + '.' + module.name + "' could not be unloaded");
     }
   },
-
 
   reload: function(from, to, module) {
     module = admin.parse_module(module);

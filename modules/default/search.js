@@ -26,7 +26,7 @@ var search = {
     });
   },
 
-  //g is an aliases to google
+  //g is an alias to google
   g: function(from, to, message) {
     search.google(from, to, message);
   },

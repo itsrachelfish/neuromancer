@@ -1,4 +1,5 @@
 var color = require("irc-colors");
+var request = require("request");
 
 var py = {
   commands: ["py", "python"],
@@ -20,7 +21,7 @@ var py = {
       }
     }
   },
-  
+
   py: function(from, to, message) {
     py.python(from, to, message);
   },
@@ -53,6 +54,6 @@ module.exports = {
     py.unbind();
     delete py;
   },
-  
+
   commands: py.commands
 };

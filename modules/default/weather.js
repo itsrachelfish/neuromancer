@@ -29,6 +29,7 @@ var weather = {
     }
   },
 
+  //TODO: clean this up and make it more readable
   worker: function(from, to, message, forecast) {
     var locale = (message == (message = message.replace(/ ?-c ?/, ' '))) ? ['imperial', 'F', 'mph'] : ['metric', 'C', 'm/s'];
     var days = message.match(/-[1-7]/) ? message.match(/-[1-7]/)[0].slice(1) : '3';

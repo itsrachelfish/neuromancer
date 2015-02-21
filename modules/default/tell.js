@@ -21,8 +21,6 @@ var tell = {
   },
 
   tell: function(from, to, message) {
-    // enable this and other read/write ops in tell and listner if your bot crashes a lot to help prevent database screwups
-    //tell.core.read_db("tell");
     var args = message.split(' ');
     var reciever = args[0].toLowerCase();
 
@@ -37,6 +35,7 @@ var tell = {
     });
     tell.core.send("say", from, to, color.green("Okay"));
 
+    //save the db so if the bot/module crashes/whatever we don't lose our new tell
     tell.core.write_db("tell");
   },
 

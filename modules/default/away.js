@@ -1,10 +1,10 @@
 var color = require("irc-colors");
 
 var away = {
-  commands: ["away"],
-  db: false,
+  commands: ["away", "rmaway"],
   client: false,
   core: false,
+  // away doesn't use a persistant database
   aways: {},
 
   message: function(from, to, message, details) {
@@ -27,6 +27,15 @@ var away = {
     console.log(from + " has gone away [" + message + ']');
   },
 
+  // allows an admin to delete a spammy away
+  rmaway: function(from, to, message) {
+    if (from.toLowerCase() in away.core.config.admins) {
+      if (message.toLowerCase() in away.aways) {
+        delete away.aways[message.toLowerCase()];
+      }
+    }
+  },
+
   listener: function(from, to, message) {
     // one of the problems of async programing is that our listener sees the away-ee leaving
     // this if statement makes it work by ignoring <prefix>away commands when listening for an away-ee's return
@@ -34,13 +43,13 @@ var away = {
     if (message.split(' ')[0] != awaycmd) {
       //listen for an away-ee coming back
       if (from.toLowerCase() in away.aways) {
-        delete away.aways[from.toLowerCase()]
+        delete away.aways[from.toLowerCase()];
         console.log(from + ' has come back');
       }
       //listen for someone attempting to speak to someone who is away
       if (away.aways[message.split(' ')[0].replace(/[:,]/, '').toLowerCase()] != undefined) {
-        var target = message.split(' ')[0].replace(/[:,]/, '')
-          var to_say = target + " is currently away " + (away.aways[target.toLowerCase()] ? "[" + color.blue(away.aways[target.toLowerCase()]) + "]" : color.blue("No reason specified"));
+        var target = message.split(' ')[0].replace(/[:,]/, '');
+        var to_say = target + " is currently away " + (away.aways[target.toLowerCase()] ? "[" + color.blue(away.aways[target.toLowerCase()]) + "]" : color.blue("No reason specified"));
         away.core.send("say", from, to, to_say);
         console.log(from + ' attempted to contact ' + message.split(' ')[0].replace(':', ''));
       }
@@ -69,6 +78,6 @@ module.exports = {
     away.unbind();
     delete away;
   },
-  
+
   commands: away.commands
 }
