@@ -22,8 +22,8 @@ core.init(client);
 
 // this is the best place to listen for uncaught errors
 process.on("uncaughtException", function(err) {
-  console.log("### GLOBAL ERROR ###");
+  console.log("[error][global]".red);
   console.log(err);
 });
 
-console.log("Initalized");
+console.log("[core]".green + " initalized");

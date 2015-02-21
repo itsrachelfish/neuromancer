@@ -1,4 +1,5 @@
 var fs = require('fs');
+var colors = require("colors");
 
 var core = {
   client: false,
@@ -48,7 +49,7 @@ var core = {
     // attempt to open the module file
     fs.readFile(path, function(err, data) {
       if (err) {
-        console.error("[ERROR][module] " + module.name + " does not exist.");
+        console.error("[ERROR][module] ".red + module.name + " does not exist.");
         console.error(path)
         console.error(err);
         return 1;
@@ -61,7 +62,7 @@ var core = {
         // and run the load funciton
         core.loaded[module_id].load(core);
         core.commands[module_id] = core.loaded[module_id].commands;
-        console.log("[module] " + module.type + '.' + module.name + " loaded.");
+        console.log("[module] ".green + module.type + '.' + module.name + " loaded.");
         return 0;
       }
     });
@@ -78,7 +79,7 @@ var core = {
       if (typeof core.loaded[module_id].unload == "function") {
         core.loaded[module_id].unload(core.client, core);
       } else {
-        console.error("[ERROR][module] " + module.name + " could not be unloaded.");
+        console.error("[ERROR][module] ".red + module.name + " could not be unloaded.");
         return 1;
       }
 
@@ -86,7 +87,7 @@ var core = {
       delete core.commands[core.loaded[module_id]];
       delete core.loaded[module_id];
       delete require.cache[require.resolve("./modules/" + module.type + '/' + module.name + ".js")];
-      console.log("[module] " + module.type + '.' + module.name + " unloaded.");
+      console.log("[module] ".green + module.type + '.' + module.name + " unloaded.");
       return 0;
     }
     return 0;
@@ -101,13 +102,13 @@ var core = {
     var path = "./db/" + db + ".db";
     fs.readFile(path, function(err, data) {
       if (err) {
-        console.error("[ERROR][db] " + db + " database does not exist.");
+        console.error("[ERROR][db] ".red + db + " database does not exist.");
         console.error(path);
         console.error(err);
         return;
       }
       core.databases[db] = JSON.parse(data, "utf8");
-      console.log("[db]: " + db + " database loaded.");
+      console.log("[db]: ".blue + db + " database loaded.");
     });
   },
 
@@ -115,12 +116,12 @@ var core = {
     var path = "./db/" + db + ".db";
     fs.writeFile(path, JSON.stringify(core.databases[db]), "utf8", function(err) {
       if (err) {
-        console.error("[ERROR][db]" + db + " database could not be written.");
+        console.error("[ERROR][db]".red + db + " database could not be written.");
         console.error(path);
         console.error(err);
         return;
       }
-      console.log("[db]: " + db + " database saved.");
+      console.log("[db]: ".blue + db + " database saved.");
     });
   },
 
