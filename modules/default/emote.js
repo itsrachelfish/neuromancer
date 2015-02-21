@@ -1,7 +1,7 @@
 var color = require("irc-colors");
 
 var emote = {
-  commands: ["dunno", "downy", "lv", "id", "ld", "intense"],
+    commands: ["dunno", "downy", "lv", "id", "ld", "intense", "doubledowny", "tripledowny", "rainbowdowny"],
   client: false,
   core: false,
 
@@ -34,6 +34,22 @@ var emote = {
     var downy = ".'\x1f/\x1f)";
     emote.core.send("say", from, to, color.lime(downy));
   },
+
+    doubledowny: function(from, to, message) {
+	emote.downy(from, to, message);
+	emote.downy(from, to, message);
+    },
+
+    tripledowny: function(from, to, message) {
+	emote.downy(from, to, message);
+	emote.downy(from, to, message);
+	emote.downy(from, to, message);
+    },
+
+    rainbowdowny: function(from, to, message) {
+	var downy = ".'\x1f/\x1f)";
+	emote.core.send("say", from, to, color.rainbow(downy));
+    },
 
   lv: function(from, to, message) {
     var lv = "♥";
@@ -73,7 +89,7 @@ var emote = {
   },
   
   intense: function(from, to, message) {
-    emote.core.send("say", from, to, "\x03\x02[" + text + " intensifies]\x02");
+    emote.core.send("say", from, to, "\x03\x02[" + message + " intensifies]\x02");
   },
 
   listener: function(from, to, message) {

@@ -50,7 +50,7 @@ var remind = {
     }
     
     // as with tell, enable this if your bot is flakey
-    //remind.core.write_db("remind");
+    remind.core.write_db("remind");
   },
   
   listener: function(from, to, message) {
@@ -61,7 +61,7 @@ var remind = {
           object.splice(index, 1);
         }
       });
-     //remind.core.write_db("remind"); 
+     remind.core.write_db("remind"); 
     }
   }, 
   

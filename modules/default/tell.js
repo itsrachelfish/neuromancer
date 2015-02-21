@@ -37,7 +37,7 @@ var tell = {
     });
     tell.core.send("say", from, to, color.green("Okay"));
 
-    //tell.core.write_db("tell");
+    tell.core.write_db("tell");
   },
 
   listener: function(from, to, message) {
@@ -48,7 +48,7 @@ var tell = {
         tell.core.send("say", from, to, to_say);
       });
       delete tell.core.databases.tell[reciever];
-      //tell.core.write_db("tell");
+      tell.core.write_db("tell");
     }
   },
 

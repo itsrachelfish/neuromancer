@@ -42,11 +42,11 @@ var weather = {
       var locate = (data.count > 1) ? data.results.Result[0] : data.results.Result;
       if (forecast) {
         request(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + locale[0] + '&lat=' + locate.latitude + '&lon=' + locate.longitude, function(e, r, body) {
-          var weath = JSON.parse(body);
+          var forecast = JSON.parse(body);
 
-          weath.core.send("say", from, to, 'Forecast for \u000310' + (locate.line2 || locate.country || locate.name) + '\u000f (\u000311' + weath.city.country + '\u000f)');
+          weather.core.send("say", from, to, 'Forecast for \u000310' + (locate.line2 || locate.country || locate.name) + '\u000f (\u000311' + forecast.city.country + '\u000f)');
 
-          weath.list.forEach(function(day, index) {
+          forecast.list.forEach(function(day, index) {
             // this is gross I know
             var to_say = ((index == 0) ? 'Now' : (new Date(day.dt * 1000).toString().slice(0, 3))) + ': \u000304' + day.temp.min.toFixed(1) + '°' + locale[1] + '\u000f - \u000305' + day.temp.max.toFixed(1) + '°' + locale[1] + ' \u000307' + day.humidity + '% humidity \u000311' + day.speed.toFixed(1) + locale[2] + ' wind\u000f (\u000306' + day.weather[0].main + '\u000f)';
 
