@@ -9,7 +9,7 @@ var prefix = {
     var userhost = details.user + '@' + details.host;
     
     // If this user appears in the admin list
-    if (userhost == prefix.core.config.admin) {
+    if (userhost == prefix.core.config.owner) {
       if (message.charAt(0) == prefix.core.config.prefix) {
         message = message.substr(1);
         message = message.split(' ');
