@@ -6,7 +6,7 @@ var help = {
   core: false,
   
   message: function(from, to, message, details) {
-    if (message.charAt(0) == help
+      if (message.charAt(0) == help.core.config.prefix) {
       message = message.split(' ');
 
       var command = message.shift();
