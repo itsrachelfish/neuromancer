@@ -4,6 +4,7 @@ var away = {
   commands: ["away", "rmaway"],
   client: false,
   core: false,
+  
   // away doesn't use a persistant database
   aways: {},
 
@@ -29,10 +30,10 @@ var away = {
 
   // allows an admin to delete a spammy away
   rmaway: function(from, to, message) {
-      //console.log(from + ':' + message);
-      //console.log(away.core.config.admins);
-     // console.log(away.aways);
-      if (admin.core.config.admins.indexOf(from) > -1) {
+    //console.log(from + ':' + message);
+    //console.log(away.core.config.admins);
+    //console.log(away.aways);
+    if (admin.core.config.admins.indexOf(from) > -1) {
       if (message.toLowerCase() in away.aways) {
         delete away.aways[message.toLowerCase()];
       }

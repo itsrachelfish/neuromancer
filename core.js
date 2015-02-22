@@ -40,6 +40,13 @@ var core = {
       core.load(core.modules[i]);
     }
   },
+  
+  shutdown: function(client) {
+    core.loaded.forEach(function(module) {
+      core.unload(module);
+    });
+    require("process").exit();
+  },
 
   load: function(module) {
     // generate the module id and path from the module name and type

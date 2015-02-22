@@ -88,9 +88,8 @@ var admin = {
   },
 
   quit: function(from, to, module) {
-    admin.core.send('say', from, to, 'Bye bye!');
     admin.core.client.part(admin.core.server.channels[0], color.rainbow("goodbye"));
-    require('process').exit();
+    admin.core.shutdown;
   },
 
   bind: function() {
