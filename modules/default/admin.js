@@ -87,11 +87,6 @@ var admin = {
     admin.core.send("say", from, to, '[' + color.blue("module") + "] '" + module.type + '.' + module.name + "' reloaded");
   },
 
-  quit: function(from, to, module) {
-    admin.core.client.part(admin.core.server.channels[0], color.rainbow("goodbye"));
-    admin.core.shutdown;
-  },
-
   bind: function() {
     admin.client.addListener('message', admin.message);
   },

@@ -3,10 +3,9 @@ var readline = require('readline');
 var prompt = {
   readline: false,
   client: false,
-  commands: [],
   core: false,
 
-  list: ["say", "ctcp", "load", "unload", "reload"],
+  commands: ["say", "ctcp", "load", "unload", "reload", "quit"],
 
   handle: function(line) {
     var line = line.split(' ');
@@ -14,7 +13,7 @@ var prompt = {
     var command = line.join(' ');
 
     if (action && command) {
-      if (prompt.list.indexOf(action) > -1) {
+      if (prompt.commands.indexOf(action) > -1) {
         prompt[action](command);
       } else {
         console.log("Invalid action: " + action);
@@ -81,8 +80,8 @@ var prompt = {
   reload: function(module) {
     module = prompt.parse_module(module);
     prompt.core.reload(module);
-  }
-
+  },
+  
 };
 
 module.exports = {
