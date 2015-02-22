@@ -1,7 +1,7 @@
 var color = require("irc-colors");
 
 var admin = {
-  commands: ["say", "ctcp", "load", "unload", "reload", "quit"],
+  commands: ["say", "ctcp", "load", "unload", "reload"],
   db: false,
   client: false,
   core: false,

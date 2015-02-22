@@ -5,7 +5,7 @@ var prompt = {
   client: false,
   core: false,
 
-  commands: ["say", "ctcp", "load", "unload", "reload", "quit"],
+  commands: ["say", "ctcp", "load", "unload", "reload"],
 
   handle: function(line) {
     var line = line.split(' ');
