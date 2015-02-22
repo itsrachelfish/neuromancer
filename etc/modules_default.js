@@ -1,1 +1,1 @@
-module.exports = ["admin", "away", "calc", "echo", "emote", "flip", "lastfm", "prefix", "py", "remind", "search", "seen", "tell", "translate", "wa", "weather"];
+module.exports = ["admin", "away", "calc", "cleverbot", "echo", "emote", "flip", "help", "lastfm", "prefix", "py", "remind", "roll", "search", "seen", "tell", "translate", "url", "wa", "weather"];

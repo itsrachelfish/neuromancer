@@ -23,7 +23,13 @@ var help = {
 
   help: function(from, to, message) {
     help.core.send("say", from, from, "Commands: ");
-    help.core.send("say", from, from, JSON.stringify(help.core.commands));
+    
+    // this is a horrible and not too great way of doing it but whatever
+    var commands = JSON.stringify(help.core.commands).split("],");
+    commands.forEach(function(entry) {
+      help.core.send("say", from, from, entry);
+    });
+
   },
 
   commands: function(from, to, message) {

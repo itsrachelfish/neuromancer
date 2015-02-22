@@ -4,6 +4,7 @@ epers@primesli.me
 */
 
 var irc = require("irc");
+var colors = require("colors");
 
 
 // get server config
@@ -25,5 +26,9 @@ process.on("uncaughtException", function(err) {
   console.log("[error][global]".red);
   console.log(err);
 });
+
+client.on("pm", function(from, text, mes) {
+  console.log("[pm]:".yellow + ' ' + from + ": " + text);
+})
 
 console.log("[core]".green + " initalized");
