@@ -7,6 +7,7 @@ var help = {
   
   message: function(from, to, message, details) {
       if (message.charAt(0) == help.core.config.prefix) {
+	  message = message.substr(1);
       message = message.split(' ');
 
       var command = message.shift();
@@ -20,7 +21,8 @@ var help = {
   },
   
   help: function(from, to, message) {
-    help.core.send("say", from, from, "Commands: " + help.core.commands);
+    help.core.send("say", from, from, "Commands: ");
+      help.core.send("say", from, from, help.core.commands);
   },
   
   bind: function(){
