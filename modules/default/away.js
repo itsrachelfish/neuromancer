@@ -4,7 +4,9 @@ var away = {
   commands: ["away", "rmaway"],
   client: false,
   core: false,
-  
+  timeout: false,
+  wait: false,
+
   // away doesn't use a persistant database
   aways: {},
 
@@ -52,12 +54,35 @@ var away = {
       }
       //listen for someone attempting to speak to someone who is away
       if (away.aways[message.split(' ')[0].replace(/[:,]/, '').toLowerCase()] != undefined) {
+        var timeout = away.waiting(1);
+        if (timeout) {
+          return;
+        }
         var target = message.split(' ')[0].replace(/[:,]/, '');
         var to_say = target + " is currently away " + (away.aways[target.toLowerCase()] ? "[" + color.blue(away.aways[target.toLowerCase()]) + "]" : color.blue("No reason specified"));
         away.core.send("say", from, to, to_say);
         console.log(from + ' attempted to contact ' + message.split(' ')[0].replace(':', ''));
       }
     }
+  },
+
+  waiting: function(timeout) {
+    if (away.wait) {
+      var timeout = (away.timeout.getTime() - new Date().getTime()) / 1000;
+      return timeout;
+    }
+
+    if (typeof away.timeout == "undefined") {
+      away.timeout = 1;
+    }
+
+    var date = new Date();
+    away.timeout = new Date(date.getTime() + (timeout * 60 * 1000));
+
+    away.wait = setTimeout(function() {
+      away.wait = false;
+      away.timeout = false;
+    }, timeout * 60 * 1000);
   },
 
   bind: function() {
