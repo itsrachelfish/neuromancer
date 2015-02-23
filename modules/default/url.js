@@ -66,7 +66,7 @@ var url = {
   },
 
   unbind: function() {
-    url.client.addListener("message", url.listener);
+    url.client.removeListener("message", url.listener);
   }
 };
 
