@@ -10,8 +10,8 @@ var help = {
     if (message.charAt(0) == help.core.config.prefix) {
       message = message.substr(1);
       message = message.split(' ');
-      
-      
+
+
 
       var command = message.shift();
 
@@ -37,13 +37,10 @@ var help = {
 
   help: function(from, to, message) {
     help.core.send("say", from, from, "Commands: ");
-    
-    // this is a horrible and not too great way of doing it but whatever
-    var commands = JSON.stringify(help.core.commands).split("],");
-    commands.forEach(function(entry) {
-      help.core.send("say", from, from, entry);
-    });
 
+    Object.keys(help.core.loaded).forEach((function(entry, index, object) {
+      help.core.send("say", from, from, entry + ": " + help.core.loaded[entry].commands);
+    }));
   },
 
   commands: function(from, to, message) {
