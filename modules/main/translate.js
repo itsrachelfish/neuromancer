@@ -10,6 +10,19 @@ var translate = {
     if (message.charAt(0) == translate.core.config.prefix) {
       message = message.substr(1);
       message = message.split(' ');
+      
+      var ignore = false
+      if (translate.core.databases.ignore[from.toLowerCase()]) {
+        translate.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
+          if (entry == "translate") {
+            console.log("[ignore]:".yellow + " ignored command '" + message.join(' ') + "' from '" + from + "'");
+            ignore = true;
+          }
+        });
+      }
+      if (ignore) {
+        return;
+      }
 
       var command = message.shift();
 

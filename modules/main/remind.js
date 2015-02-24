@@ -10,6 +10,19 @@ var remind = {
       message = message.substr(1);
       message = message.split(' ');
 
+      var ignore = false
+      if (remind.core.databases.ignore[from.toLowerCase()]) {
+        remind.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
+          if (entry == "remind") {
+            console.log("[ignore]:".yellow + " ignored command '" + message.join(' ') + "' from '" + from + "'");
+            ignore = true;
+          }
+        });
+      }
+      if (ignore) {
+        return;
+      }
+
       var command = message.shift();
 
       // If this command is valid
@@ -47,10 +60,8 @@ var remind = {
         t: time,
         m: args.slice(1).join(' '),
       });
+      remind.core.write_db("remind");
     }
-
-    // as with tell, enable this if your bot is flakey
-    remind.core.write_db("remind");
   },
 
   listener: function(from, to, message) {
