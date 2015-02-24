@@ -35,7 +35,7 @@ var cowsay = {
   },
 
   cowsay: function(from, to, message) {
-    cowsay.timeout = cowsay.waiting(2);
+    timeout = cowsay.waiting(2);
     if (timeout) {
       return;
     }
