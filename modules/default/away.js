@@ -54,7 +54,7 @@ var away = {
       }
       //listen for someone attempting to speak to someone who is away
       if (away.aways[message.split(' ')[0].replace(/[:,]/, '').toLowerCase()] != undefined) {
-        var timeout = away.waiting(1);
+        var timeout = away.waiting(5);
         if (timeout) {
           return;
         }
@@ -72,9 +72,8 @@ var away = {
       return timeout;
     }
 
-    if (typeof away.timeout == "undefined") {
-      away.timeout = 1;
-    }
+    if (typeof timeout == "undefined")
+      timeout = 1;
 
     var date = new Date();
     away.timeout = new Date(date.getTime() + (timeout * 60 * 1000));
