@@ -27,21 +27,22 @@ var url = {
 
   listener: function(from, to, message) {
     
-    var ignore = false
-    if (url.core.databases.ignore[from.toLowerCase()]) {
-      url.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
-        if (entry == "url") {
-          console.log("[ignore]:".yellow + " ignored link '" + message.join(' ') + "' from '" + from + "'");
-          ignore = true;
-        }
-      });
-    }
-    if (ignore) {
-      return;
-    }
+    
     
     // listen for links
     if (message.search(/\bhttps?:\/\/.*?\..*?\b/) !== -1) {
+      var ignore = false
+      if (url.core.databases.ignore[from.toLowerCase()]) {
+        url.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
+          if (entry == "url") {
+            console.log("[ignore]:".yellow + " ignored link '" + message.join(' ') + "' from '" + from + "'");
+            ignore = true;
+          }
+        });
+      }
+      if (ignore) {
+        return;
+      }
       // but not youtube links because those are handled seperately in youtube module
       if (message.search(/youtu((.be)|(be.com))/) !== -1) {
         return

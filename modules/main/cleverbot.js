@@ -10,24 +10,23 @@ var cleverbot = {
     if (message.charAt(0) == cleverbot.core.config.prefix) {
       message = message.substr(1);
       message = message.split(' ');
-      
-      var ignore = false
-      if (cleverbot.core.databases.ignore[from.toLowerCase()]) {
-        cleverbot.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
-          if (entry == "cleverbot") {
-            console.log("[ignore]:".yellow + " ignored command '" + message.join(' ') + "' from '" + from + "'");
-            ignore = true;
-          }
-        });
-      }
-      if (ignore) {
-        return;
-      }
 
       var command = message.shift();
 
       // If this command is valid
       if (cleverbot.commands.indexOf(command) > -1) {
+        var ignore = false
+        if (cleverbot.core.databases.ignore[from.toLowerCase()]) {
+          cleverbot.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
+            if (entry == "cleverbot") {
+              console.log("[ignore]:".yellow + " ignored command '" + message.join(' ') + "' from '" + from + "'");
+              ignore = true;
+            }
+          });
+        }
+        if (ignore) {
+          return;
+        }
         message = message.join(' ');
         cleverbot[command](from, to, message);
       }

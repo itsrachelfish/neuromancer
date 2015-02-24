@@ -9,24 +9,23 @@ var emote = {
     if (message.charAt(0) == emote.core.config.prefix) {
       message = message.substr(1);
       message = message.split(' ');
-      
-      var ignore = false
-      if (emote.core.databases.ignore[from.toLowerCase()]) {
-        emote.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
-          if (entry == "emote") {
-            console.log("[ignore]:".yellow + " ignored command '" + message.join(' ') + "' from '" + from + "'");
-            ignore = true;
-          }
-        });
-      }
-      if (ignore) {
-        return;
-      }
 
       var command = message.shift();
 
       // If this command is valid
       if (emote.commands.indexOf(command) > -1) {
+        var ignore = false
+        if (emote.core.databases.ignore[from.toLowerCase()]) {
+          emote.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
+            if (entry == "emote") {
+              console.log("[ignore]:".yellow + " ignored command '" + message.join(' ') + "' from '" + from + "'");
+              ignore = true;
+            }
+          });
+        }
+        if (ignore) {
+          return;
+        }
         message = message.join(' ');
         emote[command](from, to, message);
       }
