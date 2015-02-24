@@ -31,9 +31,9 @@ var prompt = {
         type: 'core',
         name: module[1]
       };
-    else if (module[0] == 'default')
+    else if (module[0] == 'main')
       return {
-        type: 'default',
+        type: 'main',
         name: module[1]
       };
     else if (module[1] == 'module')

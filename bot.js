@@ -31,4 +31,4 @@ client.on("pm", function(from, text, mes) {
   console.log("[pm]: ".yellow + from + ": " + text);
 })
 
-console.log("[core]:".green + " initalized");
+console.log("[core]:".green + " loading...");

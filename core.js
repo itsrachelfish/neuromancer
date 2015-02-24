@@ -18,7 +18,7 @@ var core = {
     // get core modules
     var core_modules = require("./etc/modules_core.js");
     // get modules to load at init
-    var default_modules = require("./etc/modules_default.js");
+    var main_modules = require("./etc/modules_main.js");
 
     // now load the modules
     // TODO: make these 1-liners with foreach
@@ -29,10 +29,10 @@ var core = {
       });
     }
 
-    for (var i = 0; i < default_modules.length; i++) {
+    for (var i = 0; i < main_modules.length; i++) {
       core.modules.push({
-        type: 'default',
-        name: default_modules[i]
+        type: 'main',
+        name: main_modules[i]
       });
     }
 
@@ -133,7 +133,6 @@ var core = {
       core.client[type](from, message);
     }
   }
-
 };
 
 module.exports = {

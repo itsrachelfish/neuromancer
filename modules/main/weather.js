@@ -18,6 +18,19 @@ var weather = {
     if (message.charAt(0) == weather.core.config.prefix) {
       message = message.substr(1);
       message = message.split(' ');
+      
+      var ignore = false
+      if (weather.core.databases.ignore[from.toLowerCase()]) {
+        weather.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
+          if (entry == "weather") {
+            console.log("[ignore]:".yellow + " ignored command '" + message.join(' ') + "' from '" + from + "'");
+            ignore = true;
+          }
+        });
+      }
+      if (ignore) {
+        return;
+      }
 
       var command = message.shift();
 

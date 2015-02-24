@@ -7,6 +7,20 @@ var youtube = {
   client: false,
 
   listener: function(from, to, message) {
+    
+    var ignore = false
+    if (youtube.core.databases.ignore[from.toLowerCase()]) {
+      youtube.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
+        if (entry == "youtube") {
+          console.log("[ignore]:".yellow + " ignored youtube link '" + message.join(' ') + "' from '" + from + "'");
+          ignore = true;
+        }
+      });
+    }
+    if (ignore) {
+      return;
+    }
+    
     if (message.match(/(youtube.com\/watch\S*v=|youtu.be\/)([\w-]+)/)) {
       request('http://gdata.youtube.com/feeds/api/videos/' + message.match(/(youtube.com\/watch\S*v=|youtu.be\/)([\w-]+)/)[2] + '?v=2&alt=json', function(e, r, body) {
         var data = JSON.parse(body)

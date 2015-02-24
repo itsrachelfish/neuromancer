@@ -11,6 +11,19 @@ var cowsay = {
     if (message.charAt(0) == cowsay.core.config.prefix) {
       message = message.substr(1);
       message = message.split(' ');
+      
+      var ignore = false
+      if (cowsay.core.databases.ignore[from.toLowerCase()]) {
+        cowsay.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
+          if (entry == "cowsay") {
+            console.log("[ignore]:".yellow + " ignored command '" + message.join(' ') + "' from '" + from + "'");
+            ignore = true;
+          }
+        });
+      }
+      if (ignore) {
+        return;
+      }
 
       var command = message.shift();
 
