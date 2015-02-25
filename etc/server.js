@@ -1,16 +1,16 @@
 module.exports = {
   // server to connect to
-  //server: 'irc.wetfish.net',
-  server: '192.168.0.1',
+  server: 'irc.wetfish.net',
+  //server: '192.168.0.1',
   
   // port to use
   port: 6697,
   
   // ssl?
-  //secure: true,
+  secure: true,
   
   // self signed ssl cert?
-  //selfSigned: true,
+  selfSigned: true,
   
   // the bot's nick, username, and realname
   name: 'Neuromancer',
