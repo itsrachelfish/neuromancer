@@ -22,7 +22,7 @@ var py = {
         if (py.core.databases.ignore[from.toLowerCase()]) {
           py.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
             if (entry == "py") {
-              console.log("[ignore]:".yellow + " ignored command '" + message.join(' ') + "' from '" + from + "'");
+              console.log("[ignore]:".yellow + " ignored command '" + command + ' ' + message.join(' ') + "' from '" + from + "'");
               ignore = true;
             }
           });

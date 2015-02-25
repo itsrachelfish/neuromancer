@@ -21,7 +21,7 @@ var help = {
         if (help.core.databases.ignore[from.toLowerCase()]) {
           help.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
             if (entry == "help") {
-              console.log("[ignore]:".yellow + " ignored command '" + message.join(' ') + "' from '" + from + "'");
+              console.log("[ignore]:".yellow + " ignored command '" + command + ' ' + message.join(' ') + "' from '" + from + "'");
               ignore = true;
             }
           });

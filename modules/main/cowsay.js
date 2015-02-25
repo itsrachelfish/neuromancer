@@ -20,7 +20,7 @@ var cowsay = {
         if (cowsay.core.databases.ignore[from.toLowerCase()]) {
           cowsay.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
             if (entry == "cowsay") {
-              console.log("[ignore]:".yellow + " ignored command '" + message.join(' ') + "' from '" + from + "'");
+              console.log("[ignore]:".yellow + " ignored command '" + command + ' '  + message.join(' ') + "' from '" + from + "'");
               ignore = true;
             }
           });

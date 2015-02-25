@@ -16,7 +16,7 @@ var echo = {
         if (echo.core.databases.ignore[from.toLowerCase()]) {
           echo.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
             if (entry == "echo") {
-              console.log("[ignore]:".yellow + " ignored command '" + message.join(' ') + "' from '" + from + "'");
+              console.log("[ignore]:".yellow + " ignored command '" + command + ' '  + message.join(' ') + "' from '" + from + "'");
               ignore = true;
             }
           });

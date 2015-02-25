@@ -22,7 +22,7 @@ module.exports = {
   autoConnect: true,
   
   // what channels to join upon connecting
-  channels: ["#wetfish"],
+  channels: ["#neuromancer"],
   
   // other configs, see the node-irc docs for more information
   messageSplit: 512,

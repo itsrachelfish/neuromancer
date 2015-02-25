@@ -23,7 +23,7 @@ var admin = {
           if (admin.core.databases.ignore[from.toLowerCase()]) {
             admin.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
               if (entry == "admin") {
-                console.log("[ignore]:".yellow + " ignored command '" + message.join(' ') + "' from '" + from + "'");
+                console.log("[ignore]:".yellow + " ignored command '" + command + ' ' + message.join(' ') + "' from '" + from + "'");
                 ignore = true;
               }
             });

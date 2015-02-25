@@ -21,7 +21,7 @@ var translate = {
         if (translate.core.databases.ignore[from.toLowerCase()]) {
           translate.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
             if (entry == "translate") {
-              console.log("[ignore]:".yellow + " ignored command '" + message.join(' ') + "' from '" + from + "'");
+              console.log("[ignore]:".yellow + " ignored command '" + command + ' ' + message.join(' ') + "' from '" + from + "'");
               ignore = true;
             }
           });
