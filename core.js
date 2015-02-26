@@ -54,13 +54,11 @@ var core = {
       }
 
       if (core.loaded[module_id].listener) {
-        console.log("adding listener for listener");
         core.client.addListener("message", core.loaded[module_id].listener);
         
       }
 
       if (core.loaded[module_id].commands) {
-        console.log("added listener for regular");
         core.client.addListener("message", function(from, to, message, details) {
           core.message(from, to, message, details, module_id);
         });
@@ -96,12 +94,10 @@ var core = {
       }
 
       if (core.loaded[module_id].listener) {
-        console.log("removing listener for listener");
         core.client.removeListener("message", core.loaded[module_id].listener);
       }
 
       if (core.loaded[module_id].message) {
-        console.log("removing listener for regular");
         core.client.removeListener("message", function(from, to, message, details) {
           core.message(from, to, message, details, module_id);
         });
