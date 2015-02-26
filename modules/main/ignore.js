@@ -29,18 +29,18 @@ var ignore = {
     var args = message.split(' ');
     var person = args[0].toLowerCase();
     var module = args[1];
-    
+
     if (module == "all") {
       delete ignore.core.databases.ignore[person];
-      return;
+      console.log("[ignore]:".yellow + " no longer ignoring any commands from " + person + '.');
+    } else {
+      ignore.core.databases.ignore[person].forEach(function(entry, index, object) {
+        if (entry == module) {
+          object.splice(index, 1);
+          console.log("[ignore]:".yellow + " module " + module + " is no longer ignoring " + person + '.');
+        }
+      });
     }
-
-    ignore.core.databases.ignore[person].forEach(function(entry, index, object) {
-      if (entry == module) {
-        object.splice(index, 1);
-        console.log("[ignore]:".yellow + " module " + module + " is no longer ignoring " + person + '.');
-      }
-    });
     ignore.core.write_db("ignore");
   }
 };
@@ -55,7 +55,7 @@ module.exports = {
   },
 
   commands: ignore.commands,
-  
+
   // this module uses a db
   db: true,
   // this is an admin-only module

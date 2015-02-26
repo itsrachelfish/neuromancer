@@ -165,9 +165,6 @@ var core = {
   message: function(from, to, message, details, module_id) {
     var userhost = details.user + '@' + details.host;
     if (message.charAt(0) == core.config.prefix) {
-      if (core.loaded[module_id].admin && userhost !== core.config.owner) {
-        return;
-      }
       message = message.substr(1);
       message = message.split(' ');
 
@@ -188,6 +185,10 @@ var core = {
           if (ignore) {
             return;
           }
+        }
+        
+        if (core.loaded[module_id].admin && userhost !== core.config.owner) {
+          return;
         }
         message = message.join(' ');
         core.loaded[module_id].run(command, from, to, message);

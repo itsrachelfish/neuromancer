@@ -76,6 +76,7 @@ module.exports = {
 
   commands: seen.commands,
   listener: seen.listener,
+  db: true,
   run: function(command, from, to, message) {
     seen[command](from, to, message);
   },
