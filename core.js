@@ -60,7 +60,6 @@ var core = {
       // does it have a listener?
       if (typeof core.loaded[module_id].listener == "function") {
         core.client.addListener("message", core.loaded[module_id].listener);
-
       }
 
       // does it have any commands?
@@ -99,7 +98,8 @@ var core = {
         core.write_db(module.name);
       }
 
-      if (core.loaded[module_id].listener) {
+      // does it have a listener?
+      if (typeof core.loaded[module_id].listener == "function") {
         core.client.removeListener("message", core.loaded[module_id].listener);
       }
 
@@ -116,6 +116,7 @@ var core = {
       console.log("[module]: ".green + module.type + '.' + module.name + " unloaded.");
       return 0;
     } else {
+      console.error("[ERROR][module]: ".red + module.name + " was not loaded.");
       return 1;
     }
   },
