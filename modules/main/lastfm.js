@@ -3,38 +3,8 @@ var request = require("request");
 
 var lastfm = {
   commands: ["lastfm", "fm", "np"],
-  client: false,
   core: false,
-  
-  message: function(from, to, message, details) {
-    if (message.charAt(0) == lastfm.core.config.prefix) {
-      message = message.substr(1);
-      message = message.split(' ');
-      
-      
-
-      var command = message.shift();
-
-      // If this command is valid
-      if (lastfm.commands.indexOf(command) > -1) {
-        var ignore = false
-        if (lastfm.core.databases.ignore[from.toLowerCase()]) {
-          lastfm.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
-            if (entry == "lastfm") {
-              console.log("[ignore]:".yellow + " ignored command '" + command + ' ' + message.join(' ') + "' from '" + from + "'");
-              ignore = true;
-            }
-          });
-        }
-        if (ignore) {
-          return;
-        }
-        message = message.join(' ');
-        lastfm[command](from, to, message);
-      }
-    }
-  },
-  
+    
   lastfm: function(from, to, message) {
     if (message) {
       lastfm.core.databases.lastfm[from] = text.replace(' ', '')
@@ -62,30 +32,21 @@ var lastfm = {
   
   np: function(from, to, message) {
     lastfm.lastfm(from, to, message);
-  },
-  
-  bind: function() {
-    lastfm.client.addListener("message", lastfm.message);
-  },
-  
-  unbind: function() {
-    lastfm.client.removeListener("message", lastfm.message);
   }
 };
 
 module.exports = {
   load: function(core) {
     lastfm.core = core;
-    lastfm.client = lastfm.core.client;
-    lastfm.core.read_db("lastfm");
-    lastfm.bind();
   },
   
   unload: function() {
-    lastfm.core.write_db("lastfm");
-    lastfm.unbind();
     delete lastfm;
   },
   
-  commands: lastfm.commands
+  commands: lastfm.commands,
+  db: true,
+  run: function(command, from, to, message) {
+    lastfm[command](from, to, message);
+  }
 };

@@ -4,7 +4,7 @@ var echo = {
 
   echo: function(from, to, message) {
     echo.core.send("say", from, to, message);
-  },
+  }
 };
 
 module.exports = {
@@ -15,8 +15,9 @@ module.exports = {
   unload: function() {
     delete echo;
   },
-
-  echo: echo.echo,
   
   commands: echo.commands,
+  run: function(command, from, to, message) {
+    echo[command](from, to, message);
+  }
 };

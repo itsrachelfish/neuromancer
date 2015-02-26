@@ -3,38 +3,7 @@ var request = require("request");
 
 var py = {
   commands: ["py", "python"],
-  client: false,
   core: false,
-
-  // boilerplate woo
-  message: function(from, to, message, details) {
-    if (message.charAt(0) == py.core.config.prefix) {
-      message = message.substr(1);
-      message = message.split(' ');
-      
-      
-
-      var command = message.shift();
-
-      // If this command is valid
-      if (py.commands.indexOf(command) > -1) {
-        var ignore = false
-        if (py.core.databases.ignore[from.toLowerCase()]) {
-          py.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
-            if (entry == "py") {
-              console.log("[ignore]:".yellow + " ignored command '" + command + ' ' + message.join(' ') + "' from '" + from + "'");
-              ignore = true;
-            }
-          });
-        }
-        if (ignore) {
-          return;
-        }
-        message = message.join(' ');
-        py[command](from, to, message);
-      }
-    }
-  },
 
   py: function(from, to, message) {
     py.python(from, to, message);
@@ -46,28 +15,20 @@ var py = {
       var to_say = (body.length < 300) ? (color.blue(body)) : ('[' + color.red("error") + "] Bad request");
       py.core.send("say", from, to, to_say);
     });
-  },
-
-  bind: function() {
-    py.client.addListener("message", py.message);
-  },
-
-  unbind: function() {
-    py.client.removeListener("message", py.message);
   }
 };
 
 module.exports = {
   load: function(core) {
     py.core = core;
-    py.client = py.core.client;
-    py.bind();
   },
 
   unload: function() {
-    py.unbind();
     delete py;
   },
 
-  commands: py.commands
+  commands: py.commands,
+  run: function(command, from, to, message) {
+    py[command](from, to, message);
+  },
 };

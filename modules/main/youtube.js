@@ -6,12 +6,10 @@ var youtube = {
   core: false,
   client: false,
 
-  listener: function(from, to, message) {
-    
-    
-    
+  listener: function(from, to, message) {  
     if (message.match(/(youtube.com\/watch\S*v=|youtu.be\/)([\w-]+)/)) {
       var ignore = false
+      // if we're ignoring them
       if (youtube.core.databases.ignore[from.toLowerCase()]) {
         youtube.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
           if (entry == "youtube") {
@@ -38,28 +36,18 @@ var youtube = {
         youtube.core.send("say", from, to, output);
       });
     }
-  },
-
-  bind: function() {
-    youtube.client.addListener("message", youtube.listener);
-  },
-
-  unbind: function() {
-    youtube.client.addListener("message", youtube.listener);
   }
 };
 
 module.exports = {
   load: function(core) {
     youtube.core = core;
-    youtube.client = youtube.core.client;
-    youtube.bind();
   },
 
   unload: function() {
-    youtube.unbind();
     delete youtube;
   },
 
-  commands: youtube.commands
+  commands: false,
+  listener: youtube.listener
 }

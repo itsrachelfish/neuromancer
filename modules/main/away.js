@@ -2,40 +2,14 @@ var color = require("irc-colors");
 
 var away = {
   commands: ["away", "rmaway"],
-  client: false,
   core: false,
+  
+  // vars needed for the timeout to work
   timeout: false,
   wait: false,
-
+  
   // away doesn't use a persistant database
   aways: {},
-
-  message: function(from, to, message, details) {
-    if (message.charAt(0) == away.core.config.prefix) {
-      message = message.substr(1);
-      message = message.split(' ');
-      
-      var command = message.shift();
-      
-      // If this command is valid
-      if (away.commands.indexOf(command) > -1) {
-        var ignore = false
-        if (away.core.databases.ignore[from.toLowerCase()]) {
-          away.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
-            if (entry == "away") {
-              console.log("[ignore]:".yellow + " ignored command '" + command + ' '  + message.join(' ') + "' from '" + from + "'");
-              ignore = true;
-            }
-          });
-        }
-        if (ignore) {
-          return;
-        }
-        message = message.join(' ');
-        away[command](from, to, message);
-      }
-    }
-  },
 
   away: function(from, to, message) {
     away.aways[from.toLowerCase()] = message;
@@ -44,9 +18,6 @@ var away = {
 
   // allows an admin to delete a spammy away
   rmaway: function(from, to, message) {
-    //console.log(from + ':' + message);
-    //console.log(away.core.config.admins);
-    //console.log(away.aways);
     if (admin.core.config.admins.indexOf(from) > -1) {
       if (message.toLowerCase() in away.aways) {
         delete away.aways[message.toLowerCase()];
@@ -94,30 +65,22 @@ var away = {
       away.wait = false;
       away.timeout = false;
     }, timeout * 60 * 1000);
-  },
-
-  bind: function() {
-    away.client.addListener("message", away.message);
-    away.client.addListener("message", away.listener);
-  },
-
-  unbind: function() {
-    away.client.removeListener("message", away.message);
-    away.client.removeListener("message", away.listener);
   }
 };
 
 module.exports = {
   load: function(core) {
     away.core = core;
-    away.client = away.core.client;
-    away.bind();
   },
 
   unload: function() {
-    away.unbind();
     delete away;
   },
 
-  commands: away.commands
+  commands: away.commands,
+  listener: away.listener,
+  run: function(command, from, to, message) {
+    away[command](from, to, message);
+  }
 }
+

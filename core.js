@@ -1,5 +1,7 @@
 var fs = require('fs');
 var colors = require("colors");
+var color = require("irc-colors");
+var request = require("request");
 
 var core = {
   client: false,
@@ -49,20 +51,24 @@ var core = {
 
       // require the module (woo node module goodness)
       core.loaded[module_id] = require(path);
+      
+      // if it wants a db read it in
       if (core.loaded[module_id].db) {
-        core.load_db(module.name);
+        core.read_db(module.name);
       }
 
-      if (core.loaded[module_id].listener) {
+      // does it have a listener?
+      if (typeof core.loaded[module_id].listener == "function") {
         core.client.addListener("message", core.loaded[module_id].listener);
-        
+
       }
 
+      // does it have any commands?
       if (core.loaded[module_id].commands) {
         core.client.addListener("message", function(from, to, message, details) {
           core.message(from, to, message, details, module_id);
         });
-      }//TODO: finish core.message
+      }
 
       // make sure it has a load function
       if (typeof core.loaded[module_id].load == "function") {
@@ -123,9 +129,10 @@ var core = {
     var path = "./db/" + db + ".db";
     fs.readFile(path, function(err, data) {
       if (err) {
-        console.error("[ERROR][db]: ".red + db + " database does not exist.");
+        console.error("[ERROR][db]: ".red + db + " database could not be read.");
         console.error(path);
         console.error(err);
+        console.error("[ERROR][db]: ".red + "the database should be created automatically if it doesn't exist");
         return;
       }
       core.databases[db] = JSON.parse(data, "utf8");
@@ -156,32 +163,37 @@ var core = {
   },
 
   message: function(from, to, message, details, module_id) {
-      if (message.charAt(0) == core.config.prefix) {
-        message = message.substr(1);
-        message = message.split(' ');
+    var userhost = details.user + '@' + details.host;
+    if (message.charAt(0) == core.config.prefix) {
+      if (core.loaded[module_id].admin && userhost !== core.config.owner) {
+        return;
+      }
+      message = message.substr(1);
+      message = message.split(' ');
 
-        var command = message.shift();
+      var command = message.shift();
 
-        // If this command is valid
-        if (core.loaded[module_id].commands.indexOf(command) > -1) {
-          /*var ignore = false;
+      // If this command is valid
+      if (core.loaded[module_id].commands.indexOf(command) > -1) {
+        if (core.loaded["main/ignore"]) {
+          var ignore = false;
           if (core.databases.ignore[from.toLowerCase()]) {
             core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
               if (entry == module_id.split('/')[1]) {
-                console.log("[ignore]:".yellow + " ignored command '" + command + ' '  + message.join(' ') + "' from '" + from + "'");
+                console.log("[ignore]:".yellow + " ignored command '" + command + ' ' + message.join(' ') + "' from '" + from + "'");
                 ignore = true;
               }
             });
           }
           if (ignore) {
             return;
-          }*/
-          message = message.join(' ');
-          core.loaded[module_id][command](from, to, message);
+          }
         }
+        message = message.join(' ');
+        core.loaded[module_id].run(command, from, to, message);
       }
-    },
-
+    }
+  }
 };
 
 module.exports = {

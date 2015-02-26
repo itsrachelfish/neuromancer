@@ -2,38 +2,7 @@ var color = require("irc-colors");
 
 var roll = {
   commands: ["roll"],
-  client: false,
   core: false,
-
-  // boilerplate woo
-  message: function(from, to, message, details) {
-    if (message.charAt(0) == roll.core.config.prefix) {
-      message = message.substr(1);
-      message = message.split(' ');
-      
-      
-
-      var command = message.shift();
-
-      // If this command is valid
-      if (roll.commands.indexOf(command) > -1) {
-        var ignore = false
-        if (roll.core.databases.ignore[from.toLowerCase()]) {
-          roll.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
-            if (entry == "roll") {
-              console.log("[ignore]:".yellow + " ignored command '" + command + ' ' + message.join(' ') + "' from '" + from + "'");
-              ignore = true;
-            }
-          });
-        }
-        if (ignore) {
-          return;
-        }
-        message = message.join(' ');
-        roll[command](from, to, message);
-      }
-    }
-  },
 
   roll: function(from, to, message) {
     var commands = message.split(' ');
@@ -49,9 +18,9 @@ var roll = {
       roll.core.send("say", from, to, '[' + color.blue("note") + "] die size reduced to 100");
     }
     var dice = Math.floor(commands[0].match(/[0-9]*/));
-    if (dice > 256) {
-      dice = 256;
-      roll.core.send("say", from, to, '[' + color.blue("note") + "] number of rolls reduced to 256");
+    if (dice > 50) {
+      dice = 50;
+      roll.core.send("say", from, to, '[' + color.blue("note") + "] number of rolls reduced to 50");
     }
     
     var rolls = '';
@@ -67,28 +36,20 @@ var roll = {
     if (dice > 1) {
       roll.core.send("say", from, to, '['+ color.green("total") + "] " + total);
     }
-  },
-
-  bind: function() {
-    roll.client.addListener("message", roll.message);
-  },
-
-  unbind: function() {
-    roll.client.removeListener("message", roll.message);
   }
 };
 
 module.exports = {
   load: function(core) {
     roll.core = core;
-    roll.client = roll.core.client;
-    roll.bind();
   },
 
   unload: function() {
-    roll.unbind();
     delete roll;
   },
 
-  commands: roll.commands
+  commands: roll.commands,
+  run: function(command, from, to, message) {
+    roll[command](from, to, message);
+  },
 };

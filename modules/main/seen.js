@@ -1,38 +1,8 @@
 var color = require("irc-colors");
 
 var seen = {
-  commands: ["seen", "since"],
-  client: false,
+  commands: ["seen"],
   core: false,
-
-  message: function(from, to, message, details) {
-    if (message.charAt(0) == seen.core.config.prefix) {
-      message = message.substr(1);
-      message = message.split(' ');
-      
-      
-
-      var command = message.shift();
-
-      // If this command is valid
-      if (seen.commands.indexOf(command) > -1) {
-        var ignore = false
-        if (seen.core.databases.ignore[from.toLowerCase()]) {
-          seen.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
-            if (entry == "seen") {
-              console.log("[ignore]:".yellow + " ignored command '" + command + ' ' + message.join(' ') + "' from '" + from + "'");
-              ignore = true;
-            }
-          });
-        }
-        if (ignore) {
-          return;
-        }
-        message = message.join(' ');
-        seen[command](from, to, message);
-      }
-    }
-  },
 
   readable_time: function(time) {
     var days = Math.floor(time / 86400000),
@@ -76,6 +46,7 @@ var seen = {
     }
   },
 
+  /* TODO: fix this
   since: function(from, to, message) {
     var since = [];
     for (var i in seen.core.databases.seen) {
@@ -84,39 +55,28 @@ var seen = {
       }
     }
     seen.core.send("say", from, to, 'In the last ' + message + ' minutes, I\'ve seen ' + since.join(', '));
-  },
+  }, */
 
   listener: function(from, to, message) {
     seen.core.databases.seen[from.toLowerCase()] = {
       d: Date.now(),
       l: message
     };
-  },
-
-  bind: function(from, to, message) {
-    seen.client.addListener("message", seen.message);
-    seen.client.addListener("message", seen.listener);
-  },
-
-  unbind: function(from, to, message) {
-    seen.client.removeListener("message", seen.message);
-    seen.client.removeListener("message", seen.listener);
   }
 };
 
 module.exports = {
   load: function(core) {
     seen.core = core;
-    seen.client = seen.core.client;
-    seen.core.read_db("seen");
-    seen.bind();
   },
 
   unload: function() {
-    seen.unbind();
-    seen.core.write_db("seen");
     delete seen;
   },
 
-  commands: seen.commands
+  commands: seen.commands,
+  listener: seen.listener,
+  run: function(command, from, to, message) {
+    seen[command](from, to, message);
+  },
 };

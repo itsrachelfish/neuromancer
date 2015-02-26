@@ -2,37 +2,7 @@ var color = require("irc-colors");
 
 var remind = {
   commands: ["remind"],
-  client: false,
   core: false,
-
-  message: function(from, to, message, details) {
-    if (message.charAt(0) == remind.core.config.prefix) {
-      message = message.substr(1);
-      message = message.split(' ');
-
-      
-
-      var command = message.shift();
-
-      // If this command is valid
-      if (remind.commands.indexOf(command) > -1) {
-        var ignore = false
-        if (remind.core.databases.ignore[from.toLowerCase()]) {
-          remind.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
-            if (entry == "remind") {
-              console.log("[ignore]:".yellow + " ignored command '" + command + ' ' + message.join(' ') + "' from '" + from + "'");
-              ignore = true;
-            }
-          });
-        }
-        if (ignore) {
-          return;
-        }
-        message = message.join(' ');
-        remind[command](from, to, message);
-      }
-    }
-  },
 
   remind: function(from, to, message) {
     //remind.core.read_db("remind");
@@ -79,34 +49,22 @@ var remind = {
         remind.core.write_db("remind");
       }
     }
-  },
-
-  bind: function() {
-    remind.client.addListener("message", remind.message);
-    remind.client.addListener("message", remind.listener);
-  },
-
-  unbind: function() {
-    remind.client.removeListener("message", remind.message);
-    remind.client.addListener("message", remind.listener);
   }
-
 };
 
 module.exports = {
   load: function(core) {
     remind.core = core;
-    remind.client = remind.core.client;
-
-    remind.core.read_db("remind");
-    remind.bind();
   },
 
   unload: function() {
-    remind.unbind();
-    remind.core.write_db("remind");
     delete remind;
   },
 
-  commands: remind.commands
+  commands: remind.commands,
+  db: true,
+  listener: remind.listener,
+  run: function(command, from, to, message) {
+    remind[command](from, to, message);
+  },
 };

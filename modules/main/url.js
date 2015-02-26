@@ -5,7 +5,6 @@ var urllib = require("url");
 var url = {
   commands: [],
   core: false,
-  client: false,
 
   HTMLchars: {
     '&reg': '®',
@@ -26,12 +25,10 @@ var url = {
   },
 
   listener: function(from, to, message) {
-    
-    
-    
     // listen for links
     if (message.search(/\bhttps?:\/\/.*?\..*?\b/) !== -1) {
       var ignore = false
+      // if we're ignoring the person posting the link
       if (url.core.databases.ignore[from.toLowerCase()]) {
         url.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
           if (entry == "url") {
@@ -43,6 +40,7 @@ var url = {
       if (ignore) {
         return;
       }
+      
       // but not youtube links because those are handled seperately in youtube module
       if (message.search(/youtu((.be)|(be.com))/) !== -1) {
         return
@@ -74,28 +72,18 @@ var url = {
         } catch (err) {}
       })
     }
-  },
-
-  bind: function() {
-    url.client.addListener("message", url.listener);
-  },
-
-  unbind: function() {
-    url.client.removeListener("message", url.listener);
   }
 };
 
 module.exports = {
   load: function(core) {
     url.core = core;
-    url.client = url.core.client;
-    url.bind();
   },
 
   unload: function() {
-    url.unbind();
     delete url;
   },
 
-  commands: url.commands
+  commands: false,
+  listener: url.listener
 }

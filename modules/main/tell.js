@@ -2,37 +2,7 @@ var color = require("irc-colors");
 
 var tell = {
   commands: ["tell"],
-  client: false,
   core: false,
-
-  message: function(from, to, message, details) {
-    if (message.charAt(0) == tell.core.config.prefix) {
-      message = message.substr(1);
-      message = message.split(' ');
-      
-      
-
-      var command = message.shift();
-
-      // If this command is valid
-      if (tell.commands.indexOf(command) > -1) {
-        var ignore = false
-        if (tell.core.databases.ignore[from.toLowerCase()]) {
-          tell.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
-            if (entry == "tell") {
-              console.log("[ignore]:".yellow + " ignored command '" + command + ' ' + message.join(' ') + "' from '" + from + "'");
-              ignore = true;
-            }
-          });
-        }
-        if (ignore) {
-          return;
-        }
-        message = message.join(' ');
-        tell[command](from, to, message);
-      }
-    }
-  },
 
   tell: function(from, to, message) {
     var args = message.split(' ');
@@ -87,36 +57,21 @@ var tell = {
       readable = days + hours + minutes;
     }
     return (readable + ' ago');
-  },
-
-  bind: function() {
-    tell.client.addListener("message", tell.message);
-    tell.client.addListener("message", tell.listener);
-  },
-
-  unbind: function() {
-    tell.client.removeListener("message", tell.message);
-    tell.client.removeListener("message", tell.listener);
   }
-
 };
 
 module.exports = {
   load: function(core) {
     tell.core = core;
-    tell.client = tell.core.client;
-    
-    // trigger for database read
-    tell.core.read_db("tell");
-    tell.bind();
   },
 
   unload: function() {
-    tell.unbind();
-    // trigger for database write
-    tell.core.write_db("tell");
     delete tell;
   },
   
-  commands: tell.commands
+  commands: tell.commands,
+  db: true,
+  run: function(command, from, to, message) {
+    tell[command](from, to, message);
+  },
 };

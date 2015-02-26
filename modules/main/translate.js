@@ -3,37 +3,7 @@ var request = require("request");
 
 var translate = {
   commands: ["translate", "tr"],
-  client: false,
   core: false,
-
-  message: function(from, to, message, details) {
-    if (message.charAt(0) == translate.core.config.prefix) {
-      message = message.substr(1);
-      message = message.split(' ');
-      
-      
-
-      var command = message.shift();
-
-      // If this command is valid
-      if (translate.commands.indexOf(command) > -1) {
-        var ignore = false
-        if (translate.core.databases.ignore[from.toLowerCase()]) {
-          translate.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
-            if (entry == "translate") {
-              console.log("[ignore]:".yellow + " ignored command '" + command + ' ' + message.join(' ') + "' from '" + from + "'");
-              ignore = true;
-            }
-          });
-        }
-        if (ignore) {
-          return;
-        }
-        message = message.join(' ');
-        translate[command](from, to, message);
-      }
-    }
-  },
 
   translate: function(from, to, message) {
     request('http://translate.google.com/translate_a/t?client=t&sl=auto&tl=en&q=' + message, function(e, r, body) {
@@ -43,28 +13,20 @@ var translate = {
 
   tr: function(from, to, message) {
     translate.translate(from, to, message);
-  },
-
-  bind: function() {
-    translate.client.addListener("message", translate.message);
-  },
-
-  unbind: function() {
-    translate.client.removeListener("message", translate.message);
   }
 };
 
 module.exports = {
   load: function(core) {
     translate.core = core;
-    translate.client = translate.core.client;
-    translate.bind();
   },
 
   unload: function() {
-    translate.unbind();
     delete translate;
   },
 
-  commands: translate.commands
+  commands: translate.commands,
+  run: function(command, from, to, message) {
+    translate[command](from, to, message);
+  },
 };

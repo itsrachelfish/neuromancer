@@ -2,37 +2,11 @@ var cow = require("cowsay");
 
 var cowsay = {
   commands: ["cowsay"],
-  client: false,
   core: false,
+
+  // stuff for the timeout
   timeout: false,
   wait: false,
-
-  message: function(from, to, message, details) {
-    if (message.charAt(0) == cowsay.core.config.prefix) {
-      message = message.substr(1);
-      message = message.split(' ');
-      
-      var command = message.shift();
-
-      // If this command is valid
-      if (cowsay.commands.indexOf(command) > -1) {
-        var ignore = false
-        if (cowsay.core.databases.ignore[from.toLowerCase()]) {
-          cowsay.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
-            if (entry == "cowsay") {
-              console.log("[ignore]:".yellow + " ignored command '" + command + ' '  + message.join(' ') + "' from '" + from + "'");
-              ignore = true;
-            }
-          });
-        }
-        if (ignore) {
-          return;
-        }
-        message = message.join(' ');
-        cowsay[command](from, to, message);
-      }
-    }
-  },
 
   cowsay: function(from, to, message) {
     timeout = cowsay.waiting(2);
@@ -47,6 +21,7 @@ var cowsay = {
 
   },
 
+  // TODO: maybe make this a core function eventually
   waiting: function(timeout) {
     if (cowsay.wait) {
       var timeout = (cowsay.timeout.getTime() - new Date().getTime()) / 1000;
@@ -63,28 +38,20 @@ var cowsay = {
       cowsay.wait = false;
       cowsay.timeout = false;
     }, timeout * 60 * 1000);
-  },
-
-  bind: function() {
-    cowsay.client.addListener("message", cowsay.message);
-  },
-
-  unbind: function() {
-    cowsay.client.removeListener("message", cowsay.message);
   }
 };
 
 module.exports = {
   load: function(core) {
     cowsay.core = core;
-    cowsay.client = cowsay.core.client;
-    cowsay.bind();
   },
 
   unload: function() {
-    cowsay.unbind();
     delete cowsay;
   },
 
-  commands: cowsay.commands
+  commands: cowsay.commands,
+  run: function(command, from, to, message) {
+    cowsay[command](from, to, message);
+  }
 };

@@ -13,36 +13,6 @@ var weather = {
 
   weathAPI: 'http://api.openweathermap.org/data/2.5/',
 
-  // boilerplate woo
-  message: function(from, to, message, details) {
-    if (message.charAt(0) == weather.core.config.prefix) {
-      message = message.substr(1);
-      message = message.split(' ');
-      
-      
-
-      var command = message.shift();
-
-      // If this command is valid
-      if (weather.commands.indexOf(command) > -1) {
-        var ignore = false
-        if (weather.core.databases.ignore[from.toLowerCase()]) {
-          weather.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
-            if (entry == "weather") {
-              console.log("[ignore]:".yellow + " ignored command '" + command + ' ' + message.join(' ') + "' from '" + from + "'");
-              ignore = true;
-            }
-          });
-        }
-        if (ignore) {
-          return;
-        }
-        message = message.join(' ');
-        weather[command](from, to, message);
-      }
-    }
-  },
-
   //TODO: clean this up and make it more readable
   worker: function(from, to, message, forecast) {
     var locale = (message == (message = message.replace(/ ?-c ?/, ' '))) ? ['imperial', 'F', 'mph'] : ['metric', 'C', 'm/s'];
@@ -84,30 +54,21 @@ var weather = {
   
   forecast: function(from, to, message) {
     weather.worker(from, to, message, true);
-  },
-  
-  bind: function() {
-    weather.client.addListener("message", weather.message);
-  },
-  
-  unbind: function() {
-    weather.client.removeListener("message", weather.message);
   }
 };
 
 module.exports = {
   load: function(core) {
     weather.core = core;
-    weather.client = weather.core.client;
-    weather.core.read_db("weather");
-    weather.bind();
   },
   
   unload: function(core) {
-    weather.unbind();
-    weather.core.write_db("weather");
     delete weather;
   },
   
-  commands: weather.commands
+  commands: weather.commands,
+  db: true,
+  run: function(command, from, to, message) {
+    weather[command](from, to, message);
+  },
 };
