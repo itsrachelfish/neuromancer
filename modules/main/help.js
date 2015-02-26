@@ -5,13 +5,13 @@ var help = {
   list: ["help", "commands"],
   client: false,
   core: false,
+  db: false,
+  listener: false,
 
   message: function(from, to, message, details) {
     if (message.charAt(0) == help.core.config.prefix) {
       message = message.substr(1);
       message = message.split(' ');
-
-
 
       var command = message.shift();
 

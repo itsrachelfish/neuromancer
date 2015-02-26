@@ -4,7 +4,6 @@ var colors = require("colors");
 var core = {
   client: false,
   loaded: {},
-  modules: [],
   databases: {},
   commands: {},
   config: require("./etc/core.js"),
@@ -16,29 +15,22 @@ var core = {
     }
 
     // get core modules
-    var core_modules = require("./etc/modules_core.js");
-    // get modules to load at init
-    var main_modules = require("./etc/modules_main.js");
+    var modules = require("./etc/module.js");
 
     // now load the modules
-    // TODO: make these 1-liners with foreach
-    for (var i = 0; i < core_modules.length; i++) {
-      core.modules.push({
-        type: 'core',
-        name: core_modules[i]
+    modules.core.forEach(function(module) {
+      core.load({
+        type: "core",
+        name: module
       });
-    }
+    });
 
-    for (var i = 0; i < main_modules.length; i++) {
-      core.modules.push({
-        type: 'main',
-        name: main_modules[i]
+    modules.main.forEach(function(module) {
+      core.load({
+        type: "main",
+        name: module
       });
-    }
-
-    for (var i = 0; i < core.modules.length; i++) {
-      core.load(core.modules[i]);
-    }
+    });
   },
 
   load: function(module) {
@@ -57,11 +49,27 @@ var core = {
 
       // require the module (woo node module goodness)
       core.loaded[module_id] = require(path);
+      if (core.loaded[module_id].db) {
+        core.load_db(module.name);
+      }
+
+      if (core.loaded[module_id].listener) {
+        console.log("adding listener for listener");
+        core.client.addListener("message", core.loaded[module_id].listener);
+        
+      }
+
+      if (core.loaded[module_id].commands) {
+        console.log("added listener for regular");
+        core.client.addListener("message", function(from, to, message, details) {
+          core.message(from, to, message, details, module_id);
+        });
+      }//TODO: finish core.message
+
       // make sure it has a load function
       if (typeof core.loaded[module_id].load == "function") {
         // and run the load funciton
         core.loaded[module_id].load(core);
-        core.commands[module_id] = core.loaded[module_id].commands;
         console.log("[module]: ".green + module.type + '.' + module.name + " loaded.");
         return 0;
       }
@@ -77,20 +85,37 @@ var core = {
     if (typeof core.loaded[module_id] != "undefined") {
       // and has an unload function
       if (typeof core.loaded[module_id].unload == "function") {
-        core.loaded[module_id].unload(core.client, core);
+        core.loaded[module_id].unload(core);
       } else {
         console.error("[ERROR][module]: ".red + module.name + " could not be unloaded.");
         return 1;
       }
 
+      if (core.loaded[module_id].db) {
+        core.write_db(module.name);
+      }
+
+      if (core.loaded[module_id].listener) {
+        console.log("removing listener for listener");
+        core.client.removeListener("message", core.loaded[module_id].listener);
+      }
+
+      if (core.loaded[module_id].message) {
+        console.log("removing listener for regular");
+        core.client.removeListener("message", function(from, to, message, details) {
+          core.message(from, to, message, details, module_id);
+        });
+      }
+
+
       delete core.databases[core.loaded[module_id].name];
-      delete core.commands[core.loaded[module_id]];
       delete core.loaded[module_id];
       delete require.cache[require.resolve("./modules/" + module.type + '/' + module.name + ".js")];
       console.log("[module]: ".green + module.type + '.' + module.name + " unloaded.");
       return 0;
+    } else {
+      return 1;
     }
-    return 0;
   },
 
   reload: function(module) {
@@ -132,7 +157,35 @@ var core = {
     } else {
       core.client[type](from, message);
     }
-  }
+  },
+
+  message: function(from, to, message, details, module_id) {
+      if (message.charAt(0) == core.config.prefix) {
+        message = message.substr(1);
+        message = message.split(' ');
+
+        var command = message.shift();
+
+        // If this command is valid
+        if (core.loaded[module_id].commands.indexOf(command) > -1) {
+          /*var ignore = false;
+          if (core.databases.ignore[from.toLowerCase()]) {
+            core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
+              if (entry == module_id.split('/')[1]) {
+                console.log("[ignore]:".yellow + " ignored command '" + command + ' '  + message.join(' ') + "' from '" + from + "'");
+                ignore = true;
+              }
+            });
+          }
+          if (ignore) {
+            return;
+          }*/
+          message = message.join(' ');
+          core.loaded[module_id][command](from, to, message);
+        }
+      }
+    },
+
 };
 
 module.exports = {
