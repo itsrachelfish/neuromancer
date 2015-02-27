@@ -114,23 +114,29 @@ var core = {
         core.loaded[module_id].unload();
       } else {
         console.error("[ERROR][module]: ".red + module.name + " could not be unloaded.");
-        callback(true)
+        if (callback) {
+          callback(true);
+        }
       }
 
       delete core.databases[core.loaded[module_id].name];
       delete core.loaded[module_id];
       delete require.cache[require.resolve("./modules/" + module.type + '/' + module.name + ".js")];
       console.log("[module]: ".green + module.type + '.' + module.name + " unloaded.");
-      callback(false);
+      if (callback) {
+        callback(false);
+      }
     } else {
       console.error("[ERROR][module]: ".red + module.name + " was not loaded.");
-      callback(true);
+      if (callback) {
+        callback(true);
+      }
     }
   },
 
   reload: function(module) {
-    core.unload(module, function(){});
-    core.load(module, function(){});
+    core.unload(module);
+    core.load(module);
   },
 
   read_db: function(db) {
