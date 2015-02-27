@@ -129,8 +129,8 @@ var core = {
   },
 
   reload: function(module) {
-    core.unload(module);
-    core.load(module);
+    core.unload(module, function(){});
+    core.load(module, function(){});
   },
 
   read_db: function(db) {

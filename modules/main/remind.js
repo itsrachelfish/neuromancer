@@ -30,6 +30,7 @@ var remind = {
       remind.core.databases.remind[from.toLowerCase()].push({
         t: time,
         m: args.slice(1).join(' '),
+        to: to,
       });
       remind.core.write_db("remind");
     }
@@ -40,7 +41,7 @@ var remind = {
       var save = false;
       remind.core.databases.remind[from.toLowerCase()].forEach(function(entry, index, object) {
         if (entry.t <= Date.now()) {
-          remind.core.send("say", from, to, from + ": " + color.blue(entry.m));
+          remind.core.send("say", from, entry.to, from + ": " + color.blue(entry.m));
           object.splice(index, 1);
           save = true;
         }
