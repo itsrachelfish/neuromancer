@@ -86,14 +86,8 @@ var core = {
 
     // make sure it's actually loaded
     if (typeof core.loaded[module_id] != "undefined") {
-      // and has an unload function
-      if (typeof core.loaded[module_id].unload == "function") {
-        core.loaded[module_id].unload(core);
-      } else {
-        console.error("[ERROR][module]: ".red + module.name + " could not be unloaded.");
-        return 1;
-      }
-
+      
+      // write out our db
       if (core.loaded[module_id].db) {
         core.write_db(module.name);
       }
@@ -103,12 +97,19 @@ var core = {
         core.client.removeListener("message", core.loaded[module_id].listener);
       }
 
+      // does it have any commands
       if (core.loaded[module_id].commands) {
         core.client.removeListener("message", function(from, to, message, details) {
           core.message(from, to, message, details, module_id);
         });
+      } 
+      // and has an unload function
+      if (typeof core.loaded[module_id].unload == "function") {
+        core.loaded[module_id].unload(core);
+      } else {
+        console.error("[ERROR][module]: ".red + module.name + " could not be unloaded.");
+        return 1;
       }
-
 
       delete core.databases[core.loaded[module_id].name];
       delete core.loaded[module_id];
