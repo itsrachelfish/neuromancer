@@ -51,7 +51,7 @@ var core = {
 
       // require the module (woo node module goodness)
       core.loaded[module_id] = require(path);
-      
+
       // if it wants a db read it in
       if (core.loaded[module_id].db) {
         core.read_db(module.name);
@@ -187,7 +187,7 @@ var core = {
             return;
           }
         }
-        
+
         if (core.loaded[module_id].admin && userhost !== core.config.owner) {
           return;
         }

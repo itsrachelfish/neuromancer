@@ -13,7 +13,7 @@ var away = {
 
   away: function(from, to, message) {
     away.aways[from.toLowerCase()] = message;
-    console.log(from + " has gone away [" + message + ']');
+    console.log("[away]: ".yellow + from + " has gone away [" + message + ']');
   },
 
   // allows an admin to delete a spammy away
@@ -33,7 +33,7 @@ var away = {
       //listen for an away-ee coming back
       if (from.toLowerCase() in away.aways) {
         delete away.aways[from.toLowerCase()];
-        console.log(from + ' has come back');
+        console.log("[away]: ".yellow + from + ' has come back');
       }
       //listen for someone attempting to speak to someone who is away
       if (away.aways[message.split(' ')[0].replace(/[:,]/, '').toLowerCase()] != undefined) {
@@ -44,7 +44,7 @@ var away = {
         var target = message.split(' ')[0].replace(/[:,]/, '');
         var to_say = target + " is currently away " + (away.aways[target.toLowerCase()] ? "[" + color.blue(away.aways[target.toLowerCase()]) + "]" : color.blue("No reason specified"));
         away.core.send("say", from, to, to_say);
-        console.log(from + ' attempted to contact ' + message.split(' ')[0].replace(':', ''));
+        console.log("[away]: ".yellow + from + ' attempted to contact ' + message.split(' ')[0].replace(':', ''));
       }
     }
   },
