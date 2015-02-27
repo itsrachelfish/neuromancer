@@ -103,7 +103,7 @@ var core = {
         core.client.removeListener("message", core.loaded[module_id].listener);
       }
 
-      if (core.loaded[module_id].message) {
+      if (core.loaded[module_id].commands) {
         core.client.removeListener("message", function(from, to, message, details) {
           core.message(from, to, message, details, module_id);
         });
@@ -165,14 +165,17 @@ var core = {
 
   message: function(from, to, message, details, module_id) {
     var userhost = details.user + '@' + details.host;
+    // if the command is prefixed with our command prefix
     if (message.charAt(0) == core.config.prefix) {
       message = message.substr(1);
       message = message.split(' ');
 
       var command = message.shift();
 
-      // If this command is valid
-      if (core.loaded[module_id].commands.indexOf(command) > -1) {
+      // If the module is loaded and the command is valid
+      if (typeof core.loaded[module_id] != "undefined" && core.loaded[module_id].commands.indexOf(command) > -1) {
+        
+        // if the ignore module is loaded
         if (core.loaded["main/ignore"]) {
           var ignore = false;
           if (core.databases.ignore[from.toLowerCase()]) {
@@ -188,9 +191,12 @@ var core = {
           }
         }
 
-        if (core.loaded[module_id].admin && userhost !== core.config.owner) {
+        // if it's an admin-only module and the user is a non-admin
+        if (core.loaded[module_id].admin && userhost != core.config.owner) {
           return;
         }
+        
+        // run the command
         message = message.join(' ');
         core.loaded[module_id].run(command, from, to, message);
       }

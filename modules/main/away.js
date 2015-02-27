@@ -18,7 +18,7 @@ var away = {
 
   // allows an admin to delete a spammy away
   rmaway: function(from, to, message) {
-    if (admin.core.config.admins.indexOf(from) > -1) {
+    if (away.core.config.admins.indexOf(from) > -1) {
       if (message.toLowerCase() in away.aways) {
         delete away.aways[message.toLowerCase()];
       }
