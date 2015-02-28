@@ -20,20 +20,20 @@ var remind = {
     if (args[0].toLowerCase() == "-f") {
       setTimeout(function() {
         var to_say = from.toLowerCase() + ": " + color.blue(args.slice(2).join(' '));
-	  if (to.charAt(0) != '#') {
-	      to = from.toLowerCase();
-	  }
+        if (to.charAt(0) != '#') {
+          to = from.toLowerCase();
+        }
         remind.core.send("say", from.toLowerCase(), to, to_say);
       }, ptime);
     } else {
       if (!remind.core.databases.remind[from.toLowerCase()]) {
         remind.core.databases.remind[from.toLowerCase()] = [];
       }
-	// determine if privmessage or channelmessage
-	// if privmessage, set the db to send the remind notification as a privmessage to the person
-	if (to.charAt(0) != '#') {
-	    to = from.toLowerCase();
-	}
+      // determine if privmessage or channelmessage
+      // if privmessage, set the db to send the remind notification as a privmessage to the person
+      if (to.charAt(0) != '#') {
+        to = from.toLowerCase();
+      }
 
       remind.core.databases.remind[from.toLowerCase()].push({
         t: time,

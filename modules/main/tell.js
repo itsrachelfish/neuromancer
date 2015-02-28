@@ -71,6 +71,7 @@ module.exports = {
   
   commands: tell.commands,
   db: true,
+  listener: tell.listeners,
   run: function(command, from, to, message) {
     tell[command](from, to, message);
   },
