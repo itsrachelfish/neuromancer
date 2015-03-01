@@ -32,6 +32,10 @@ var admin = {
   say: function(from, to, message) {
     admin.core.send("say", from, to, message);
   },
+  
+  wflogin: function(from, to, message) {
+    admin.core.send("pm", from, "nickserv", "login");
+  },
 
   ctcp: function(from, to, message) {
     message = message.split(' ');
