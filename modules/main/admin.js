@@ -34,7 +34,7 @@ var admin = {
   },
   
   wflogin: function(from, to, message) {
-    admin.core.send("pm", from, "nickserv", "login");
+    admin.core.client.say("nickserv", "login");
   },
 
   ctcp: function(from, to, message) {
