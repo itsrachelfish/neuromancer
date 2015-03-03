@@ -5,7 +5,7 @@ var prompt = {
   client: false,
   core: false,
 
-  commands: ["say", "ctcp", "load", "unload", "reload"],
+  commands: ["say", "join", "part", "ctcp", "load", "unload", "reload"],
 
   handle: function(line) {
     var line = line.split(' ');
@@ -54,6 +54,18 @@ var prompt = {
     prompt.client.say(prompt.core.server.channels[0], message);
   },
 
+  join: function(message) {
+    prompt.core.client.join(message, function() {
+      console.log("[client]: ".yellow + "joined channel: " + message);
+    });
+  },
+
+  part: function(message) {
+    prompt.core.client.part(message, "bye", function() {
+      console.log("[client]: ".yellow + "left channel: " + message);
+    });
+  },
+  
   // Send a CTCP message
   ctcp: function(message) {
     message = message.split(' ');
