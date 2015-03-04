@@ -4,8 +4,8 @@ var ignore = {
 
   ignore: function(from, to, message) {
     var args = message.split(' ');
-    var module = args[0].toLowerCase();
-    var person = args[1].toLowerCase();
+    var person = args[0].toLowerCase();
+    var module = args[1].toLowerCase();
 
     if (!ignore.core.databases.ignore[person]) {
       ignore.core.databases.ignore[person] = [];
@@ -28,7 +28,7 @@ var ignore = {
   unignore: function(from, to, message) {
     var args = message.split(' ');
     var person = args[0].toLowerCase();
-    var module = args[1];
+    var module = args[1].toLowerCase();
 
     if (module == "all") {
       delete ignore.core.databases.ignore[person];

@@ -3,7 +3,6 @@ var request = require("request");
 var urllib = require("url");
 
 var url = {
-  commands: [],
   core: false,
 
   HTMLchars: {
@@ -84,6 +83,5 @@ module.exports = {
     delete url;
   },
 
-  commands: false,
   listener: url.listener
 }

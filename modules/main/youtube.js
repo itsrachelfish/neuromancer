@@ -2,7 +2,6 @@ var color = require("irc-colors");
 var request = require("request");
 
 var youtube = {
-  commands: [],
   core: false,
   client: false,
 
@@ -48,6 +47,5 @@ module.exports = {
     delete youtube;
   },
 
-  commands: false,
   listener: youtube.listener
 }
