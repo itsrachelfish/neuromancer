@@ -1,16 +1,17 @@
 module.exports = {
   // server to connect to
-  server: 'irc.wetfish.net',
+  server: 'irc.primesli.me',
   //server: '192.168.0.1',
   
   // port to use
-  port: 6697,
+  //port: 6697,
+  port: 6667,
   
   // ssl?
-  secure: true,
+  //secure: true,
   
   // self signed ssl cert?
-  selfSigned: true,
+  //selfSigned: false,
   
   // the bot's nick, username, and realname
   name: 'Neuromancer',
@@ -22,10 +23,10 @@ module.exports = {
   autoConnect: true,
   
   // what channels to join upon connecting
-  channels: ["#wetfish"],
+  channels: ["#primeslime"],
   
   // other configs, see the node-irc docs for more information
   messageSplit: 512,
-  stripColors: true,
+  stripColors: false,
   encoding: "UTF-8"
 }

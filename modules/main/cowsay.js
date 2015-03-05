@@ -1,4 +1,5 @@
 var cow = require("cowsay");
+var parseArgs = require("minimist");
 
 var cowsay = {
   commands: ["cowsay"],
@@ -9,14 +10,18 @@ var cowsay = {
   wait: false,
 
   cowsay: function(from, to, message) {
+    message = message.split(' ')
+    var args = parseArgs(message);
     timeout = cowsay.waiting(2);
     if (timeout) {
       return;
     }
     cowsay.core.send("say", from, to, cow.say({
-      text: message,
-      e: "xx",
-      f: "bong"
+      text: args._.join(' '),
+      e: args.e,
+      f: args.f,
+      T: args.T,
+      W: args.W,
     }));
 
   },
