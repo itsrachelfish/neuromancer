@@ -7,6 +7,8 @@ var core = {
   client: false,
   read_db: false,
   write_db: false,
+  read_log: false,
+  write_log: false,
   send: false,
   recieve: false,
 
@@ -20,6 +22,7 @@ var core = {
 
   loaded: {},
   databases: {},
+  logs: {},
   listeners: {},
   config: require("./etc/core.js"),
   server: require("./etc/server.js"),
@@ -75,6 +78,10 @@ var core = {
         if (core.loaded[module_id].db) {
           core.read_db(module.name);
         }
+        
+        if (core.loaded[module_id].log) {
+          core.read_log(module.name);
+        }
 
         // does it have a listener?
         if (typeof core.loaded[module_id].listener == "function") {
@@ -112,6 +119,10 @@ var core = {
         // write out the module's db if it had one
         if (core.loaded[module_id].db) {
           core.write_db(module.name);
+        }
+        
+        if (core.loaded[module_id].log) {
+          core.write_log(module.name);
         }
 
         // does it have a listener?

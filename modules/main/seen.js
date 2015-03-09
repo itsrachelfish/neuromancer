@@ -1,7 +1,7 @@
 var color = require("irc-colors");
 
 var seen = {
-  commands: ["seen"],
+  commands: ["seen", "since"],
   core: false,
 
   readable_time: function(time) {
@@ -46,16 +46,15 @@ var seen = {
     }
   },
 
-  /* TODO: fix this
   since: function(from, to, message) {
     var since = [];
     for (var i in seen.core.databases.seen) {
-      if (i.d >= Date.now() - (((message > 1440) ? 1440 : message) * 60000)) {
+      if (seen.core.databases.seen[i].d >= Date.now() - ((message > 1440) ? 1440 : message) * 60000) {
         since.push(i);
       }
     }
     seen.core.send("say", from, to, 'In the last ' + message + ' minutes, I\'ve seen ' + since.join(', '));
-  }, */
+  },
 
   listener: function(from, to, message) {
     seen.core.databases.seen[from.toLowerCase()] = {

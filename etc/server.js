@@ -28,5 +28,6 @@ module.exports = {
   // other configs, see the node-irc docs for more information
   messageSplit: 512,
   stripColors: false,
-  encoding: "UTF-8"
-}
+  encoding: "UTF-8",
+  floodProtection: false,
+};

@@ -12,7 +12,11 @@ var py = {
   python: function(from, to, message) {
     // make a call to an external server for this one
     request("http://tumbolia.appspot.com/py/" + message, function(e, r, body) {
-      var to_say = (body.length < 300) ? (color.blue(body)) : ('[' + color.red("error") + "] Bad request");
+      if (body.length < 300) {
+        var to_say = color.blue(body);
+      } else {
+        var to_say = '[' + color.red("error") + "] Bad request";
+      }
       py.core.send("say", from, to, to_say);
     });
   }

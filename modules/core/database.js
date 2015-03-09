@@ -13,8 +13,14 @@ var database = {
         console.error("[ERROR][db]: ".red + "the database should be created automatically if it doesn't exist");
         return;
       }
-      database.core.databases[db] = JSON.parse(data, "utf8");
-      console.log("[db]: ".blue + db + " database loaded.");
+      
+      if (data != "undefined") {
+        database.core.databases[db] = JSON.parse(data, "utf8");
+        console.log("[db]: ".blue + db + " database loaded.");
+      } else {
+        database.core.databases[db] = {};
+        console.log("[db]: ".blue + db + " database was empty, init'ing");
+      }
     });
   },
 
@@ -29,8 +35,8 @@ var database = {
       }
       console.log("[db]: ".blue + db + " database saved.");
     });
-  }
-}
+  },
+};
 
 module.exports = {
   load: function(core) {
@@ -43,5 +49,5 @@ module.exports = {
     database.core.read_db = false;
     database.core.write_db = false;
     delete database;
-  }
-}
+  },
+};
