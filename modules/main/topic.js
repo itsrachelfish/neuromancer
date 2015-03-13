@@ -338,18 +338,6 @@ var topic = {
     topic.user = from;
     topic.core.client.send('TOPIC', channel, topic.build(sections));
   },
-
-  help: function(from, to) {
-    // TODO: make this work better with the help module
-    topic.core.client.send('PRIVMSG', from, '  :topic log [count] -- pms a list of the last 3 topics, or user requested count');
-    topic.core.client.send('PRIVMSG', from, '  :topic restore [log id] -- restores last topic (or optional id from the log list)');
-    topic.core.client.send('PRIVMSG', from, '  :topic replace [section id] [text] -- Replace a section of the current topic with new text');
-    topic.core.client.send('PRIVMSG', from, '  :topic set [delimiter] [text] -- Sets text as the topic, broken into sections delimited by a user specified delimiter or the default value of |');
-    topic.core.client.send('PRIVMSG', from, '  :topic delete [index] [count] -- Delete a section of the topic');
-    topic.core.client.send('PRIVMSG', from, '  :topic append [delimiter] [text] -- Append new sections to the topic');
-    topic.core.client.send('PRIVMSG', from, '  :topic prepend [delimiter] [text] -- Prepend new sections to the topic');
-    topic.core.client.send('PRIVMSG', from, '  :topic insert [index] [delimiter] [text] -- Create a new section at a specific location in the topic');
-  },
 };
 
 module.exports = {
