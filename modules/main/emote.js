@@ -74,17 +74,6 @@ var emote = {
 
   intense: function(from, to, message) {
     emote.core.send("say", from, to, color.bold("[" + message + " intensifies]"));
-  },
-
-  listener: function(from, to, message) {
-    if (message == "xD" || message == "xd" || message == "XD" || message == "Xd") {
-      var x = ~~ (Math.random() * 4) + 0;
-      var y = ~~ (Math.random() * 99) + 0;
-      if (y < 45) {
-        var xd = ['xd', 'xD', 'XD', 'xDD', 'XDD'];
-        emote.core.send("say", from, to, xd[x]);
-      }
-    }
   }
 };
 
@@ -98,7 +87,6 @@ module.exports = {
   },
 
   commands: emote.commands,
-  listener: emote.listener,
   run: function(command, from, to, message) {
     emote[command](from, to, message);
   }
