@@ -7,12 +7,8 @@ var remind = {
 
   remind: function(from, to, message) {
     var args = parseArgs(message.split(' '), opts = {
-      boolean: ['f', 'r'],
+      boolean: ['f', 'r', 'l'],
     }); // args parsing with minimist is awesome
-    if (to.charAt(0) != '#') {
-      to = from;
-    }
-
     if (to.charAt(0) != '#') {
       to = from;
     }
@@ -20,8 +16,15 @@ var remind = {
       // give them one lol
       remind.core.databases.remind[from.toLowerCase()].forEach(function(entry, index, object) {
         var rtime = remind.readable_time(entry.time - Date.now());
-        remind.core.send("say", from, from, '[' + index + ']: force: ' + entry.force + "; SMS: " + entry.sms + "; recurring: " + entry.recurring + "; TTL: " + rtime + "; message: " + entry.message);
+        remind.core.send("say", from, from, '[' + (index + 1) + ']: force: ' + entry.force + "; SMS: " + entry.sms + "; recurring: " + entry.recurring + "; TTL: " + rtime + "; message: " + entry.message);
       });
+    } else if (args.d) { // if the user wants to delete a reminder
+      if (remind.core.databases.remind[from.toLowerCase()][args.d - 1]) {
+        remind.core.databases.remind[from.toLowerCase()].splice(args.d - 1, 1);
+        remind.core.send("say", from, to, "Reminder #" + args.d + " deleted");
+      } else {
+        remind.core.send("say", from, to, "Reminder #" + args.d + " doesn't exist");
+      }
     } else { // if it's not one of the others it must be a normal    
       var htime = args._[0];
       var ptime = 0;
@@ -55,7 +58,7 @@ var remind = {
             to = from;
           }
           remind.core.send("say", from, to, to_say);
-          
+
         }, ptime);
       } else {
         var force = false;
