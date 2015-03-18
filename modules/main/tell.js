@@ -27,7 +27,11 @@ var tell = {
     var reciever = from.toLowerCase();
     if (tell.core.databases.tell[reciever]) {
       tell.core.databases.tell[reciever].forEach(function(entry) {
+<<<<<<< HEAD
         var to_say = from + ": " + color.yellow('"' + entry.mes + '"') + ' [' + color.red(entry.from) + '] ' + '[' + color.lime(tell.readable_time(Date.now() - entry.when)) + ']';
+=======
+        var to_say = from + ": " + color.yellow('"' + entry.mes + '"') + ' [' + color.red(entry.from) + '] ' + '[' + color.green(tell.readable_time(Date.now() - entry.when)) + ']';
+>>>>>>> f150fa390549c31885aa63f1e602ce8001437f15
         tell.core.send("say", from, to, to_say);
       });
       delete tell.core.databases.tell[reciever];
