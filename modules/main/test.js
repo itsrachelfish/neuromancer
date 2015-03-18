@@ -7,11 +7,11 @@ var test = {
   textme: function(from, to, message) {
     sms.send(5186451982, "test niggahhh", function(err, result) {
       if (err) {
-        test.core.send(from, to, "error");
+        test.core.send("say", from, to, "error");
       } else {
-        test.core.send(from, to, "sent");
+        test.core.send("say", from, to, "sent");
       }
-    })
+    });
   }
 };
 
@@ -23,7 +23,7 @@ module.exports = {
   unload: function() {
     delete test;
   },
-  
+
   commands: test.commands,
   run: function(command, from, to, message) {
     test[command](from, to, message);

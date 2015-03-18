@@ -9,12 +9,12 @@ module.exports = {
   //port: 6667,
   
   // ssl?
-  //secure: true,
   secure: true,
   
   // self signed ssl cert?
   //selfSigned: false,
- selfSigned: true,
+  selfSigned: true,
+  
   // the bot's nick, username, and realname
   name: 'Neuromancer',
   userName: 'imaBot',
