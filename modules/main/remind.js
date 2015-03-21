@@ -175,20 +175,18 @@ var remind = {
     if (debug) {
       console.log("running reminder: " + JSON.stringify(reminder));
     }
-
+    
     if (reminder.args.p) {
-      sms.send(reminder.args.s, reminder.args._, function(err, result) {
+      sms.send(reminder.args.p, reminder.args._.join(' '), function(err, result) {
         if (err) {
-          if (reminder.args.f) {
-            remind.core.send("say", reminder.from, reminder.channel, reminder.from + ": I had a problem sending you an sms, here's your reminder: " + color.yellow(reminder.args._));
-          }
+            remind.core.send("say", reminder.from, reminder.from, reminder.from + ": I had a problem sending you an sms, here's your reminder: " + color.yellow(reminder.args._.join(' '))));
         } else {
           console.log("[remind]: ".yellow + "sms sent to: " + reminder.from);
         }
       });
     }
     if (reminder.args.f) {
-      remind.core.send("say", reminder.from, reminder.channel, reminder.from + ": " + color.yellow(reminder.args._));
+      remind.core.send("say", reminder.from, reminder.channel, reminder.from + ": " + color.yellow(reminder.args._.join(' ')));
     } else {
       if (!remind.pending[reminder.from.toLowerCase()]) {
         remind.pending[reminder.from.toLowerCase()] = [];
@@ -214,7 +212,6 @@ var remind = {
 
     if (remind.scheduled[reminder.from.toLowerCase()]) {
       remind.scheduled[reminder.from.toLowerCase()].forEach(function(entry, index, object) {
-        console.log(JSON.stringify(entry) + "==========");
         if (reminder.uid == entry.uid) {
           entry.job.cancel();
           object.splice(index, 1);
