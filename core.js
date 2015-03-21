@@ -11,12 +11,18 @@ var core = {
   write_log: false,
   send: false,
   recieve: false,
+  err: false,
 
   recieve_wrapper: function(module_id, from, to, text, details) {
     if (core.recieve) {
       core.recieve(module_id, from, to, text, details);
     } else {
-      console.error("[ERROR][core]: ".red + " messages module is unloaded");
+      core.err({
+        type: "core",
+        title: "messages module is unloaded.",
+        text: false,
+        info: false,
+      });
     }
   },
 
@@ -57,13 +63,17 @@ var core = {
     var path = "./modules/" + module_id + ".js";
 
     fs.readFile(path, function(err, data) {
-      if (err) {
-        console.error("[ERROR][module]: ".red + module.name + " does not exist.");
-        console.error(path)
-        console.error(err);
+      if (err) {  
+        core.err({
+          type: "module",
+          title: module.name + " could not be read.",
+          text: "path: " + path,
+          info: err,
+        });
         if (callback) {
           callback(true);
         }
+        return;
       }
 
       // require the module (woo node module goodness)
@@ -137,7 +147,12 @@ var core = {
 
         core.loaded[module_id].unload();
       } else {
-        console.error("[ERROR][module]: ".red + module.name + " could not be unloaded.");
+        core.err({
+          type: "module",
+          title: module.name + " could not be unloaded.",
+          text: false,
+          info: false,
+        });
         if (callback) {
           callback(true);
         }
@@ -151,7 +166,12 @@ var core = {
         callback(false);
       }
     } else {
-      console.error("[ERROR][module]: ".red + module.name + " was not loaded.");
+      core.err({
+        type: "module",
+        title: module.name + " was not loaded.",
+        text: false,
+        info: false,
+      });
       if (callback) {
         callback(true);
       }
