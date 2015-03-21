@@ -1,109 +1,297 @@
 var color = require("irc-colors");
+var colors = require("colors");
 var parseArgs = require("minimist");
+var schedule = require("node-schedule");
+var sms = require("mtextbelt");
+var debug = true;
+var recurSecondsEnabled = false;
+
 
 var remind = {
-  commands: ["remind", "test"],
+  commands: ["remind"],
   core: false,
+
+  scheduled: {},
+  pending: {},
 
   remind: function(from, to, message) {
     var args = parseArgs(message.split(' '), opts = {
-      boolean: ['f', 'r', 'l'],
-    }); // args parsing with minimist is awesome
-    if (to.charAt(0) != '#') {
-      to = from;
+      boolean: ['f', 'l', 'r'],
+      string: ['d'],
+    }); // args parsing with minimist is awesome)
+
+    if (debug) {
+      console.log("args: " + JSON.stringify(args));
     }
-    if (args.l) { // if the user wants a listing
-      // give them one lol
+
+    if (args.l) {
+      remind.core.send("say", from, from, "Reminders: ");
       remind.core.databases.remind[from.toLowerCase()].forEach(function(entry, index, object) {
-        var rtime = remind.readable_time(entry.time - Date.now());
-        remind.core.send("say", from, from, '[' + (index + 1) + ']: force: ' + entry.force + "; SMS: " + entry.sms + "; recurring: " + entry.recurring + "; TTL: " + rtime + "; message: " + entry.message);
-      });
-    } else if (args.d) { // if the user wants to delete a reminder
-      if (remind.core.databases.remind[from.toLowerCase()][args.d - 1]) {
-        remind.core.databases.remind[from.toLowerCase()].splice(args.d - 1, 1);
-        remind.core.send("say", from, to, "Reminder #" + args.d + " deleted");
-      } else {
-        remind.core.send("say", from, to, "Reminder #" + args.d + " doesn't exist");
-      }
-    } else { // if it's not one of the others it must be a normal    
-      var htime = args._[0];
-      var ptime = 0;
-      ptime += (htime.match(/[0-9.]*s/) || '0')[0].match(/[0-9.]*/)[0] * 1000;
-      ptime += (htime.match(/[0-9.]*m/) || '0')[0].match(/[0-9.]*/)[0] * 60000;
-      ptime += (htime.match(/[0-9.]*h/) || '0')[0].match(/[0-9.]*/)[0] * 3600000;
-      ptime += (htime.match(/[0-9.]*d/) || '0')[0].match(/[0-9.]*/)[0] * 86400000;
-      var time = Date.now() + ptime;
-
-      // if it's an sms
-      // sms reminders are akin to force reminders, but they're handled differently
-      if (args.s) {
-        var sms = args.s;
-        remind.core.send("say", from, to, "SMS reminders aren't fully implemented. Your reminders will not be sms'd to you, but will be deilvered normally");
-      } else {
-        var sms = false;
-      }
-
-      if (args.r) {
-        var recurring = true;
-        remind.core.send("say", from, to, "Recurring reminders aren't fully implemented. Your reminders will not recur");
-      } else {
-        var recurring = false;
-      }
-
-      if (args.f) {
-        var force = true;
-        setTimeout(function() {
-          var to_say = from + ": " + color.blue(args._.slice(1).join(' '));
-          if (to.charAt(0) != '#') {
-            to = from;
+        // this is horrifying I know
+        var opts = "---";
+        if (entry.args.f) {
+          opts = "f--";
+          if (entry.args.p) {
+            opts = "fp-";
+            if (entry.args.r) {
+              opts = "fpr";
+            }
           }
-          remind.core.send("say", from, to, to_say);
-
-        }, ptime);
-      } else {
-        var force = false;
+        }
+        if (entry.args.p) {
+          opts = "-p-";
+          if (entry.args.r) {
+            opts = "-pr";
+            if (entry.args.f) {
+              opts = "fpr";
+            }
+          }
+        }
+        if (entry.args.r) {
+          opts = "--r";
+          if (entry.args.f) {
+            opts = "f-r";
+            if (entry.args.p) {
+              opts = "fpr";
+            }
+          }
+        }
+        if (!entry.args.r) {
+          remind.core.send("say", from, from, "[" + index + "] ttl: " + remind.readable_time(entry.time - Date.now()) + " message: " + entry.args._.join(' ') + " opts: " + opts + " uid: " + entry.uid);
+        } else {
+          var time = "";
+          if (entry.args.h) {
+            time = time + entry.args.h + 'h:';
+          }
+          if (entry.args.m) {
+            time = time + entry.args.m + 'm:';
+          }
+          if (recurSecondsEnabled) {
+            if (entry.args.s) {
+              time = time + entry.args.s + 's';
+            }
+          }
+          remind.core.send("say", from, from, "[" + index + "] time: " + time + " message: " + entry.args._.join(' ') + " opts: " + opts + " uid: " + entry.uid);
+        }
+      });
+      return;
+    } else if (args.d) {
+      remind.core.databases.remind[from.toLowerCase()].forEach(function(entry, index, object) {
+        if (args.d == index) {
+          remind.delReminder(entry);
+          remind.core.send("say", from, from, "Reminder #" + index + " deleted")
+        }
+      });
+      return;
+    } else { // if it's not a listing or deletion, it must be a schedule request
+      var now = new Date();
+      var then = new Date();
+      // this is gross I know :c
+      var hour = now.getHours();
+      var minutes = now.getMinutes();
+      var seconds = now.getSeconds();
+      if (args.h) {
+        hour = hour + args.h;
+      }
+      if (args.m) {
+        minutes = minutes + args.m;
+      }
+      if (args.s) {
+        seconds = seconds + args.s
       }
 
-      if (remind.core.databases.remind[from.toLowerCase()]) {
-        remind.core.databases.remind[from.toLowerCase()].push({
-          time: time,
-          message: args._.slice(1).join(' '),
-          to: to,
-          sms: sms,
-          recurring: recurring,
-          force: force,
-        });
-      } else {
-        remind.core.databases.remind[from.toLowerCase()] = [{
-          time: time,
-          message: args._.slice(1).join(' '),
-          to: to,
-          sms: sms,
-          recurring: recurring,
-          force: force,
-        }]
+      then.setHours(hour);
+      then.setMinutes(minutes);
+      then.setSeconds(seconds);
+
+      // thanks to stackoverflow user kennytm for this uid generation method, it's so clean
+      var uid = ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4);
+      if (debug) {
+        console.log("uid: " + uid);
       }
-      remind.core.write_db("remind");
+
+      var reminder = {
+        from: from,
+        channel: to,
+        time: then,
+        args: args,
+        uid: uid,
+      }
+
+      if (debug) {
+        console.log("now: " + JSON.stringify(now));
+        console.log("then: " + JSON.stringify(then));
+        console.log("diff: " + remind.readable_time(JSON.stringify(then - now)));
+        console.log("reminder: " + JSON.stringify(reminder));
+      }
+
+      remind.addReminder(reminder);
+    }
+  },
+
+  addReminder: function(reminder) {
+    // push to main db
+    if (!remind.core.databases.remind[reminder.from.toLowerCase()]) {
+      remind.core.databases.remind[reminder.from.toLowerCase()] = [];
     }
 
+    remind.core.databases.remind[reminder.from.toLowerCase()].push(reminder);
+
+    // schedule the reminder
+    if (reminder.args.r) { // if it's recurring
+      var rule = new schedule.RecurrenceRule();
+      if (reminder.args.h) {
+        rule.hour = reminder.args.h;
+      }
+      if (reminder.args.m) {
+        rule.minute = reminder.args.m;
+      }
+      if (recurSecondsEnabled) {
+        if (reminder.args.s) {
+          rule.second = reminder.args.s;
+        }
+      }
+      var job = schedule.scheduleJob(rule, function(reminder) {
+        remind.runReminder(reminder);
+      }.bind(null, reminder));
+    } else { // or not
+      var job = schedule.scheduleJob(reminder.time, function(reminder) {
+        remind.runReminder(reminder);
+      }.bind(null, reminder));
+    }
+
+    if (!remind.scheduled[reminder.from.toLowerCase()]) {
+      remind.scheduled[reminder.from.toLowerCase()] = [];
+    }
+    remind.scheduled[reminder.from.toLowerCase()].push({
+      job: job,
+      uid: reminder.uid,
+    });
+
+    remind.core.write_db("remind");
+  },
+
+  runReminder: function(reminder) {
+    if (debug) {
+      console.log("running reminder: " + JSON.stringify(reminder));
+    }
+
+    if (reminder.args.p) {
+      sms.send(reminder.args.s, reminder.args._, function(err, result) {
+        if (err) {
+          if (reminder.args.f) {
+            remind.core.send("say", reminder.from, reminder.channel, reminder.from + ": I had a problem sending you an sms, here's your reminder: " + color.yellow(reminder.args._));
+          }
+        } else {
+          console.log("[remind]: ".yellow + "sms sent to: " + reminder.from);
+        }
+      });
+    }
+    if (reminder.args.f) {
+      remind.core.send("say", reminder.from, reminder.channel, reminder.from + ": " + color.yellow(reminder.args._));
+    } else {
+      if (!remind.pending[reminder.from.toLowerCase()]) {
+        remind.pending[reminder.from.toLowerCase()] = [];
+      }
+      remind.pending[reminder.from.toLowerCase()].push(reminder);
+      if (debug) {
+        console.log("pending db: " + JSON.stringify(remind.pending));
+      }
+    }
+    if (!reminder.args.r) {
+      remind.delReminder(reminder);
+    }
+  },
+
+  delReminder: function(reminder) {
+    console.log("uid to del: " + reminder.uid);
+    remind.core.databases.remind[reminder.from.toLowerCase()].forEach(function(entry, index, object) {
+      console.log("current uid: " + entry.uid);
+      if (reminder.uid == entry.uid) {
+        object.splice(index, 1);
+      }
+    });
+
+    if (remind.scheduled[reminder.from.toLowerCase()]) {
+      remind.scheduled[reminder.from.toLowerCase()].forEach(function(entry, index, object) {
+        console.log(JSON.stringify(entry) + "==========");
+        if (reminder.uid == entry.uid) {
+          entry.job.cancel();
+          object.splice(index, 1);
+        }
+      });
+    }
+    remind.core.write_db("remind");
+  },
+
+  init: function() {
+    // woo javascript!
+    // this goes through the saved reminders and restores the reminder job for them
+    remind.core.read_db("remind", function() {
+      Object.keys(remind.core.databases.remind).forEach(function(user) {
+        remind.core.databases.remind[user.toLowerCase()].forEach(function(entry, index, object) {
+          var now = new Date();
+          var then = new Date();
+          // this is gross I know :c
+          var hour = now.getHours();
+          var minutes = now.getMinutes();
+          var seconds = now.getSeconds();
+          if (entry.args.h) {
+            hour = hour + entry.args.h;
+          }
+          if (entry.args.m) {
+            minutes = minutes + entry.args.m;
+          }
+          if (recurSecondsEnabled) {
+            if (entry.args.s) {
+              seconds = seconds + entry.args.s
+            }
+          }
+
+          then.setHours(hour);
+          then.setMinutes(minutes);
+          then.setSeconds(seconds);
+
+          entry.time = then;
+          // schedule the reminder
+          if (entry.args.r) { // if it's recurring
+            var rule = new schedule.RecurrenceRule();
+            if (entry.args.h) {
+              rule.hour = entry.args.h;
+            }
+            if (entry.args.m) {
+              rule.minute = entry.args.m;
+            }
+            if (entry.args.s) {
+              rule.second = entry.args.s;
+            }
+            var job = schedule.scheduleJob(rule, function(reminder) {
+              remind.runReminder(reminder);
+            }.bind(null, entry));
+          } else { // or not
+            var job = schedule.scheduleJob(entry.time, function(reminder) {
+              remind.runReminder(reminder);
+            }.bind(null, entry));
+          }
+
+          if (!remind.scheduled[entry.from.toLowerCase()]) {
+            remind.scheduled[entry.from.toLowerCase()] = [];
+          }
+          remind.scheduled[entry.from.toLowerCase()].push({
+            job: job,
+            uid: entry.uid,
+          });
+        });
+      });
+    });
   },
 
   listener: function(from, to, message) {
-    if (remind.core.databases.remind[from.toLowerCase()]) {
-      var save = false;
-      remind.core.databases.remind[from.toLowerCase()].forEach(function(entry, index, object) {
-        if (entry.time <= Date.now()) {
-          // don't re-send force reminders
-          if (!entry.force) {
-            remind.core.send("say", from, entry.to, from + ": " + color.blue(entry.message));
-          }
-          object.splice(index, 1);
-          save = true;
-        }
+    if (remind.pending[from.toLowerCase()]) {
+      remind.pending[from.toLowerCase()].forEach(function(entry, index, object) {
+        remind.core.send("say", from, to, entry.from + ": " + color.yellow(entry.args._.join(' ')));
       });
-      if (save) {
-        remind.core.write_db("remind");
-      }
+      delete remind.pending[from.toLowerCase()];
     }
   },
 
@@ -113,7 +301,7 @@ var remind = {
       minutes = Math.floor(time / 60000) - (hours * 60) - (days * 1440);
     var readable = ''
     if (time < 60000) {
-      readable = "less than a minute";
+      readable = (time / 1000) + " seconds"
     } else {
       //Fuck yeah nested ternary operators. Unreadable as hell
       days = (days == 0) ? '' : (days == 1) ? (days + ' day') : (days + ' days');
@@ -129,12 +317,13 @@ var remind = {
       readable = days + hours + minutes;
     }
     return (readable);
-  }
+  },
 };
 
 module.exports = {
   load: function(core) {
     remind.core = core;
+    remind.init();
   },
 
   unload: function() {

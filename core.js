@@ -71,9 +71,6 @@ var core = {
 
       // make sure it has a load function
       if (typeof core.loaded[module_id].load == "function") {
-        // and run the load funciton
-        core.loaded[module_id].load(core);
-
         // if it wants a db read it in
         if (core.loaded[module_id].db) {
           core.read_db(module.name);
@@ -94,6 +91,9 @@ var core = {
           core.listeners[module_id] = reciever;
           core.client.addListener("message", core.listeners[module_id]);
         }
+        
+        // and run the load funciton
+        core.loaded[module_id].load(core);
 
         console.log("[module]: ".green + module.type + '.' + module.name + " loaded.");
         if (callback) {
