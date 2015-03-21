@@ -179,7 +179,7 @@ var remind = {
     if (reminder.args.p) {
       sms.send(reminder.args.p, reminder.args._.join(' '), function(err, result) {
         if (err) {
-            remind.core.send("say", reminder.from, reminder.from, reminder.from + ": I had a problem sending you an sms, here's your reminder: " + color.yellow(reminder.args._.join(' '))));
+            remind.core.send("say", reminder.from, reminder.from, reminder.from + ": I had a problem sending you an sms, here's your reminder: " + color.yellow(reminder.args._.join(' ')));
         } else {
           console.log("[remind]: ".yellow + "sms sent to: " + reminder.from);
         }
