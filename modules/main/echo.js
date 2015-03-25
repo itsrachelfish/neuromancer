@@ -1,15 +1,18 @@
+var client, core, say;
+
 var echo = {
   commands: ["echo"],
-  core: false,
 
   echo: function(from, to, message) {
-    echo.core.send("say", from, to, message);
+    say(from, to, message);
   }
 };
 
 module.exports = {
-  load: function(core) {
-    echo.core = core;
+  load: function(_core) {
+    core = _core;
+    client = _core.client;
+    say = _core.say;
   },
 
   unload: function() {

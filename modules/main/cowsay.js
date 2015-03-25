@@ -1,5 +1,7 @@
 var cow = require("cowsay");
 var parseArgs = require("minimist");
+var fs = require("fs");
+var path = require("path");
 
 var cowsay = {
   commands: ["cowsay"],
@@ -12,21 +14,34 @@ var cowsay = {
   cowsay: function(from, to, message) {
     message = message.split(' ')
     var args = parseArgs(message);
-    timeout = cowsay.waiting(2);
-    if (timeout) {
-      return;
+    if (args.l) {
+      // TODO: make this more robust
+      fs.readdir(path.join(__dirname, "../../node_modules/cowsay/cows"), function(err, files) {
+        if (err) {
+          core.err(err);
+        } else {
+          var cows = files.map(function(cow) {
+            return path.basename(cow, ".cow");
+          });
+          cowsay.core.say(from, from, cows.join(' '));
+        }
+      });
+    } else {
+      timeout = cowsay.waiting(2);
+      if (timeout) {
+        return;
+      }
+      cowsay.core.send("say", from, to, cow.say({
+        text: args._.join(' '),
+        e: args.e,
+        f: args.f,
+        T: args.T,
+        W: args.W,
+      }));
     }
-    cowsay.core.send("say", from, to, cow.say({
-      text: args._.join(' '),
-      e: args.e,
-      f: args.f,
-      T: args.T,
-      W: args.W,
-    }));
-
   },
 
-  // TODO: maybe make this a core function eventually
+  // TODO: maybe make this a core function eventually maybe 
   waiting: function(timeout) {
     if (cowsay.wait) {
       var timeout = (cowsay.timeout.getTime() - new Date().getTime()) / 1000;
@@ -43,7 +58,7 @@ var cowsay = {
       cowsay.wait = false;
       cowsay.timeout = false;
     }, timeout * 60 * 1000);
-  }
+  },
 };
 
 module.exports = {
@@ -58,5 +73,5 @@ module.exports = {
   commands: cowsay.commands,
   run: function(command, from, to, message) {
     cowsay[command](from, to, message);
-  }
+  },
 };

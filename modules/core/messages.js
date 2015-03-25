@@ -10,6 +10,10 @@ var messages = {
       messages.core.client[type](from, message);
     }
   },
+  
+  say: function(from, to, message) {
+    messages.send("say", from, to, message);
+  },
 
   recieve: function(module_id, from, to, text, details) {
     var userhost = details.user + '@' + details.host;
@@ -49,19 +53,20 @@ var messages = {
         messages.core.loaded[module_id].run(command, from, to, text);
       }
     }
-  }
-}
+  },
+};
 
 module.exports = {
   load: function(core) {
     messages.core = core;
     messages.core.send = messages.send;
     messages.core.recieve = messages.recieve;
+    messages.core.say = messages.say;
   },
 
   unload: function() {
     messages.core.send = false;
     messages.core.recieve = false;
     delete messages;
-  }
-}
+  },
+};

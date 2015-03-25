@@ -1,3 +1,17 @@
 module.exports = {
-  cowsay: "<message> returns a cowsay'd message"
+  cowsay: "<message> returns a cowsay'd message",
+	b: "Mode: Borg",
+	d: "Mode: Dead",
+	g: "Mode: Greedy",
+	p: "Mode: Paranoia",
+	s: "Mode: Stoned",
+	t: "Mode: Tired",
+	w: "Mode: Wired",
+	y: "Mode: Youthful",
+	e: "Select the appearance of the cow's eyes.",
+	T: "The tongue is configurable similarly to the eyes through -T and tongue_string.",
+	h: "Display this help message",
+	n: "If it is specified, the given message will not be word-wrapped.",
+	W: "Specifies roughly where the message should be wrapped. The default is equivalent to -W 40 i.e. wrap words at or before the 40th column.",
+	f: "Specifies a cow picture file (''cowfile'') to use.",
 }

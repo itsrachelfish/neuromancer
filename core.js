@@ -5,11 +5,21 @@ var request = require("request");
 
 var core = {
   client: false,
+  
+  loaded: {},
+  databases: {},
+  logs: {},
+  listeners: {},
+  config: require("./etc/core.js"),
+  server: require("./etc/server.js"),
+
+  // all of these are handled by core modules
   read_db: false,
   write_db: false,
   read_log: false,
   write_log: false,
   send: false,
+  say: false,
   recieve: false,
   err: false,
 
@@ -26,33 +36,26 @@ var core = {
     }
   },
 
-  loaded: {},
-  databases: {},
-  logs: {},
-  listeners: {},
-  config: require("./etc/core.js"),
-  server: require("./etc/server.js"),
-
   init: function(client) {
     if (!core.client) {
       core.client = client;
     }
-    
-    // get core modules
+
+    // get modules
     var modules = require("./etc/module.js");
 
     // now load the modules
     modules.core.forEach(function(module) {
       core.load({
         type: "core",
-        name: module
+        name: module,
       });
     });
 
     modules.main.forEach(function(module) {
       core.load({
         type: "main",
-        name: module
+        name: module,
       });
     });
   },
@@ -63,7 +66,7 @@ var core = {
     var path = "./modules/" + module_id + ".js";
 
     fs.readFile(path, function(err, data) {
-      if (err) {  
+      if (err) {
         core.err({
           type: "module",
           title: module.name + " could not be read.",
@@ -85,7 +88,7 @@ var core = {
         if (core.loaded[module_id].db) {
           core.read_db(module.name);
         }
-        
+
         if (core.loaded[module_id].log) {
           core.read_log(module.name);
         }
@@ -98,10 +101,11 @@ var core = {
         // does it have any commands?
         if (core.loaded[module_id].commands) {
           var reciever = core.recieve_wrapper.bind(this, module_id);
+          //var reciever = core.recieve.bind(this, module_id);
           core.listeners[module_id] = reciever;
           core.client.addListener("message", core.listeners[module_id]);
         }
-        
+
         // and run the load funciton
         core.loaded[module_id].load(core);
 
@@ -130,7 +134,7 @@ var core = {
         if (core.loaded[module_id].db) {
           core.write_db(module.name);
         }
-        
+
         if (core.loaded[module_id].log) {
           core.write_log(module.name);
         }
