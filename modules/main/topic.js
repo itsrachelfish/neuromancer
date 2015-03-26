@@ -1,7 +1,9 @@
+var core;
+
 var topic = {
   commands: ['topic'],
   actions: ['log', 'restore', 'replace', 'set', 'append', 'prepend', 'insert', 'delete'],
-  core: false,
+
   user: false,
 
   // Helper function to parse topic sections
@@ -36,13 +38,13 @@ var topic = {
 
   // listens for topic changes
   listener: function(channel, message, set_by) {
-    if (typeof topic.core.logs.topic[channel] == "undefined") {
-      topic.core.logs.topic[channel] = [];
+    if (typeof core.logs.topic[channel] == "undefined") {
+      core.logs.topic[channel] = [];
     }
 
-    if (topic.core.logs.topic[channel].length) {
-      var index = topic.core.logs.topic[channel].length - 1
-      var last = topic.core.logs.topic[channel][index];
+    if (core.logs.topic[channel].length) {
+      var index = core.logs.topic[channel].length - 1
+      var last = core.logs.topic[channel][index];
 
       // Don't push duplicate topics to the list
       if (message == last.message && set_by == last.set_by) {
@@ -56,12 +58,12 @@ var topic = {
       set_by: set_by
     };
 
-    if (set_by == topic.core.server.name && topic.user) {
+    if (set_by == core.server.name && topic.user) {
       new_topic.requested_by = topic.user;
       topic.user = false;
     }
-    topic.core.logs.topic[channel].push(new_topic);
-    topic.core.write_log("topic")
+    core.logs.topic[channel].push(new_topic);
+    core.write_log("topic")
   },
 
   log: function(from, channel, message) {
@@ -71,8 +73,8 @@ var topic = {
       return;
     }
 
-    if (typeof topic.core.logs.topic[channel] == "undefined") {
-      topic.core.client.say(from, "No topic log exists for " + channel);
+    if (typeof core.logs.topic[channel] == "undefined") {
+      core.client.say(from, "No topic log exists for " + channel);
       return;
     }
 
@@ -84,60 +86,60 @@ var topic = {
     else
       count *= -1;
 
-    var most_recent = topic.core.logs.topic[channel].slice(count);
+    var most_recent = core.logs.topic[channel].slice(count);
 
     for (var i = 0, l = most_recent.length; i < l; i++) {
       var recent = most_recent[i];
-      var index = topic.core.logs.topic[channel].indexOf(recent);
+      var index = core.logs.topic[channel].indexOf(recent);
 
       if (typeof recent.requested_by != "undefined")
         recent.user = recent.requested_by;
       else
         recent.user = recent.set_by.split('!')[0];
 
-      topic.core.client.say(from, recent.user + " set " + channel + "'s topic to " + recent.message + "\u000f [#" + index + "]");
+      core.client.say(from, recent.user + " set " + channel + "'s topic to " + recent.message + "\u000f [#" + index + "]");
     }
   },
 
   restore: function(from, channel, message) {
     // Make sure this command has a valid channel
     if (channel.indexOf('#') != 0) {
-      topic.core.client.say(from, "You must use :topic restore in a channel, or use :topic restore [channel].");
+      core.client.say(from, "You must use :topic restore in a channel, or use :topic restore [channel].");
       return;
     }
 
-    if (typeof topic.core.logs.topic[channel] == "undefined") {
-      topic.core.client.say(from, "No topic log exists for " + channel);
+    if (typeof core.logs.topic[channel] == "undefined") {
+      core.client.say(from, "No topic log exists for " + channel);
       return;
     }
 
     var index = parseInt(message);
 
     // If an invalid topic ID is passed (or no topic ID at all)
-    if (typeof topic.core.logs.topic[channel][index] == "undefined") {
+    if (typeof core.logs.topic[channel][index] == "undefined") {
       // Use most recent topic before the current
-      index = topic.core.logs.topic[channel].length - 2;
+      index = core.logs.topic[channel].length - 2;
     }
 
     topic.user = from;
-    var new_topic = topic.core.logs.topic[channel][index].message;
-    topic.core.client.send('topic', channel, new_topic);
+    var new_topic = core.logs.topic[channel][index].message;
+    core.client.send('topic', channel, new_topic);
   },
 
   replace: function(from, channel, message) {
     // Make sure this command has a valid channel
     if (channel.indexOf('#') != 0) {
-      topic.core.client.say(from, "You must use :topic replace in a channel, or use :topic replace [channel].");
+      core.client.say(from, "You must use :topic replace in a channel, or use :topic replace [channel].");
       return;
     }
 
-    if (typeof topic.core.logs.topic[channel] == "undefined") {
-      topic.core.client.say(from, "No topic log exists for " + channel);
+    if (typeof core.logs.topic[channel] == "undefined") {
+      core.client.say(from, "No topic log exists for " + channel);
       return;
     }
 
-    var index = topic.core.logs.topic[channel].length - 1;
-    var last = topic.core.logs.topic[channel][index];
+    var index = core.logs.topic[channel].length - 1;
+    var last = core.logs.topic[channel][index];
     var sections = topic.parse(last.message);
 
     message = message.split(" ");
@@ -155,13 +157,13 @@ var topic = {
 
     // Set the new topic
     topic.user = from;
-    topic.core.client.send('TOPIC', channel, topic.build(sections));
+    core.client.send('TOPIC', channel, topic.build(sections));
   },
 
   set: function(from, channel, message) {
     // Make sure this command has a valid channel
     if (channel.indexOf('#') != 0) {
-      topic.core.client.say(from, "You must use :topic set in a channel, or use :topic set [channel].");
+      core.client.say(from, "You must use :topic set in a channel, or use :topic set [channel].");
       return;
     }
 
@@ -182,23 +184,23 @@ var topic = {
     sections = message.split(delimiter);
 
     topic.user = from;
-    topic.core.client.send('TOPIC', channel, topic.build(sections));
+    core.client.send('TOPIC', channel, topic.build(sections));
   },
 
   append: function(from, channel, message) {
     // Make sure this command has a valid channel
     if (channel.indexOf('#') != 0) {
-      topic.core.client.say(from, "You must use :topic append in a channel, or use :topic append [channel].");
+      core.client.say(from, "You must use :topic append in a channel, or use :topic append [channel].");
       return;
     }
 
-    if (typeof topic.core.logs.topic[channel] == "undefined") {
-      topic.core.client.say(from, "No topic log exists for " + channel);
+    if (typeof core.logs.topic[channel] == "undefined") {
+      core.client.say(from, "No topic log exists for " + channel);
       return;
     }
 
-    var index = topic.core.logs.topic[channel].length - 1;
-    var last = topic.core.logs.topic[channel][index];
+    var index = core.logs.topic[channel].length - 1;
+    var last = core.logs.topic[channel][index];
     var sections = topic.parse(last.message);
 
     var delimiter = "|";
@@ -218,23 +220,23 @@ var topic = {
     sections = sections.concat(message.split(delimiter));
 
     topic.user = from;
-    topic.core.client.send('TOPIC', channel, topic.build(sections));
+    core.client.send('TOPIC', channel, topic.build(sections));
   },
 
   prepend: function(from, channel, message) {
     // Make sure this command has a valid channel
     if (channel.indexOf('#') != 0) {
-      topic.core.client.say(from, "You must use :topic prepend in a channel, or use :topic prepend [channel].");
+      core.client.say(from, "You must use :topic prepend in a channel, or use :topic prepend [channel].");
       return;
     }
 
-    if (typeof topic.core.logs.topic[channel] == "undefined") {
-      topic.core.client.say(from, "No topic log exists for " + channel);
+    if (typeof core.logs.topic[channel] == "undefined") {
+      core.client.say(from, "No topic log exists for " + channel);
       return;
     }
 
-    var index = topic.core.logs.topic[channel].length - 1;
-    var last = topic.core.logs.topic[channel][index];
+    var index = core.logs.topic[channel].length - 1;
+    var last = core.logs.topic[channel][index];
     var sections = topic.parse(last.message);
     var first = sections.shift();
 
@@ -258,23 +260,23 @@ var topic = {
     sections.unshift(first);
 
     topic.user = from;
-    topic.core.client.send('TOPIC', channel, topic.build(sections));
+    core.client.send('TOPIC', channel, topic.build(sections));
   },
 
   insert: function(from, channel, message) {
     // Make sure this command has a valid channel
     if (channel.indexOf('#') != 0) {
-      topic.core.client.say(from, "You must use :topic insert in a channel, or use :topic insert [channel].");
+      core.client.say(from, "You must use :topic insert in a channel, or use :topic insert [channel].");
       return;
     }
 
-    if (typeof topic.core.logs.topic[channel] == "undefined") {
-      topic.core.client.say(from, "No topic log exists for " + channel);
+    if (typeof core.logs.topic[channel] == "undefined") {
+      core.client.say(from, "No topic log exists for " + channel);
       return;
     }
 
-    var index = topic.core.logs.topic[channel].length - 1;
-    var last = topic.core.logs.topic[channel][index];
+    var index = core.logs.topic[channel].length - 1;
+    var last = core.logs.topic[channel][index];
     var sections = topic.parse(last.message);
 
     var delimiter = "|";
@@ -302,25 +304,25 @@ var topic = {
     Array.prototype.splice.apply(sections, [index, 0].concat(message.split(delimiter)));
 
     topic.user = from;
-    topic.core.client.send('TOPIC', channel, topic.build(sections));
+    core.client.send('TOPIC', channel, topic.build(sections));
   },
 
   delete: function(from, channel, message) {
     // Make sure this command has a valid channel
     if (channel.indexOf('#') != 0) {
-      topic.core.client.say(from, "You must use :topic delete in a channel, or use :topic delete [channel].");
+      core.client.say(from, "You must use :topic delete in a channel, or use :topic delete [channel].");
       return;
     }
 
-    if (typeof topic.core.logs.topic[channel] == "undefined") {
-      topic.core.client.say(from, "No topic log exists for " + channel);
+    if (typeof core.logs.topic[channel] == "undefined") {
+      core.client.say(from, "No topic log exists for " + channel);
       return;
     }
 
     message = message.split(" ");
 
-    var lastIndex = topic.core.logs.topic[channel].length - 1;
-    var last = topic.core.logs.topic[channel][lastIndex];
+    var lastIndex = core.logs.topic[channel].length - 1;
+    var last = core.logs.topic[channel][lastIndex];
     var sections = topic.parse(last.message);
 
     var index = parseInt(message[0]) - 1;
@@ -336,19 +338,20 @@ var topic = {
     sections.splice(index, length);
 
     topic.user = from;
-    topic.core.client.send('TOPIC', channel, topic.build(sections));
+    core.client.send('TOPIC', channel, topic.build(sections));
   },
 };
 
 module.exports = {
-  load: function(core) {
-    topic.core = core;
-    topic.core.client.addListener("topic", topic.listener);
+  load: function(c_ore) {
+    core = _core;
+    core.client.addListener("topic", topic.listener);
   },
 
   unload: function() {
-    topic.core.client.removeListener("topic", topic.listener);
+    core.client.removeListener("topic", topic.listener);
     delete topic;
+    delete core;
   },
 
   commands: topic.commands,

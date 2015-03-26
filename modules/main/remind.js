@@ -4,13 +4,13 @@ var parseArgs = require("minimist");
 var schedule = require("node-schedule");
 var sms = require("mtextbelt");
 var config = require("../../etc/remind.js");
+var core;
 var debug = false;
 
 
 
 var remind = {
   commands: ["remind"],
-  core: false,
 
   scheduled: {},
   pending: {},
@@ -26,8 +26,8 @@ var remind = {
     }
 
     if (args.l) {
-      remind.core.send("say", from, from, "Reminders: ");
-      remind.core.databases.remind[from.toLowerCase()].forEach(function(entry, index, object) {
+      core.say(from, from, "Reminders: ");
+      core.databases.remind[from.toLowerCase()].forEach(function(entry, index, object) {
         var opts = [];
         if (entry.args.r) {
           opts.push("r");
@@ -45,7 +45,7 @@ var remind = {
           opts.push('-');
         }
         if (!entry.args.r) {
-          remind.core.send("say", from, from, "[" + index + "] ttl: " + remind.readable_time(entry.time - Date.now()) + " opts: " + opts.join('') + " message: " + entry.args._.join(' '));
+          core.say(from, from, "[" + index + "] ttl: " + remind.readable_time(entry.time - Date.now()) + " opts: " + opts.join('') + " message: " + entry.args._.join(' '));
           if (debug) {
             console.log(JSON.stringify(entry));
           }
@@ -61,15 +61,15 @@ var remind = {
           if (debug) {
             console.log(JSON.stringify(entry));
           }
-          remind.core.send("say", from, from, "[" + index + "] time: " + time + " opts: " + opts.join('') + " message: " + entry.args._.join(' '));
+          core.say(from, from, "[" + index + "] time: " + time + " opts: " + opts.join('') + " message: " + entry.args._.join(' '));
         }
       });
       return;
     } else if (args.d) {
-      remind.core.databases.remind[from.toLowerCase()].forEach(function(entry, index, object) {
+      core.databases.remind[from.toLowerCase()].forEach(function(entry, index, object) {
         if (args.d == index) {
           remind.delReminder(entry);
-          remind.core.send("say", from, from, "Reminder #" + index + " deleted")
+          core.say(from, from, "Reminder #" + index + " deleted")
         }
       });
       return;
@@ -154,11 +154,11 @@ var remind = {
 
   addReminder: function(reminder) {
     // push to main db
-    if (!remind.core.databases.remind[reminder.from.toLowerCase()]) {
-      remind.core.databases.remind[reminder.from.toLowerCase()] = [];
+    if (!core.databases.remind[reminder.from.toLowerCase()]) {
+      core.databases.remind[reminder.from.toLowerCase()] = [];
     }
 
-    remind.core.databases.remind[reminder.from.toLowerCase()].push(reminder);
+    core.databases.remind[reminder.from.toLowerCase()].push(reminder);
 
     // schedule the reminder
     if (reminder.args.r) { // if it's recurring
@@ -181,7 +181,7 @@ var remind = {
       uid: reminder.uid,
     });
 
-    remind.core.write_db("remind");
+    core.write_db("remind");
     return;
   },
 
@@ -194,7 +194,7 @@ var remind = {
     if (reminder.args.p) {
       sms.send(reminder.args.p, reminder.args._.join(' '), function(err, result) {
         if (err) {
-          remind.core.send("say", reminder.from, reminder.from, reminder.from + ": I had a problem sending you an sms, here's your reminder: " + color.yellow(reminder.args._.join(' ')));
+          core.say(reminder.from, reminder.from, reminder.from + ": I had a problem sending you an sms, here's your reminder: " + color.yellow(reminder.args._.join(' ')));
         } else {
           console.log("[remind]: ".yellow + "sms sent to: " + reminder.from);
         }
@@ -202,7 +202,7 @@ var remind = {
     }
     // if it's a force reminder
     if (reminder.args.f) {
-      remind.core.send("say", reminder.from, reminder.channel, reminder.from + ": " + color.yellow(reminder.args._.join(' ')));
+      core.say(reminder.from, reminder.channel, reminder.from + ": " + color.yellow(reminder.args._.join(' ')));
     } else {
       if (!remind.pending[reminder.from.toLowerCase()]) {
         remind.pending[reminder.from.toLowerCase()] = [];
@@ -224,7 +224,7 @@ var remind = {
     if (debug) {
       console.log("uid to del: " + reminder.uid);
     }
-    remind.core.databases.remind[reminder.from.toLowerCase()].forEach(function(entry, index, object) {
+    core.databases.remind[reminder.from.toLowerCase()].forEach(function(entry, index, object) {
       if (debug) {
         console.log("current uid: " + entry.uid);
       }
@@ -244,16 +244,16 @@ var remind = {
         }
       });
     }
-    remind.core.write_db("remind");
+    core.write_db("remind");
     return;
   },
 
   init: function() {
     // woo javascript!
     // this goes through the saved reminders and restores the reminder job for them
-    remind.core.read_db("remind", function() {
-      Object.keys(remind.core.databases.remind).forEach(function(user) {
-        remind.core.databases.remind[user.toLowerCase()].forEach(function(entry, index, object) {
+    core.read_db("remind", function() {
+      Object.keys(core.databases.remind).forEach(function(user) {
+        core.databases.remind[user.toLowerCase()].forEach(function(entry, index, object) {
           var now = new Date();
           var then = new Date();
           // this is gross I know :c
@@ -300,7 +300,7 @@ var remind = {
   listener: function(from, to, message) {
     if (remind.pending[from.toLowerCase()]) {
       remind.pending[from.toLowerCase()].forEach(function(entry, index, object) {
-        remind.core.send("say", from, to, entry.from + ": " + color.yellow(entry.args._.join(' ')));
+        core.say(from, to, entry.from + ": " + color.yellow(entry.args._.join(' ')));
       });
       delete remind.pending[from.toLowerCase()];
     }
@@ -333,14 +333,21 @@ var remind = {
 };
 
 module.exports = {
-  load: function(core) {
-    remind.core = core;
+  load: function(_core) {
+    core = _core;
     remind.init();
     return;
   },
 
   unload: function() {
     delete remind;
+    delete core;
+    delete color;
+    delete colors;
+    delete parseArgs;
+    delete schedule;
+    delete sms;
+    delete config;
     return;
   },
 

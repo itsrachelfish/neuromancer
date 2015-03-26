@@ -1,37 +1,37 @@
 var color = require("irc-colors");
+var core;
 
 var tell = {
   commands: ["tell"],
-  core: false,
 
   tell: function(from, to, message) {
     var args = message.split(' ');
     var reciever = args[0].toLowerCase();
 
-    if (!tell.core.databases.tell[reciever]) {
-      tell.core.databases.tell[reciever] = [];
+    if (!core.databases.tell[reciever]) {
+      core.databases.tell[reciever] = [];
     }
 
-    tell.core.databases.tell[reciever].push({
+    core.databases.tell[reciever].push({
       from: from,
       mes: args.slice(1).join(' '),
       when: Date.now()
     });
-    tell.core.send("say", from, to, color.green("Okay"));
+    core.say(from, to, color.green("Okay"));
 
     //save the db so if the bot/module crashes/whatever we don't lose our new tell
-    tell.core.write_db("tell");
+    core.write_db("tell");
   },
 
   listener: function(from, to, message) {
     var reciever = from.toLowerCase();
-    if (tell.core.databases.tell[reciever]) {
-      tell.core.databases.tell[reciever].forEach(function(entry) {
+    if (core.databases.tell[reciever]) {
+      core.databases.tell[reciever].forEach(function(entry) {
         var to_say = from + ": " + color.yellow('"' + entry.mes + '"') + ' [' + color.red(entry.from) + '] ' + '[' + color.lime(tell.readable_time(Date.now() - entry.when)) + ']';
-        tell.core.send("say", from, to, to_say);
+        core.say(from, to, to_say);
       });
-      delete tell.core.databases.tell[reciever];
-      tell.core.write_db("tell");
+      delete core.databases.tell[reciever];
+      core.write_db("tell");
     }
   },
 
@@ -57,16 +57,18 @@ var tell = {
       readable = days + hours + minutes;
     }
     return (readable + ' ago');
-  }
+  },
 };
 
 module.exports = {
-  load: function(core) {
-    tell.core = core;
+  load: function(_core) {
+    core = _core;
   },
 
   unload: function() {
     delete tell;
+    delete core;
+    delete color;
   },
   
   commands: tell.commands,

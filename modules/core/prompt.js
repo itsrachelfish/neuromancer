@@ -23,9 +23,9 @@ var prompt = {
     }
   },
 
-  // TODO: improve this
+  // TODO: improve this/move into core
   parse_module: function(module) {
-    module = module.split('.');
+    module = module.split('/');
     if (module[0] == 'core')
       return {
         type: 'core',
@@ -36,14 +36,9 @@ var prompt = {
         type: 'main',
         name: module[1]
       };
-    else if (module[1] == 'module')
-      return {
-        type: 'modules',
-        name: module[1]
-      };
     else
       return {
-        type: 'modules',
+        type: 'main',
         name: module[0]
       };
   },

@@ -1,8 +1,8 @@
 var color = require("irc-colors");
+var core;
 
 var roll = {
   commands: ["roll"],
-  core: false,
 
   roll: function(from, to, message) {
     var commands = message.split(' ');
@@ -15,12 +15,12 @@ var roll = {
     }
     if (dieType > 100) {
       dieType = 100;
-      roll.core.send("say", from, to, '[' + color.blue("note") + "] die size reduced to 100");
+      core.say(from, to, '[' + color.blue("note") + "] die size reduced to 100");
     }
     var dice = Math.floor(commands[0].match(/[0-9]*/));
     if (dice > 50) {
       dice = 50;
-      roll.core.send("say", from, to, '[' + color.blue("note") + "] number of rolls reduced to 50");
+      core.say(from, to, '[' + color.blue("note") + "] number of rolls reduced to 50");
     }
     
     var rolls = '';
@@ -32,20 +32,22 @@ var roll = {
       total += parseInt(rand);
     }
     
-    roll.core.send("say", from, to, rolls);
+    core.say(from, to, rolls);
     if (dice > 1) {
-      roll.core.send("say", from, to, '['+ color.green("total") + "] " + total);
+      core.say(from, to, '['+ color.green("total") + "] " + total);
     }
   }
 };
 
 module.exports = {
-  load: function(core) {
-    roll.core = core;
+  load: function(_core) {
+    core = _core;
   },
 
   unload: function() {
     delete roll;
+    delete core;
+    delete color;
   },
 
   commands: roll.commands,

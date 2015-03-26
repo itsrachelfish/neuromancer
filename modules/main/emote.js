@@ -1,4 +1,5 @@
 var color = require("irc-colors");
+var core;
 
 var emote = {
   commands: ["dunno", "downy", "lv", "id", "ld", "intense", "doubledowny", "tripledowny", "rainbowdowny"],
@@ -11,12 +12,12 @@ var emote = {
       "¯\\_(シ)_/¯"
     ];
 
-    emote.core.send("say", from, to, color.lime(faces[Math.floor(Math.random() * faces.length)]));
+    core.say(from, to, color.lime(faces[Math.floor(Math.random() * faces.length)]));
   },
 
   downy: function(from, to, message) {
     var downy = ".'\x1f/\x1f)";
-    emote.core.send("say", from, to, color.lime(downy));
+    core.say(from, to, color.lime(downy));
   },
 
   doubledowny: function(from, to, message) {
@@ -32,12 +33,12 @@ var emote = {
 
   rainbowdowny: function(from, to, message) {
     var downy = ".'\x1f/\x1f)";
-    emote.core.send("say", from, to, color.rainbow(downy));
+    core.say(from, to, color.rainbow(downy));
   },
 
   lv: function(from, to, message) {
     var lv = "♥";
-    emote.core.send("say", from, to, color.red(lv));
+    core.say(from, to, color.red(lv));
   },
 
   id: function(from, to, message) {
@@ -52,9 +53,9 @@ var emote = {
         'Twenty-five years in prison was worth it for just one hit of dbladez',
         'Taking dbladez ruined my life.'
       ];
-      emote.core.send("say", from, to, color.bold(dbladez[x]));
+      core.say(from, to, color.bold(dbladez[x]));
     } else {
-      emote.core.send("say", from, to, color.bold("illegal drugs"));
+      core.say(from, to, color.bold("illegal drugs"));
     }
   },
 
@@ -62,13 +63,13 @@ var emote = {
     var x = ~~ (Math.random() * 29) + 0;
 
     if (x == 9) {
-      emote.core.send("say", from, to, color.bold("There are no legal drugs."));
+      core.say(from, to, color.bold("There are no legal drugs."));
     } else if (x == 19) {
-      emote.core.send("say", from, to, color.bold("All drugs are illegal."));
+      core.say(from, to, color.bold("All drugs are illegal."));
     } else if (x == 29) {
-      emote.core.send("say", from, to, color.bold("Your drug use has been logged and reported."));
+      core.say(from, to, color.bold("Your drug use has been logged and reported."));
     } else {
-      emote.core.send("say", from, to, color.bold("legal drugs\x02"));
+      core.say(from, to, color.bold("legal drugs\x02"));
     }
   },
 
@@ -78,12 +79,14 @@ var emote = {
 };
 
 module.exports = {
-  load: function(core) {
-    emote.core = core;
+  load: function(_core) {
+    core = _core;
   },
 
   unload: function() {
     delete emote;
+    delete color;
+    delete core;
   },
 
   commands: emote.commands,

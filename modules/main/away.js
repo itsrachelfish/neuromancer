@@ -1,8 +1,8 @@
 var color = require("irc-colors");
+var core;
 
 var away = {
   commands: ["away", "rmaway"],
-  core: false,
   
   // vars needed for the timeout to work
   timeout: false,
@@ -18,7 +18,7 @@ var away = {
 
   // allows an admin to delete a spammy away
   rmaway: function(from, to, message) {
-    if (away.core.config.admins.indexOf(from) > -1) {
+    if (core.config.admins.indexOf(from) > -1) {
       if (message.toLowerCase() in away.aways) {
         delete away.aways[message.toLowerCase()];
       }
@@ -28,7 +28,7 @@ var away = {
   listener: function(from, to, message) {
     // one of the problems of async programing is that our listener sees the away-ee leaving
     // this if statement makes it work by ignoring <prefix>away commands when listening for an away-ee's return
-    var awaycmd = away.core.config.prefix + "away";
+    var awaycmd = core.config.prefix + "away";
     if (message.split(' ')[0] != awaycmd) {
       //listen for an away-ee coming back
       if (from.toLowerCase() in away.aways) {
@@ -43,7 +43,7 @@ var away = {
         }
         var target = message.split(' ')[0].replace(/[:,]/, '');
         var to_say = target + " is currently away " + (away.aways[target.toLowerCase()] ? "[" + color.blue(away.aways[target.toLowerCase()]) + "]" : color.blue("No reason specified"));
-        away.core.send("say", from, to, to_say);
+        core.say(from, to, to_say);
         console.log("[away]: ".yellow + from + ' attempted to contact ' + message.split(' ')[0].replace(':', ''));
       }
     }
@@ -69,12 +69,14 @@ var away = {
 };
 
 module.exports = {
-  load: function(core) {
-    away.core = core;
+  load: function(_core) {
+    core = _core;
   },
 
   unload: function() {
     delete away;
+    delete core;
+    delete color;
   },
 
   commands: away.commands,

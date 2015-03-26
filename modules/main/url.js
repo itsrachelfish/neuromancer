@@ -1,10 +1,9 @@
 var color = require("irc-colors");
 var request = require("request");
 var urllib = require("url");
+var core;
 
 var url = {
-  core: false,
-
   HTMLchars: {
     '&reg': '®',
     '&nbsp;': ' ',
@@ -75,13 +74,14 @@ var url = {
 };
 
 module.exports = {
-  load: function(core) {
-    url.core = core;
+  load: function(_core) {
+    core = _core;
   },
 
   unload: function() {
     delete url;
+    delete core;
   },
 
-  listener: url.listener
-}
+  listener: url.listener,
+};
