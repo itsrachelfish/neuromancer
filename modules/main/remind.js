@@ -18,7 +18,7 @@ var remind = {
   remind: function(from, to, message) {
     var args = parseArgs(message.split(' '), opts = {
       boolean: ['f', 'l', 'r'],
-      string: ['d', 'p', 'h', 'm', 's'],
+      string: ['d', 'p'],
     }); // args parsing with minimist is awesome)
 
     if (debug) {
