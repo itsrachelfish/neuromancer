@@ -343,7 +343,7 @@ var topic = {
 };
 
 module.exports = {
-  load: function(c_ore) {
+  load: function(_core) {
     core = _core;
     core.client.addListener("topic", topic.listener);
   },
