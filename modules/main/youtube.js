@@ -1,16 +1,14 @@
 var color = require("irc-colors");
 var request = require("request");
+var core;
 
 var youtube = {
-  core: false,
-  client: false,
-
   listener: function(from, to, message) {  
     if (message.match(/(youtube.com\/watch\S*v=|youtu.be\/)([\w-]+)/)) {
       var ignore = false
       // if we're ignoring them
-      if (youtube.core.databases.ignore[from.toLowerCase()]) {
-        youtube.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
+      if (core.databases.ignore[from.toLowerCase()]) {
+        core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
           if (entry == "youtube") {
             console.log("[ignore]:".yellow + " ignored youtube link '" + message.join(' ') + "' from '" + from + "'");
             ignore = true;
@@ -32,20 +30,23 @@ var youtube = {
           return a + ':' + ('0' + b).substr(-2)
         }) + '] '
         output += (data.entry.yt$rating) ? '[\u000303' + data.entry.yt$rating.numLikes + '\u000f|\u000304' + data.entry.yt$rating.numDislikes + '\u000f]' : ''
-        youtube.core.send("say", from, to, output);
+        core.say(from, to, output);
       });
     }
   }
 };
 
 module.exports = {
-  load: function(core) {
-    youtube.core = core;
+  load: function(_core) {
+    core = _core;
   },
 
   unload: function() {
     delete youtube;
+    delete color;
+    delete request;
+    delete core;
   },
 
-  listener: youtube.listener
-}
+  listener: youtube.listener,
+};

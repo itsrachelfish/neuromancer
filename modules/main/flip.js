@@ -1,28 +1,30 @@
 var color = require("irc-colors");
+var core;
 
 var flip = {
   commands: ["flip"],
-  core: false,
 
   flip: function(from, to, message) {
     rand = Math.random();
     if (rand > 0.5) {
-      flip.core.send("say", from, to, color.blue("Heads"));
+      core.say(from, to, color.blue("Heads"));
     } else if (rand < 0.5) {
-      flip.core.send("say", from, to, color.red("Tails"));
+      core.say(from, to, color.red("Tails"));
     } else if (rand == 0.5) {
-      flip.core.send("say", from, to, color.purple("Edge"));
+      core.say(from, to, color.purple("Edge"));
     }
   }
 };
 
 module.exports = {
-  load: function(core) {
-    flip.core = core;
+  load: function(_core) {
+    core = _core;
   },
 
   unload: function() {
     delete flip;
+    delete core;
+    delete color;
   },
 
   commands: flip.commands,

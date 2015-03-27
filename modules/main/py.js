@@ -1,9 +1,9 @@
 var color = require("irc-colors");
 var request = require("request");
+var core;
 
 var py = {
   commands: ["py", "python"],
-  core: false,
 
   py: function(from, to, message) {
     py.python(from, to, message);
@@ -17,18 +17,21 @@ var py = {
       } else {
         var to_say = '[' + color.red("error") + "] Bad request";
       }
-      py.core.send("say", from, to, to_say);
+      core.say(from, to, to_say);
     });
   }
 };
 
 module.exports = {
-  load: function(core) {
-    py.core = core;
+  load: function(_core) {
+    core = _core;
   },
 
   unload: function() {
     delete py;
+    delete color;
+    delete request;
+    delete core;
   },
 
   commands: py.commands,

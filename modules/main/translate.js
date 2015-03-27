@@ -1,10 +1,10 @@
 var color = require("irc-colors");
 var request = require("request");
+var core;
 
 var translate = {
   commands: ["translate", "tr"],
-  core: false,
-
+  
   translate: function(from, to, message) {
     request('http://translate.google.com/translate_a/t?client=t&sl=auto&tl=en&q=' + message, function(e, r, body) {
       translate.core.send("say", from, to, from + '[' + color.green("translation") + "] " + JSON.parse(body.replace(/,,/g, ',null,').replace(/,,/g, ',').replace(/\[,/g, '[null,'))[0][0][0])
@@ -17,12 +17,13 @@ var translate = {
 };
 
 module.exports = {
-  load: function(core) {
-    translate.core = core;
+  load: function(_core) {
+    core = _core;
   },
 
   unload: function() {
     delete translate;
+    delete core;
   },
 
   commands: translate.commands,

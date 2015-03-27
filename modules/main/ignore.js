@@ -1,3 +1,5 @@
+var core;
+
 var ignore = {
   commands: ["ignore", "unignore"],
   core: false,
@@ -7,22 +9,22 @@ var ignore = {
     var person = args[0].toLowerCase();
     var module = args[1].toLowerCase();
 
-    if (!ignore.core.databases.ignore[person]) {
-      ignore.core.databases.ignore[person] = [];
+    if (!core.databases.ignore[person]) {
+      core.databases.ignore[person] = [];
     }
 
     if (module == "all") {
-      for (key in ignore.core.loaded) {
+      for (key in core.loaded) {
         module = key.split('/')[1];
-        ignore.core.databases.ignore[person].push(module);
+        core.databases.ignore[person].push(module);
         console.log("[ignore]:".yellow + " module " + module + " is now ignoring " + person + '.');
       }
     } else {
-      ignore.core.databases.ignore[person].push(module);
-      ignore.core.write_db("ignore");
+      core.databases.ignore[person].push(module);
+      core.write_db("ignore");
       console.log("[ignore]:".yellow + " module " + module + " is now ignoring " + person + '.');
     }
-    ignore.core.write_db("ignore");
+    core.write_db("ignore");
   },
 
   unignore: function(from, to, message) {
@@ -31,27 +33,28 @@ var ignore = {
     var module = args[1].toLowerCase();
 
     if (module == "all") {
-      delete ignore.core.databases.ignore[person];
+      delete core.databases.ignore[person];
       console.log("[ignore]:".yellow + " no longer ignoring any commands from " + person + '.');
     } else {
-      ignore.core.databases.ignore[person].forEach(function(entry, index, object) {
+      core.databases.ignore[person].forEach(function(entry, index, object) {
         if (entry == module) {
           object.splice(index, 1);
           console.log("[ignore]:".yellow + " module " + module + " is no longer ignoring " + person + '.');
         }
       });
     }
-    ignore.core.write_db("ignore");
+    core.write_db("ignore");
   }
 };
 
 module.exports = {
-  load: function(core) {
-    ignore.core = core;
+  load: function(_core) {
+    core = _core;
   },
 
   unload: function() {
     delete ignore;
+    delete core;
   },
 
   commands: ignore.commands,

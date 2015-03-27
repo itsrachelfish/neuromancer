@@ -1,3 +1,5 @@
+var core;
+
 var help = {
   // list because commands is a command
   list: ["help", "commands"],
@@ -6,28 +8,32 @@ var help = {
   help: function(from, to, message) {
     var doc = require("../../doc/" + message + ".js");
     for (var key in doc) {
-      help.core.send("say", from, from, key + ': ' + doc[key]);
+      core.say(from, from, key + ': ' + doc[key]);
     }
   },
 
   commands: function(from, to, message) {
-    help.core.send("say", from, from, "Commands: ");
+    core.say(from, from, "<Module Name>: <Commands>");
 
-    Object.keys(help.core.loaded).forEach(function(entry, index, object) {
-      help.core.send("say", from, from, entry + ": " + help.core.loaded[entry].commands);
+    Object.keys(core.loaded).forEach(function(entry, index, object) {
+      if (core.loaded[entry].commands) {
+        var modName = entry.split('/');
+        core.say(from, from, modName[1] + ": " + core.loaded[entry].commands.join(' '));
+      }
     });
-    
-    help.core.send("say", from, from, "For detailed help on a module, do " + help.core.config.prefix + "help <module>, without the module type");
+
+    core.say(from, from, "For detailed help on a module, do " + core.config.prefix + "help <module>");
   }
 };
 
 module.exports = {
-  load: function(core) {
-    help.core = core;
+  load: function(_core) {
+    core = _core;
   },
 
   unload: function() {
     delete help;
+    delete core;
   },
 
   commands: help.list,

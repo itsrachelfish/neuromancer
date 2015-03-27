@@ -2,10 +2,10 @@ var cow = require("cowsay");
 var parseArgs = require("minimist");
 var fs = require("fs");
 var path = require("path");
+var core;
 
 var cowsay = {
   commands: ["cowsay"],
-  core: false,
 
   // stuff for the timeout
   timeout: false,
@@ -31,7 +31,7 @@ var cowsay = {
       if (timeout) {
         return;
       }
-      cowsay.core.send("say", from, to, cow.say({
+      cowsay.core.say(from, to, cow.say({
         text: args._.join(' '),
         e: args.e,
         f: args.f,
@@ -62,12 +62,17 @@ var cowsay = {
 };
 
 module.exports = {
-  load: function(core) {
-    cowsay.core = core;
+  load: function(_core) {
+    core = _core;
   },
 
   unload: function() {
     delete cowsay;
+    delete core;
+    delete cow;
+    delete parseArgs;
+    delete fs;
+    delete path;
   },
 
   commands: cowsay.commands,
