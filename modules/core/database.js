@@ -4,7 +4,7 @@ var database = {
   core: false,
 
   read_db: function(db, callback) {
-    var path = "./db/" + db + ".db";
+    var path = "./db/" + db + ".json";
     fs.readFile(path, function(err, data) {
       if (err) {
         console.error("[ERROR][db]: ".red + db + " database could not be read.");
@@ -14,7 +14,7 @@ var database = {
         database.write_db(db);
         console.error("[ERROR][db]: ".red + "the database has been init'ed");
         if (callback) {
-          callback();
+          callback(true);
         }
         return;
       }
@@ -27,27 +27,27 @@ var database = {
         console.log("[db]: ".blue + db + " database was empty, init'ing");
       }
       if (callback) {
-        callback();
+        callback(false);
       }
     });
   },
 
   write_db: function(db, callback) {
-    var path = "./db/" + db + ".db";
+    var path = "./db/" + db + ".json";
     fs.writeFile(path, JSON.stringify(database.core.databases[db]), "utf8", function(err) {
       if (err) {
         console.error("[ERROR][db]: ".red + db + " database could not be written.");
         console.error(path);
         console.error(err);
         if (callback) {
-          callback();
+          callback(true);
         }
         return;
       }
       console.log("[db]: ".blue + db + " database saved.");
     });
     if (callback) {
-      callback();
+      callback(false);
     }
   },
 };
@@ -55,13 +55,13 @@ var database = {
 module.exports = {
   load: function(core) {
     database.core = core;
-    database.core.read_db = database.read_db;
-    database.core.write_db = database.write_db;
+    database.core.mread_db = database.read_db;
+    database.core.mwrite_db = database.write_db;
   },
 
   unload: function() {
-    database.core.read_db = false;
-    database.core.write_db = false;
+    database.core.mread_db = false;
+    database.core.mwrite_db = false;
     delete database;
   },
 };

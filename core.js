@@ -5,7 +5,7 @@ var request = require("request");
 
 var core = {
   client: false,
-  
+
   loaded: {},
   databases: {},
   logs: {},
@@ -14,25 +14,125 @@ var core = {
   server: require("./etc/server.js"),
 
   // all of these are handled by core modules
-  read_db: false,
-  write_db: false,
-  read_log: false,
-  write_log: false,
-  send: false,
-  say: false,
-  recieve: false,
-  err: false,
+  mread_db: false,
+  mwrite_db: false,
+  mread_log: false,
+  mwrite_log: false,
+  mrecieve: false,
+  msend: false,
+  msay: false,
+  merr: false,
+  
+  // and these are wrappers to those functions so things can fail gracefully if the respective core module is unloaded or broken
+  read_db: function(subdb, callback) {
+    if(core.mread_db) {
+      core.mread_db(subdb, callback);
+    } else {
+      core.err({
+        type: "core",
+        title: "db module is unloaded,",
+        text: subdb,
+        info: false,
+      });
+      if (callback) {
+        callback(true);
+      }
+    }
+  },
 
-  recieve_wrapper: function(module_id, from, to, text, details) {
-    if (core.recieve) {
-      core.recieve(module_id, from, to, text, details);
+  write_db: function(subdb, callback) {
+    if(core.mwrite_db) {
+      core.mwrite_db(subdb, callback);
+    } else {
+      core.err({
+        type: "core",
+        title: "db module is unloaded,",
+        text: subdb,
+        info: false,
+      });
+      if (callback) {
+        callback(true);
+      }
+    }
+  },
+
+  read_log: function(sublog, callback) {
+    if (core.mread_log) {
+      core.mread_log(sublog, callback);
+    } else {
+      core.err({
+        type: "core",
+        title: "logs module is unloaded,",
+        text: sublog,
+        info: false,
+      });
+      if (callback) {
+        callback(true);
+      }
+    }
+  },
+
+  write_log: function(sublog, callback) {
+    if (core.mwrite_log) {
+      core.mwrite_log(sublog, callback);
+    } else {
+      core.err({
+        type: "core",
+        title: "logs module is unloaded,",
+        text: sublog,
+        info: false,
+      });
+      if (callback) {
+        callback(true);
+      }
+    }
+  },
+
+  recieve: function(module_id, from, to, text, details) {
+    if (core.mrecieve) {
+      core.mrecieve(module_id, from, to, text, details);
     } else {
       core.err({
         type: "core",
         title: "messages module is unloaded.",
-        text: false,
+        text: message,
+        info: details,
+      });
+    }
+  },
+
+  send: function(type, from, to, message) {
+    if (core.msend) {
+      core.msend(type, from, to, message);
+    } else {
+      core.err({
+        type: "core",
+        title: "messages module is unloaded.",
+        text: message,
         info: false,
       });
+    }
+  },
+
+  say: function(from, to, message) {
+    if (core.msay) {
+      core.msay(from, to, message);
+    } else {
+      core.err({
+        type: "core",
+        title: "messages module is unloaded.",
+        text: message,
+        info: false,
+      });
+    }
+  },
+
+  err: function(error) {
+    if (core.merr) {
+      core.merr(error);
+    } else {
+      console.error("error module is not loaded");
+      console.error(JSON.stringify(error));
     }
   },
 
@@ -52,12 +152,15 @@ var core = {
       });
     });
 
-    modules.main.forEach(function(module) {
-      core.load({
-        type: "main",
-        name: module,
+    // sleep for a few seconds to allow the core modules to fully load before loading secondary modules, this has caused problems in the past
+    setTimeout(function() {
+      modules.main.forEach(function(module) {
+        core.load({
+          type: "main",
+          name: module,
+        });
       });
-    });
+    }, 1000);
   },
 
   load: function(module, callback) {
@@ -100,7 +203,7 @@ var core = {
 
         // does it have any commands?
         if (core.loaded[module_id].commands) {
-          var reciever = core.recieve_wrapper.bind(this, module_id);
+          var reciever = core.recieve.bind(this, module_id);
           //var reciever = core.recieve.bind(this, module_id);
           core.listeners[module_id] = reciever;
           core.client.addListener("message", core.listeners[module_id]);
@@ -189,5 +292,6 @@ var core = {
 };
 
 module.exports = {
-  init: core.init
+  init: core.init,
+  err: core.err,
 }

@@ -1,4 +1,5 @@
 var request = require("request");
+var debug = true;
 var core;
 
 var search = {
@@ -7,6 +8,10 @@ var search = {
   google: function(from, to, message) {
     request("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=1&safe=oss&q=" + message, function(e, r, body) {
       if (body) {
+        if (debug) {
+          console.log(JSON.stringify(JSON.parse(body)));
+          console.log(JSON.stringify(JSON.parse(body).responseData.results[0].unescapedUrl));
+        }
         core.say(from, to, from + ": " + JSON.parse(body).responseData.results[0].unescapedUrl);
       }
     });

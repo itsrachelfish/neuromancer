@@ -28,11 +28,11 @@ var err = {
 module.exports = {
   load: function(core) {
     err.core = core;
-    err.core.err = err.err;
+    err.core.merr = err.err;
   },
 
   unload: function() {
-    err.core.err = false;
+    err.core.merr = false;
     delete err;
   },
   log: true,
