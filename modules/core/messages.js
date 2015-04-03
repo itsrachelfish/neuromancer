@@ -59,14 +59,15 @@ var messages = {
 module.exports = {
   load: function(core) {
     messages.core = core;
-    messages.core.send = messages.send;
-    messages.core.recieve = messages.recieve;
-    messages.core.say = messages.say;
+    messages.core.msend = messages.send;
+    messages.core.mrecieve = messages.recieve;
+    messages.core.msay = messages.say;
   },
 
   unload: function() {
-    messages.core.send = false;
-    messages.core.recieve = false;
+    messages.core.msend = false;
+    messages.core.mrecieve = false;
+    messages.core.msay = false;
     delete messages;
   },
 };

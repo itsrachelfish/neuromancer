@@ -25,7 +25,7 @@ var prompt = {
 
   // TODO: improve this/move into core
   parse_module: function(module) {
-    module = module.split('/');
+    module = module.split('.');
     if (module[0] == 'core')
       return {
         type: 'core',

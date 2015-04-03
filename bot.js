@@ -23,12 +23,16 @@ core.init(client);
 
 // this is the best place to listen for uncaught errors
 process.on("uncaughtException", function(err) {
-  console.log("[error][global]".red);
-  console.log(err);
+  core.err({
+    type: "uncaughtException",
+    title: "uncaughtException",
+    text: err,
+    info: false,
+  })
 });
 
 client.on("pm", function(from, text, mes) {
   console.log("[pm]: ".yellow + from + ": " + text);
-})
+});
 
 console.log("[core]:".green + " loading...");
