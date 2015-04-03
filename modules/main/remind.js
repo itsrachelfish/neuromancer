@@ -74,6 +74,11 @@ var remind = {
       });
       return;
     } else { // if it's not a listing or deletion, it must be a schedule request
+      // thanks to stackoverflow user kennytm for this uid generation method, it's so clean
+      var uid = ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4);
+      if (debug) {
+	console.log("uid: " + uid);
+      }
       if (args.r) { // if it's recurring
         var rule = new schedule.RecurrenceRule();
         // process the args into the recurrence rule
@@ -141,12 +146,6 @@ var remind = {
         }
       }
 
-      // thanks to stackoverflow user kennytm for this uid generation method, it's so clean
-      var uid = ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4);
-      if (debug) {
-        console.log("uid: " + uid);
-      }
-      
       remind.addReminder(reminder);
       return;
     }
