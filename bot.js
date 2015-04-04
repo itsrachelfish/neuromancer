@@ -28,7 +28,7 @@ process.on("uncaughtException", function(err) {
     title: "uncaughtException",
     text: err,
     info: false,
-  })
+  });
 });
 
 client.on("pm", function(from, text, mes) {
