@@ -1,15 +1,15 @@
 module.exports = {
   // server to connect to
   //server: 'irc.primesli.me',
-  //server: 'irc.wetfish.net',
-  server: '192.168.0.1',
+  server: 'irc.wetfish.net',
+  //server: '192.168.0.1',
   
   // port to use
-  //port: 6697,
-  port: 6667,
+  port: 6697,
+  //port: 6667,
   
   // ssl?
-  //secure: true,
+  secure: true,
   
   // self signed ssl cert?
   //selfSigned: false,
