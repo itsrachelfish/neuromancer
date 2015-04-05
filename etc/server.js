@@ -13,7 +13,7 @@ module.exports = {
   
   // self signed ssl cert?
   //selfSigned: false,
-  //selfSigned: true,
+  selfSigned: true,
   
   // the bot's nick, username, and realname
   name: 'Neuromancer',
