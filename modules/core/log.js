@@ -2,6 +2,7 @@ var fs = require("fs");
 
 var log = {
   core: false,
+  commands: ["show_log"],
 
   read_log: function(sublog, callback) {
     var path = "./log/" + sublog + ".json";
@@ -51,6 +52,14 @@ var log = {
       callback(false);
     }
   },
+  
+  show_log: function(from, to, message) {
+    if (message) {
+      log.core.say(from, to, JSON.stringify(log.core.logs[message]));
+    } else {
+      log.core.say(from, to, JSON.stringify(log.core.logs));
+    }
+  },
 };
 
 module.exports = {
@@ -64,5 +73,12 @@ module.exports = {
     log.core.mread_log = false;
     log.core.mwrite_log = false;
     delete log;
-  }
-}
+  },
+  
+  commands: log.commands,
+  run: function(command, from, to, message) {
+    log[command](from, to, message);
+  },
+  admin: true,
+};
+

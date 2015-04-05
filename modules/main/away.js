@@ -3,16 +3,20 @@ var core;
 
 var away = {
   commands: ["away", "rmaway"],
-  
+
   // vars needed for the timeout to work
   timeout: false,
   wait: false,
-  
+
   // away doesn't use a persistant database
   aways: {},
 
   away: function(from, to, message) {
-    away.aways[from.toLowerCase()] = message;
+    if (!message) {
+      away.aways[from.toLowerCase()] = "No reason specified";
+    } else {
+      away.aways[from.toLowerCase()] = message;
+    }
     console.log("[away]: ".yellow + from + " has gone away [" + message + ']');
   },
 
@@ -42,7 +46,7 @@ var away = {
           return;
         }
         var target = message.split(' ')[0].replace(/[:,]/, '');
-        var to_say = target + " is currently away " + (away.aways[target.toLowerCase()] ? "[" + color.blue(away.aways[target.toLowerCase()]) + "]" : color.blue("No reason specified"));
+        var to_say = target + " is currently away [" + color.blue(away.aways[target.toLowerCase()]) + ']';
         core.say(from, to, to_say);
         console.log("[away]: ".yellow + from + ' attempted to contact ' + message.split(' ')[0].replace(':', ''));
       }
@@ -65,7 +69,7 @@ var away = {
       away.wait = false;
       away.timeout = false;
     }, timeout * 60 * 1000);
-  }
+  },
 };
 
 module.exports = {
@@ -85,4 +89,3 @@ module.exports = {
     away[command](from, to, message);
   }
 }
-

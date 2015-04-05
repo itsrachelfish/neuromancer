@@ -1,7 +1,7 @@
 var core;
 
 var ignore = {
-  commands: ["ignore", "unignore"],
+  commands: ["ignore", "unignore", "listignores"],
   core: false,
 
   ignore: function(from, to, message) {
@@ -44,7 +44,15 @@ var ignore = {
       });
     }
     core.write_db("ignore");
-  }
+  },
+  
+  listignores: function(from, to, message) {
+    if (message) {
+      core.say(from, to, JSON.stringify(core.databases.ignore[message]));
+    } else {
+      core.say(from, to, JSON.stringify(core.databases.ignore));
+    }
+  },
 };
 
 module.exports = {

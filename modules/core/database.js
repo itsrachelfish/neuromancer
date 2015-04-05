@@ -2,6 +2,7 @@ var fs = require("fs");
 
 var database = {
   core: false,
+  commands: ["show_db"],
 
   read_db: function(db, callback) {
     var path = "./db/" + db + ".json";
@@ -50,6 +51,14 @@ var database = {
       callback(false);
     }
   },
+
+  show_db: function(from, to, message) {
+    if (message) {
+      database.core.say(from, to, JSON.stringify(database.core.databases[message]));
+    } else {
+      database.core.say(from, to, JSON.stringify(database.core.databases));
+    }
+  },
 };
 
 module.exports = {
@@ -64,4 +73,10 @@ module.exports = {
     database.core.mwrite_db = false;
     delete database;
   },
+
+  commands: database.commands,
+  run: function(command, from, to, message) {
+    database[command](from, to, message);
+  },
+  admin: true,
 };
