@@ -77,7 +77,7 @@ var remind = {
       // thanks to stackoverflow user kennytm for this uid generation method, it's so clean
       var uid = ("0000" + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4);
       if (debug) {
-	console.log("uid: " + uid);
+        console.log("uid: " + uid);
       }
       if (args.r) { // if it's recurring
         var rule = new schedule.RecurrenceRule();
@@ -93,7 +93,7 @@ var remind = {
           rule.minute = 0;
         }
         var then = false;
-        
+
         var reminder = {
           from: from,
           channel: to,
@@ -128,7 +128,7 @@ var remind = {
         then.setMinutes(minutes);
         then.setSeconds(seconds);
         var rule = false;
-        
+
         var reminder = {
           from: from,
           channel: to,
