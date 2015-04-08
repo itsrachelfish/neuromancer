@@ -24,11 +24,11 @@ var url = {
 
   listener: function(from, to, message) {
     // listen for links
-    if (message.search(/\bhttps?:\/\/.*?\..*?\b/) !== -1) {
+    if (message.search(/\bhttps?:\/\/.*?\..*?\b/) != -1) {
       var ignore = false
       // if we're ignoring the person posting the link
-      if (url.core.databases.ignore[from.toLowerCase()]) {
-        url.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
+      if (core.databases.ignore[from.toLowerCase()]) {
+        core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
           if (entry == "url") {
             console.log("[ignore]:".yellow + " ignored link '" + message.join(' ') + "' from '" + from + "'");
             ignore = true;
