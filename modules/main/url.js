@@ -1,6 +1,7 @@
 var color = require("irc-colors");
 var request = require("request");
 var urllib = require("url");
+var debug = true;
 var core;
 
 var url = {
@@ -25,6 +26,9 @@ var url = {
   listener: function(from, to, message) {
     // listen for links
     if (message.search(/\bhttps?:\/\/.*?\..*?\b/) != -1) {
+      if (debug) {
+        console.log(message);
+      }
       var ignore = false
       // if we're ignoring the person posting the link
       if (core.databases.ignore[from.toLowerCase()]) {
@@ -44,6 +48,9 @@ var url = {
         return
       }
       var link = '' + message.match(/http\S*/)
+      if (debug) {
+        console.log("url: " + link);
+      }
       var ua = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:26.0) Gecko/20100101 Firefox/26.0'
       }
@@ -81,6 +88,9 @@ module.exports = {
   unload: function() {
     delete url;
     delete core;
+    delete request;
+    delete urllib;
+    delete color;
   },
 
   listener: url.listener,
