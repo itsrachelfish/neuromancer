@@ -75,7 +75,7 @@ var url = {
             })
             title = title.replace(/(\r)|(\n)/g, '').replace(/\s+/g, ' ')
             title = title.slice(0, 80).replace(/(^\s)|(\s$)/g, '')
-            url.core.send("say", from, to, '[\u000310 ' + title + ' \u000f] -\u000304 ' + urllib.parse(link).host)
+            core.say(from, to, '[\u000310 ' + title + ' \u000f] -\u000304 ' + urllib.parse(link).host)
           } catch (err) {
             if (debug) {
               console.log(err);
