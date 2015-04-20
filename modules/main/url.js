@@ -1,7 +1,7 @@
 var color = require("irc-colors");
 var request = require("request");
 var urllib = require("url");
-var debug = true;
+var debug = false;
 var core;
 
 var url = {
