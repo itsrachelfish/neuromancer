@@ -1,16 +1,17 @@
+var core = false;
+
 var messages = {
-  core: false,
   client: false,
 
   send: function(type, from, to, message) {
     //determine if it's a channel message or a privmessage
     if (to.charAt(0) == '#') {
-      messages.core.client[type](to, message);
+      core.client[type](to, message);
     } else {
-      messages.core.client[type](from, message);
+      core.client[type](from, message);
     }
   },
-  
+
   say: function(from, to, message) {
     messages.send("say", from, to, message);
   },
@@ -18,20 +19,20 @@ var messages = {
   recieve: function(module_id, from, to, text, details) {
     var userhost = details.user + '@' + details.host;
     // if the command is prefixed with our command prefix
-    if (text.charAt(0) == messages.core.config.prefix) {
+    if (text.charAt(0) == core.config.prefix) {
       text = text.substr(1);
       text = text.split(' ');
 
       var command = text.shift();
 
       // If the module is loaded and the command is valid
-      if (typeof messages.core.loaded[module_id] != "undefined" && messages.core.loaded[module_id].commands.indexOf(command) > -1) {
+      if (typeof core.loaded[module_id] != "undefined" && core.loaded[module_id].commands.indexOf(command) > -1) {
 
         // if the ignore module is loaded
-        if (messages.core.loaded["main/ignore"]) {
+        if (core.loaded["main/ignore"]) {
           var ignore = false;
-          if (messages.core.databases.ignore[from.toLowerCase()]) {
-            messages.core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
+          if (core.databases.ignore[from.toLowerCase()]) {
+            core.databases.ignore[from.toLowerCase()].forEach(function(entry, index, object) {
               if (entry == module_id.split('/')[1]) {
                 console.log("[ignore]:".yellow + " ignored command '" + command + ' ' + text.join(' ') + "' from '" + from + "'");
                 ignore = true;
@@ -44,30 +45,31 @@ var messages = {
         }
 
         // if it's an admin-only module and the user is a non-admin
-        if (messages.core.loaded[module_id].admin && userhost != messages.core.config.owner) {
+        if (core.loaded[module_id].admin && userhost != core.config.owner) {
           return;
         }
 
         // run the command
         text = text.join(' ');
-        messages.core.loaded[module_id].run(command, from, to, text);
+        core.loaded[module_id].run(command, from, to, text);
       }
     }
   },
 };
 
 module.exports = {
-  load: function(core) {
-    messages.core = core;
-    messages.core.msend = messages.send;
-    messages.core.mrecieve = messages.recieve;
-    messages.core.msay = messages.say;
+  load: function(_core) {
+    core = _core;
+    core.msend = messages.send;
+    core.mrecieve = messages.recieve;
+    core.msay = messages.say;
   },
 
   unload: function() {
-    messages.core.msend = false;
-    messages.core.mrecieve = false;
-    messages.core.msay = false;
+    core.msend = false;
+    core.mrecieve = false;
+    core.msay = false;
     delete messages;
+    delete core;
   },
 };
