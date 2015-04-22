@@ -6,10 +6,6 @@ var calc = {
   commands: ["c"],
 
   c: function(from, to, message) {
-    mathjs.config({
-      matrix: "matrix"
-    });
-    
     var parser = mathjs.parser();
 
     if (message.indexOf('!') + message.indexOf('factorial') != -2) {
@@ -31,17 +27,20 @@ var calc = {
 module.exports = {
   load: function(_core) {
     core = _core;
+    mathjs.config({
+      matrix: "matrix"
+    });
   },
-  
+
   unload: function() {
     delete calc;
     delete core;
     delete color;
     delete mathjs;
   },
-  
+
   commands: calc.commands,
   run: function(command, from, to, message) {
     calc[command](from, to, message);
-  }
+  },
 };
