@@ -13,6 +13,9 @@ var weather = {
 
   //TODO: clean this up and make it more readable
   worker: function(from, to, message, forecast) {
+    if (debug) {
+      console.log(forecast + ' ' + message);
+    }
     var args = parseArgs(message.split(' '), opts = {
       boolean: ['c', 'i'],
     });
