@@ -92,7 +92,7 @@ var weather = {
           core.say(from, to, 'Forecast for \u000310' + (core.databases.weather[from.toLowerCase()].locate.line2 || core.databases.weather[from.toLowerCase()].locate.country || core.databases.weather[from.toLowerCase()].locate.name) + '\u000f (\u000311' + daily.city.country + '\u000f)');
 
           daily.list.forEach(function(day, index) {
-            log(JSON.stringify(day))
+            if (debug) {console.log(JSON.stringify(day))}
             var to_say = (new Date(day.dt * 1000).toString().slice(0, 3)) + ': \u000304' + day.temp.min.toFixed(1) + '°' + locale[1] + '\u000f - \u000305' + day.temp.max.toFixed(1) + '°' + locale[1] + ' \u000307' + day.humidity + '% humidity \u000311' + day.speed.toFixed(1) + locale[2] + ' wind\u000f (\u000306' + day.weather[0].main + '\u000f)';
 
             core.say(from, to, to_say);
