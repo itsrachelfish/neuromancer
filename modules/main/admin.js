@@ -3,7 +3,7 @@ var core;
 
 var admin = {
   commands: ["say", "wflogin", "join", "part", "ctcp", "load", "unload", "reload"],
-  
+
   // TODO: improve this/move into core
   parse_module: function(module) {
     module = module.split('.');

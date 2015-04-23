@@ -14,10 +14,11 @@ var away = {
   away: function(from, to, message) {
     if (!message) {
       away.aways[from.toLowerCase()] = "No reason specified";
+      console.log("[away]: ".yellow + from + " has gone away [No reason specified]");
     } else {
       away.aways[from.toLowerCase()] = message;
+      console.log("[away]: ".yellow + from + " has gone away [" + message + ']');
     }
-    console.log("[away]: ".yellow + from + " has gone away [" + message + ']');
   },
 
   // allows an admin to delete a spammy away
@@ -46,7 +47,13 @@ var away = {
           return;
         }
         var target = message.split(' ')[0].replace(/[:,]/, '');
-        var to_say = target + " is currently away [" + color.blue(away.aways[target.toLowerCase()]) + ']';
+
+        if (away.aways[target.toLowerCase()] == "No reason specified") {
+          var to_say = target + " is currently away";
+        } else {
+          var to_say = target + " is currently away [" + color.blue(away.aways[target.toLowerCase()]) + ']';
+        }
+        
         core.say(from, to, to_say);
         console.log("[away]: ".yellow + from + ' attempted to contact ' + message.split(' ')[0].replace(':', ''));
       }
