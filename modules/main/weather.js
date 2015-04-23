@@ -76,7 +76,7 @@ var weather = {
       });
     }
 
-    if (!core.databases.weather[from.toLowerCase()].locate) {
+    if (!core.databases.weather[from.toLowerCase()]) {
       core.say(from, to, from + ": I need a location");
       return;
     }
