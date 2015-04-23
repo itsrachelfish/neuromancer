@@ -20,6 +20,10 @@ var weather = {
       boolean: ['c', 'i'],
     });
 
+    if (!core.databases.weather[from.toLowerCase()]) {
+      core.databases.weather[from.toLowerCase()] = {};
+    }
+
     // if it's a forecast then strip the -n from the message now so it doesn't mess with other stuff
     if (forecast) {
       var days = message.match(/-[1-7]/) ? message.match(/-[1-7]/)[0].slice(1) : '3';
@@ -36,10 +40,19 @@ var weather = {
     if (args.c) {
       var locale = ['metric', 'C', 'm/s'];
       core.databases.weather[from.toLowerCase()].locale = ['metric', 'C', 'm/s'];
-      console.log(core.databases.weather[from.toLowerCase()]);
+      if (debug) {
+        console.log(core.databases.weather[from.toLowerCase()]);
+      }
     } else if (args.i) {
       core.databases.weather[from.toLowerCase()].locale = ['imperial', 'F', 'mph'];
-      console.log(core.databases.weather[from.toLowerCase()]);
+      if (debug) {
+        console.log(core.databases.weather[from.toLowerCase()]);
+      }
+    } else {
+      core.databases.weather[from.toLowerCase()].locale = ['imperial', 'F', 'mph'];
+      if (debug) {
+        console.log(core.databases.weather[from.toLowerCase()]);
+      }
     }
 
     if (args._[0]) { // if they're setting a new location
@@ -58,9 +71,14 @@ var weather = {
           core.databases.weather[from.toLowerCase()].locate = locate;
           core.write_db("weather");
         } else {
-          core.say(from, to, "I had a problem setting your location, please try again in a minute (location api call failed)");
+          core.say(from, to, from + ": I had a problem setting your location, please try again in a minute (location api call failed)");
         }
       });
+    }
+
+    if (!core.databases.weather[from.toLowerCase()].locate) {
+      core.say(from, to, from + ": I need a location");
+      return;
     }
 
     if (days) { // if it's a forecast
@@ -80,7 +98,7 @@ var weather = {
             core.say(from, to, to_say);
           });
         } else {
-          core.say(from, to, "I had a problem fetching weather, please try again in a minute (weather api call failed)");
+          core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute (weather api call failed)");
         }
       });
     } else {
@@ -95,7 +113,7 @@ var weather = {
 
           core.say(from, to, to_say);
         } else {
-          core.say(from, to, "I had a problem fetching weather, please try again in a minute (weather api call failed)");
+          core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute (weather api call failed)");
         }
       });
     }
