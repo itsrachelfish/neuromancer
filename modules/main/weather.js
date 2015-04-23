@@ -82,7 +82,7 @@ var weather = {
     }
 
     if (days) { // if it's a forecast
-      request(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + locale[0] + '&lat=' + core.databases.weather[from.toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[from.toLowerCase()].locate.longitude, function(e, r, body) {
+	request(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + core.databases.weather[from.toLowerCase()].locale[0] + '&lat=' + core.databases.weather[from.toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[from.toLowerCase()].locate.longitude, function(e, r, body) {
         if (body) {
           if (debug) {
             console.log(body);
