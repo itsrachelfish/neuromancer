@@ -60,7 +60,7 @@ var weather = {
       if (debug) {
         console.log(args._.join(' '));
       }
-      request(weather.locAPI2 + args._.join('%20') + "%22", function(e, r, body) {
+      request(weather.locAPI + args._.join('%20') + "%22", function(e, r, body) {
         if (body) {
           if (debug) {
             console.log(body);
