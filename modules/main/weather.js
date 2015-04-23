@@ -64,7 +64,7 @@ var weather = {
         core.say(from, to, to_say);
       });
     }
-  }
+  },
 
   weather: function(from, to, message) {
     weather.worker(from, to, message, false);
