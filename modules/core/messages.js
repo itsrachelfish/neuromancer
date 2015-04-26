@@ -19,7 +19,7 @@ var messages = {
   recieve: function(module_id, from, to, text, details) {
     var userhost = details.user + '@' + details.host;
     // if the command is prefixed with our command prefix
-    if (text.slice(0, core.config.prefix.length) == core.config.prefix) {
+    if (text.slice(0, core.config.prefix.length) === core.config.prefix) {
       var command = text.slice(core.config.prefx.length).split(' ')[0];
       text = text.slice(core.config.prefix.length).split(' ').slice(1).join(' ');
 
