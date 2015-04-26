@@ -1,4 +1,4 @@
-0;115;0c0;115;0cvar core = false;
+var core = false;
 
 var messages = {
   client: false,
