@@ -19,11 +19,9 @@ var messages = {
   recieve: function(module_id, from, to, text, details) {
     var userhost = details.user + '@' + details.host;
     // if the command is prefixed with our command prefix
-    if (text.charAt(0) == core.config.prefix) {
-      text = text.substr(1);
-      text = text.split(' ');
-
-      var command = text.shift();
+    if (text.slice(0, core.config.prefix.length) == core.config.prefix) {
+      var command = text.slice(core.config.prefx.length).split(' ')[0];
+      text = text.slice(core.config.prefix.length).split(' ').slice(1).join(' ');
 
       // If the module is loaded and the command is valid
       if (typeof core.loaded[module_id] != "undefined" && core.loaded[module_id].commands.indexOf(command) > -1) {
