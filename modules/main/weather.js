@@ -87,7 +87,11 @@ var weather = {
           if (debug) {
             console.log(body);
           }
-          var daily = JSON.parse(body);
+          try {
+            var daily = JSON.parse(body);
+          } catch (e) {
+            console.log("api error");
+          }
           // this is gross I know
           core.say(from, to, 'Forecast for \u000310' + (core.databases.weather[from.toLowerCase()].locate.line2 || core.databases.weather[from.toLowerCase()].locate.country || core.databases.weather[from.toLowerCase()].locate.name) + '\u000f (\u000311' + daily.city.country + '\u000f)');
 
@@ -108,7 +112,11 @@ var weather = {
           if (debug) {
             console.log(body);
           }
-          var weath = JSON.parse(body);
+          try {
+            var weath = JSON.parse(body);
+          } catch(e) {
+            console.log("api error");
+          }
           var to_say = from + ': [\u000310' + (core.databases.weather[from.toLowerCase()].locate.line2 || core.databases.weather[from.toLowerCase()].locate.country || core.databases.weather[from.toLowerCase()].locate.name) + '\u000f (\u000311' + weath.sys.country + '\u000f)] [\u000304' + weath.main.temp + '°' + core.databases.weather[from.toLowerCase()].locale[1] + '\u000f (\u000307' + weath.main.humidity + '% humidity\u000f)] [\u000311Wind: ' + weath.wind.speed + ' ' + core.databases.weather[from.toLowerCase()].locale[2] + ' at ' + weath.wind.deg + '°\u000f] [\u000306' + weath.weather[0].description.charAt(0).toUpperCase() + weath.weather[0].description.slice(1) + '\u000f]';
 
           core.say(from, to, to_say);

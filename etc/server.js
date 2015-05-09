@@ -1,7 +1,7 @@
 module.exports = {
   // server to connect to
   //server: 'irc.primesli.me',
-  server: 'irc.svchost.ca',
+  server: 'irc.wetfish.net',
   //server: '192.168.0.1',
 
   // port to use
