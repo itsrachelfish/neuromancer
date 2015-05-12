@@ -3,7 +3,7 @@ var request = require("request");
 var core;
 
 var youtube = {
-  listener: function(from, to, message) {  
+  listener: function(from, to, message) {
     if (message.match(/(youtube.com\/watch\S*v=|youtu.be\/)([\w-]+)/)) {
       var ignore = false
       // if we're ignoring them
@@ -18,19 +18,17 @@ var youtube = {
       if (ignore) {
         return;
       }
-      request('http://gdata.youtube.com/feeds/api/videos/' + message.match(/(youtube.com\/watch\S*v=|youtu.be\/)([\w-]+)/)[2] + '?v=2&alt=json', function(e, r, body) {
-        var data = JSON.parse(body)
-        var output = ''
-        output += '\u00031,00You\u00030,04Tube\u000f '
-        output += '[\u000310' + data.entry.title.$t + '\u000f] '
-        var t = data.entry.media$group.yt$duration.seconds
-        var time = [Math.floor(t / 3600), (Math.floor(t / 60) - (Math.floor(t / 3600) * 60)), t % 60]
-        if (!time[0]) time.shift()
-        output += '[' + time.reduce(function(a, b) {
-          return a + ':' + ('0' + b).substr(-2)
-        }) + '] '
-        output += (data.entry.yt$rating) ? '[\u000303' + data.entry.yt$rating.numLikes + '\u000f|\u000304' + data.entry.yt$rating.numDislikes + '\u000f]' : ''
-        core.say(from, to, output);
+
+      request('https://www.youtube.com/watch?v='+text.match(/(youtube.com\/watch\S*v=|youtu.be\/)([\w-]+)/)[2], function(e,r,b) {
+        var output = '\u00031,00You\u00030,04Tube\u000f '
+        var title = b.match(/eow-title.*/)[0].match(/title=.*/)[0].match(/\".*\"/)[0].replace(/\"/g,'')
+        output += '[\u000310' + title + '\u000f] '
+        var duration = b.match(/duration\".*content=.*/)[0].match(/content.*/)[0].match(/[A-Z0-9]+/)[0].replace('M',':').replace(/[A-Z]/g, '')
+        output += '[' + duration + '] '
+        var likes = b.match(/like-button.*watch-like.*/g)[0].match(/>[0-9,\.]+</)[0].replace(/[><,\.]/g,'')
+        var dislikes = b.match(/dislike-button.*watch-dislike.*/g)[0].match(/>[0-9,\.]+</)[0].replace(/[><,\.]/g,'')
+        output += '[\u000303' + likes + '\u000f|\u000304' + dislikes + '\u000f]'
+        core.say(from, to, output)
       });
     }
   }

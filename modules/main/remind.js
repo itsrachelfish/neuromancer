@@ -7,8 +7,6 @@ var config = require("../../etc/remind.js");
 var core;
 var debug = false;
 
-
-
 var remind = {
   commands: ["remind"],
 
@@ -147,6 +145,7 @@ var remind = {
       }
 
       remind.addReminder(reminder);
+      core.say(from, to, from + ": Okay, will remind at " + JSON.stringify(then));
       return;
     }
   },
