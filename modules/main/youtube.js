@@ -19,7 +19,7 @@ var youtube = {
         return;
       }
 
-      request('https://www.youtube.com/watch?v='+text.match(/(youtube.com\/watch\S*v=|youtu.be\/)([\w-]+)/)[2], function(e,r,b) {
+      request('https://www.youtube.com/watch?v='+message.match(/(youtube.com\/watch\S*v=|youtu.be\/)([\w-]+)/)[2], function(e,r,b) {
         var output = '\u00031,00You\u00030,04Tube\u000f '
         var title = b.match(/eow-title.*/)[0].match(/title=.*/)[0].match(/\".*\"/)[0].replace(/\"/g,'')
         output += '[\u000310' + title + '\u000f] '
