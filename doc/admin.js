@@ -6,5 +6,6 @@ module.exports = {
   ctcp: "<target> <type> <message> makes the bot send a ctcp message",
   load: "<type>.<name> makes the bot load the specified module",
   unload: "<type>.<name> makes the bot unload the specified module",
-  reload: "<type>.<name> makes the bot reload the specified module"
+  reload: "<type>.<name> makes the bot reload the specified module",
+  note: "these are all admin-only commands"
 }

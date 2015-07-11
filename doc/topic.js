@@ -7,4 +7,5 @@ module.exports = {
   append: "<opt: delimiter> <text> - appends sections to the topic",
   prepend: "<opt: delimiter> <text> - prepends sections to the topic",
   insert: "<index> <delimiter> <text> - inserts sections into the topic at <index>",
+  note: "all options are 0-indexed"
 }

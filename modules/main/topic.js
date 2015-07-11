@@ -18,7 +18,7 @@ var topic = {
 
     return sections;
   },
-  
+
   // Helper function to build topic strings
   build: function(sections) {
     var output = [];
@@ -30,7 +30,8 @@ var topic = {
 
       // Make sure there's still something left
       if (section.length)
-        output.push('[' + section + '\u000f]');
+      // if you want to remove the extra whitespace, remove the spaces below
+        output.push('[ ' + section + '\u000f ]');
     }
 
     return output.join(' ');
