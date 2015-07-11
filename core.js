@@ -22,8 +22,9 @@ var core = {
   msend: false,
   msay: false,
   merr: false,
-  
+
   // and these are wrappers to those functions so things can fail gracefully if the respective core module is unloaded or broken
+  // yay middlemaning
   read_db: function(subdb, callback) {
     if(core.mread_db) {
       core.mread_db(subdb, callback);
@@ -136,6 +137,7 @@ var core = {
     }
   },
 
+  // bootstrap function
   init: function(client) {
     if (!core.client) {
       core.client = client;
@@ -152,7 +154,7 @@ var core = {
       });
     });
 
-    // sleep for a few seconds to allow the core modules to fully load before loading secondary modules, this has caused problems in the past
+    // sleep for a few seconds to allow the core modules to fully load before loading secondary modules, this has caused problems in the past, woo async programming
     setTimeout(function() {
       modules.main.forEach(function(module) {
         core.load({
@@ -160,7 +162,7 @@ var core = {
           name: module,
         });
       });
-    }, 1000);
+    }, 2000);
   },
 
   load: function(module, callback) {

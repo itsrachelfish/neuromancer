@@ -18,7 +18,7 @@ module.exports = {
   // the bot's nick, username, and realname
   name: 'Neuromancer',
   userName: 'imaBot',
-  realName: 'Source available via http://github.com/edwin-pers/neuromancer',
+  realName: 'Source available at http://github.com/edwin-pers/neuromancer',
 
   // should we autorejoin/connect?
   autoRejoin: true,
