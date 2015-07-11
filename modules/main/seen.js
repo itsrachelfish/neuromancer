@@ -61,6 +61,7 @@ var seen = {
       d: Date.now(),
       l: message
     };
+    core.write_db("seen");
   }
 };
 

@@ -1,7 +1,7 @@
 var color = require("irc-colors");
 var request = require("request");
 var parseArgs = require("minimist");
-var debug = true;
+var debug = false;
 var core;
 
 var weather = {
@@ -29,7 +29,7 @@ var weather = {
       var days = message.match(/-[1-7]/) ? message.match(/-[1-7]/)[0].slice(1) : '3';
       message = message.replace(/ ?-[0-9]+ ?/, ' ');
     }
-    if (args.f) {
+    if (args.f) { // or if they did >weather -f <days>
       var days = args.f;
     }
 
@@ -37,18 +37,15 @@ var weather = {
       console.log("days: " + days);
     }
 
-    if (args.c) {
+    if (args.c) { // if they want to switch to metric results
       var locale = ['metric', 'C', 'm/s'];
       core.databases.weather[from.toLowerCase()].locale = ['metric', 'C', 'm/s'];
       if (debug) {
         console.log(core.databases.weather[from.toLowerCase()]);
       }
-    } else if (args.i) {
-      core.databases.weather[from.toLowerCase()].locale = ['imperial', 'F', 'mph'];
-      if (debug) {
-        console.log(core.databases.weather[from.toLowerCase()]);
-      }
-    } else {
+    }
+
+    if (args.i) { // or imperial
       core.databases.weather[from.toLowerCase()].locale = ['imperial', 'F', 'mph'];
       if (debug) {
         console.log(core.databases.weather[from.toLowerCase()]);
@@ -72,17 +69,69 @@ var weather = {
           core.write_db("weather");
         } else {
           core.say(from, to, from + ": I had a problem setting your location, please try again in a minute (location api call failed)");
+          return;
         }
       });
+      // woo avoiding race conditions the super-lazy way, ^c^v for the win
+      if (days) { // if it's a forecast
+        request(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + core.databases.weather[from.toLowerCase()].locale[0] + '&lat=' + core.databases.weather[from.toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[from.toLowerCase()].locate.longitude, function(e, r, body) {
+          if (body) {
+            if (debug) {
+              console.log(body);
+            }
+            try {
+              var daily = JSON.parse(body);
+            } catch (e) {
+              console.log("api error: " + e);
+              core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute (weather api call failed)");
+            }
+            // this is gross I know
+            core.say(from, to, 'Forecast for \u000310' + (core.databases.weather[from.toLowerCase()].locate.line2 || core.databases.weather[from.toLowerCase()].locate.country || core.databases.weather[from.toLowerCase()].locate.name) + '\u000f (\u000311' + daily.city.country + '\u000f)');
+
+            daily.list.forEach(function(day, index) {
+              if (debug) {
+                console.log(JSON.stringify(day))
+              }
+              var to_say = (new Date(day.dt * 1000).toString().slice(0, 3)) + ': \u000304' + day.temp.min.toFixed(1) + '°' + core.databases.weather[from.toLowerCase()].locale[1] + '\u000f - \u000305' + day.temp.max.toFixed(1) + '°' + core.databases.weather[from.toLowerCase()].locale[1] + ' \u000307' + day.humidity + '% humidity \u000311' + day.speed.toFixed(1) + core.databases.weather[from.toLowerCase()].locale[2] + ' wind\u000f (\u000306' + day.weather[0].main + '\u000f)';
+
+              core.say(from, to, to_say);
+            });
+          } else {
+            core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute (weather api call failed)");
+          }
+        });
+      } else {
+        // this is even worse
+        request(weather.weathAPI + 'weather?units=' + core.databases.weather[from.toLowerCase()].locale[0] + '&lat=' + core.databases.weather[from.toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[from.toLowerCase()].locate.longitude, function(e, r, body) {
+          if (body) {
+            if (debug) {
+              console.log(body);
+            }
+            try {
+              var weath = JSON.parse(body);
+            } catch (e) {
+              console.log("api error: " + e);
+              core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute (weather api call failed)");
+            }
+            var to_say = from + ': [\u000310' + (core.databases.weather[from.toLowerCase()].locate.line2 || core.databases.weather[from.toLowerCase()].locate.country || core.databases.weather[from.toLowerCase()].locate.name) + '\u000f (\u000311' + weath.sys.country + '\u000f)] [\u000304' + weath.main.temp + '°' + core.databases.weather[from.toLowerCase()].locale[1] + '\u000f (\u000307' + weath.main.humidity + '% humidity\u000f)] [\u000311Wind: ' + weath.wind.speed + ' ' + core.databases.weather[from.toLowerCase()].locale[2] + ' at ' + weath.wind.deg + '°\u000f] [\u000306' + weath.weather[0].description.charAt(0).toUpperCase() + weath.weather[0].description.slice(1) + '\u000f]';
+
+            core.say(from, to, to_say);
+          } else {
+            core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute (weather api call failed)");
+          }
+        });
+      }
+      return;
     }
 
-    if (!core.databases.weather[from.toLowerCase()]) {
+    // this is really not the best way to do this but w/e
+    if (!core.databases.weather[from.toLowerCase().locate] && !args._[0]) {
       core.say(from, to, from + ": I need a location");
       return;
     }
 
     if (days) { // if it's a forecast
-	request(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + core.databases.weather[from.toLowerCase()].locale[0] + '&lat=' + core.databases.weather[from.toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[from.toLowerCase()].locate.longitude, function(e, r, body) {
+      request(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + core.databases.weather[from.toLowerCase()].locale[0] + '&lat=' + core.databases.weather[from.toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[from.toLowerCase()].locate.longitude, function(e, r, body) {
         if (body) {
           if (debug) {
             console.log(body);
@@ -90,14 +139,17 @@ var weather = {
           try {
             var daily = JSON.parse(body);
           } catch (e) {
-            console.log("api error");
+            console.log("api error: " + e);
+            core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute (weather api call failed)");
           }
           // this is gross I know
           core.say(from, to, 'Forecast for \u000310' + (core.databases.weather[from.toLowerCase()].locate.line2 || core.databases.weather[from.toLowerCase()].locate.country || core.databases.weather[from.toLowerCase()].locate.name) + '\u000f (\u000311' + daily.city.country + '\u000f)');
 
           daily.list.forEach(function(day, index) {
-            if (debug) {console.log(JSON.stringify(day))}
-              var to_say = (new Date(day.dt * 1000).toString().slice(0, 3)) + ': \u000304' + day.temp.min.toFixed(1) + '°' + core.databases.weather[from.toLowerCase()].locale[1] + '\u000f - \u000305' + day.temp.max.toFixed(1) + '°' + core.databases.weather[from.toLowerCase()].locale[1] + ' \u000307' + day.humidity + '% humidity \u000311' + day.speed.toFixed(1) + core.databases.weather[from.toLowerCase()].locale[2] + ' wind\u000f (\u000306' + day.weather[0].main + '\u000f)';
+            if (debug) {
+              console.log(JSON.stringify(day))
+            }
+            var to_say = (new Date(day.dt * 1000).toString().slice(0, 3)) + ': \u000304' + day.temp.min.toFixed(1) + '°' + core.databases.weather[from.toLowerCase()].locale[1] + '\u000f - \u000305' + day.temp.max.toFixed(1) + '°' + core.databases.weather[from.toLowerCase()].locale[1] + ' \u000307' + day.humidity + '% humidity \u000311' + day.speed.toFixed(1) + core.databases.weather[from.toLowerCase()].locale[2] + ' wind\u000f (\u000306' + day.weather[0].main + '\u000f)';
 
             core.say(from, to, to_say);
           });
@@ -114,8 +166,9 @@ var weather = {
           }
           try {
             var weath = JSON.parse(body);
-          } catch(e) {
-            console.log("api error");
+          } catch (e) {
+            console.log("api error: " + e);
+            core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute (weather api call failed)");
           }
           var to_say = from + ': [\u000310' + (core.databases.weather[from.toLowerCase()].locate.line2 || core.databases.weather[from.toLowerCase()].locate.country || core.databases.weather[from.toLowerCase()].locate.name) + '\u000f (\u000311' + weath.sys.country + '\u000f)] [\u000304' + weath.main.temp + '°' + core.databases.weather[from.toLowerCase()].locale[1] + '\u000f (\u000307' + weath.main.humidity + '% humidity\u000f)] [\u000311Wind: ' + weath.wind.speed + ' ' + core.databases.weather[from.toLowerCase()].locale[2] + ' at ' + weath.wind.deg + '°\u000f] [\u000306' + weath.weather[0].description.charAt(0).toUpperCase() + weath.weather[0].description.slice(1) + '\u000f]';
 
