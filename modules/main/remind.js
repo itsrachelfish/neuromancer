@@ -23,7 +23,7 @@ var remind = {
       console.log("args: " + JSON.stringify(args));
     }
 
-    if (args.l) {
+    if (args.l) { // if they want a list
       core.say(from, from, "Reminders: ");
       core.databases.remind[from.toLowerCase()].forEach(function(entry, index, object) {
         var opts = [];
@@ -81,12 +81,12 @@ var remind = {
         var rule = new schedule.RecurrenceRule();
         // process the args into the recurrence rule
         if (args.h) {
-          rule.hour = Number(args.h) - Number(config.localTZ);
+          rule.hour = Number(args.h) + Number(config.localTZ);
         } else {
           rule.hour = 0;
         }
         if (args.m) {
-          rule.minute = args.m;
+          rule.minute = Number(args.m);
         } else {
           rule.minute = 0;
         }
@@ -113,13 +113,13 @@ var remind = {
         var minutes = now.getMinutes();
         var seconds = now.getSeconds();
         if (args.h) {
-          hour = hour + args.h;
+          hour = Number(hour + args.h);
         }
         if (args.m) {
-          minutes = minutes + args.m;
+          minutes = Number(minutes + args.m);
         }
         if (args.s) {
-          seconds = seconds + args.s;
+          seconds = Number(seconds + args.s);
         }
 
         then.setHours(hour);
@@ -145,7 +145,7 @@ var remind = {
       }
 
       remind.addReminder(reminder);
-      core.say(from, to, from + ": Okay, will remind at " + JSON.stringify(then));
+      core.say(from, from, "Okay, will remind at " + JSON.stringify(then) + " UTC");
       return;
     }
   },
@@ -201,7 +201,7 @@ var remind = {
     // if it's a force reminder
     if (reminder.args.f) {
       core.say(reminder.from, reminder.channel, reminder.from + ": " + color.yellow(reminder.args._.join(' ')));
-    } else {
+    } else { // or just a normal one
       if (!remind.pending[reminder.from.toLowerCase()]) {
         remind.pending[reminder.from.toLowerCase()] = [];
       }
@@ -277,7 +277,7 @@ var remind = {
               remind.runReminder(reminder);
             }.bind(null, entry));
           } else { // or not
-            var job = schedule.scheduleJob(entry.time, function(reminder) {
+            var job = schedule.scheduleJob(then, function(reminder) { // switching from entry.time to then /might/ fix a small bug
               remind.runReminder(reminder);
             }.bind(null, entry));
           }
@@ -306,6 +306,7 @@ var remind = {
   },
 
   readable_time: function(time) {
+    // I blame spaghetti@soupwhale for this. Eventually I'll rewrite it to be readble
     var days = Math.floor(time / 86400000),
       hours = Math.floor(time / 3600000) - (days * 24),
       minutes = Math.floor(time / 60000) - (hours * 60) - (days * 1440);
