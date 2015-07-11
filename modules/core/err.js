@@ -21,6 +21,15 @@ var err = {
         console.error("[ERROR] ".red + error.text);
       }
     }
+
+    if (config.toPrivMsg) {
+      // pm the error to the bot owner
+      core.say(core.config.ownerNick, core.config.ownerNick, "[ERROR][" + error.type + "] ").red + error.title);
+
+      if (error.text) {
+        core.say(core.config.ownerNick, core.config.ownerNick, "[ERROR] ".red + error.text);
+      }
+    }
     err.core.write_log("err");
   },
 };
