@@ -24,7 +24,7 @@ var err = {
 
     if (config.toPrivMsg) {
       // pm the error to the bot owner
-      core.say(core.config.ownerNick, core.config.ownerNick, "[ERROR][" + error.type + "] ").red + error.title);
+      core.say(core.config.ownerNick, core.config.ownerNick, "[ERROR][" .red + error.type + "] ".red + error.title);
 
       if (error.text) {
         core.say(core.config.ownerNick, core.config.ownerNick, "[ERROR] ".red + error.text);
