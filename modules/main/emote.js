@@ -74,7 +74,7 @@ var emote = {
   },
 
   intense: function(from, to, message) {
-    emote.core.send("say", from, to, color.bold("[" + message + " intensifies]"));
+    core.say(from, to, color.bold("[" + message + " intensifies]"));
   }
 };
 
