@@ -74,8 +74,10 @@ var weather = {
 
     if (days) {
       weather.forecastWorker(args, days);
+      console.log("a");
     } else {
       weather.weatherWorker(args);
+      console.log("b");
     }
   },
 
