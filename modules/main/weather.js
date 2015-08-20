@@ -25,7 +25,7 @@ var weather = {
     }
 
     // this is really not the best way to do this but w/e
-    if (!core.databases.weather[from.toLowerCase().locate] && !args._[0]) {
+    if (!core.databases.weather[from.toLowerCase()]["locate"] && !args._[0]) {
       core.say(from, to, from + ": I need a location");
       return;
     }
