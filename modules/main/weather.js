@@ -84,6 +84,10 @@ var weather = {
       core.say("Something went wrong, try again later");
     }
 
+    if (debug) {
+      console.log(weather.locAPI + str.join('%20') + "%22");
+    }
+
     request(weather.locAPI + str.join('%20') + "%22", function(e, r, body) {
       if (body) {
         if (debug) {
