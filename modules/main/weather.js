@@ -143,8 +143,8 @@ var weather = {
       core.say("Something went wrong, try again later");
     }
 
-    console.log("weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + core.databases.weather[args["from"].toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args["from"].toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args["from"].toLowerCase()].locate.longitude");
-    
+    console.log(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + core.databases.weather[args["from"].toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args["from"].toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args["from"].toLowerCase()].locate.longitude);
+
     request(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + core.databases.weather[args["from"].toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args["from"].toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args["from"].toLowerCase()].locate.longitude, function(e, r, body) {
       if (body) {
         if (debug) {
