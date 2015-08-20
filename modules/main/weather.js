@@ -157,7 +157,7 @@ var weather = {
           core.say(args["from"], args["to"], args["from"] + ": I had a problem fetching weather, please try again in a minute (weather api call failed)");
         }
         // this is gross I know
-        core.say(args["from"], args["to"], 'Forecast for \u000310' + (core.databases.weather[args["from"].toLowerCase()].locate.line2 || core.databases.weather[args["from"].toLowerCase()].locate.country || core.databases.weather[args["from"].toLowerCase()].locate.name) + daily.city.country);
+        core.say(args["from"], args["to"], 'Forecast for \u000310' + (core.databases.weather[args["from"].toLowerCase()].locate.line2 || core.databases.weather[args["from"].toLowerCase()].locate.country || core.databases.weather[args["from"].toLowerCase()].locate.name)+ '\u000f (\u000311' + daily.city.country + '\u000f)');
         daily.list.forEach(function(day, index) {
           if (debug) {
             console.log(JSON.stringify(day))
