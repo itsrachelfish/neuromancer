@@ -5,128 +5,127 @@ var debug = false;
 var core;
 
 var weather = {
-    commands: ["weather", "forecast"],
-    locAPI: 'http://query.yahooapis.com/v1/public/yql?format=json&q=select%20*%20from%20geo.placefinder%20where%20text=%22',
-    weathAPI: 'http://api.openweathermap.org/data/2.5/',
-    //TODO: clean this up and make it more readable
-    worker: function(from, to, message, forecast) {
+  commands: ["weather", "forecast"],
+  locAPI: 'http://query.yahooapis.com/v1/public/yql?format=json&q=select%20*%20from%20geo.placefinder%20where%20text=%22',
+  weathAPI: 'http://api.openweathermap.org/data/2.5/',
+  //TODO: clean this up and make it more readable
+  worker: function(from, to, message, forecast) {
+    if (debug) {
+      console.log(forecast + ' ' + message);
+    }
+
+    var args = parseArgs(message.split(' '), opts = {
+      boolean: ['c', 'i'],
+    });
+    args.from = from;
+    args.to = to;
+
+    if (!core.databases.weather[from.toLowerCase()]) {
+      core.databases.weather[from.toLowerCase()] = {};
+    }
+
+    // this is really not the best way to do this but w/e
+    if (!core.databases.weather[from.toLowerCase().locate] && !args._[0]) {
+      core.say(from, to, from + ": I need a location");
+      return;
+    }
+
+    // if it's a forecast then strip the -n from the message now so it doesn't mess with other stuff
+    if (forecast) {
+      var days = message.match(/-[1-7]/) ? message.match(/-[1-7]/)[0].slice(1) : '3';
+      message = message.replace(/ ?-[0-9]+ ?/, ' ');
+    }
+
+    if (args.f) { // or if they did >weather -f <days>
+      var days = args.f;
+    }
+
+    if (debug && days) {
+      console.log("days: " + days);
+    }
+
+    if (args.c) { // if they want to switch to metric results
+      var locale = ['metric', 'C', 'm/s'];
+      core.databases.weather[from.toLowerCase()].locale = ['metric', 'C', 'm/s'];
       if (debug) {
-        console.log(forecast + ' ' + message);
+        console.log(core.databases.weather[from.toLowerCase()]);
       }
+    }
 
-      var args = parseArgs(message.split(' '), opts = {
-        boolean: ['c', 'i'],
-      });
-      args.from = from;
-      args.to = to;
-
-      if (!core.databases.weather[from.toLowerCase()]) {
-        core.databases.weather[from.toLowerCase()] = {};
+    if (args.i) { // or imperial
+      core.databases.weather[from.toLowerCase()].locale = ['imperial', 'F', 'mph'];
+      if (debug) {
+        console.log(core.databases.weather[from.toLowerCase()]);
       }
+    }
 
-      // this is really not the best way to do this but w/e
-      if (!core.databases.weather[from.toLowerCase().locate] && !args._[0]) {
-        core.say(from, to, from + ": I need a location");
-        return;
+    if (args._[0]) { // if they're setting a new location
+      // get the lat+long for the location
+      if (debug) {
+        console.log(args._.join(' '));
       }
-
-      // if it's a forecast then strip the -n from the message now so it doesn't mess with other stuff
-      if (forecast) {
-        var days = message.match(/-[1-7]/) ? message.match(/-[1-7]/)[0].slice(1) : '3';
-        message = message.replace(/ ?-[0-9]+ ?/, ' ');
-      }
-
-      if (args.f) { // or if they did >weather -f <days>
-        var days = args.f;
-      }
-
-      if (debug && days) {
-        console.log("days: " + days);
-      }
-
-      if (args.c) { // if they want to switch to metric results
-        var locale = ['metric', 'C', 'm/s'];
-        core.databases.weather[from.toLowerCase()].locale = ['metric', 'C', 'm/s'];
-        if (debug) {
-          console.log(core.databases.weather[from.toLowerCase()]);
-        }
-      }
-
-      if (args.i) { // or imperial
-        core.databases.weather[from.toLowerCase()].locale = ['imperial', 'F', 'mph'];
-        if (debug) {
-          console.log(core.databases.weather[from.toLowerCase()]);
-        }
-      }
-
-      if (args._[0]) { // if they're setting a new location
-        // get the lat+long for the location
-        if (debug) {
-          console.log(args._.join(' '));
-        }
-        if (days) {
-          weather.locWorker(args._, args, days, weather.forecastWorker);
-        } else {
-          weather.locWorker(args._, args, days, weather.weatherWorker);
-        }
-        return;
-      }
-
       if (days) {
-        weather.forecastWorker(args, days);
+        weather.locWorker(args._, args, days, weather.forecastWorker);
       } else {
-        weather.weatherWorker(args);
+        weather.locWorker(args._, args, days, weather.weatherWorker);
       }
-    },
+      return;
+    }
 
-    locWorker: function(string, args, days, callback) {
-      request(weather.locAPI + string.join('%20') + "%22", function(e, r, body) {
-        if (body) {
-          if (debug) {
-            console.log(body);
-          }
-          var data = JSON.parse(body).query;
-          var locate = (data.count > 1) ? data.results.Result[0] : data.results.Result;
-          // and save it to the db
-          core.databases.weather[from.toLowerCase()].locate = locate;
-          core.write_db("weather");
-          if (callback) {
-            callback(args);
-          }
-        } else {
-          core.say(from, to, from + ": I had a problem setting your location, please try again in a minute (location api call failed)");
-          if (callback) {
-            callback(false);
-          }
-          return;
+    if (days) {
+      weather.forecastWorker(args, days);
+    } else {
+      weather.weatherWorker(args);
+    }
+  },
+
+  locWorker: function(string, args, days, callback) {
+    request(weather.locAPI + string.join('%20') + "%22", function(e, r, body) {
+      if (body) {
+        if (debug) {
+          console.log(body);
         }
-      });
-    },
-
-    weatherWorker: function(args) {
-      if (!args) {
-        core.say(args.from, args.to, args.from + ": something went wrong, try again later");
+        var data = JSON.parse(body).query;
+        var locate = (data.count > 1) ? data.results.Result[0] : data.results.Result;
+        // and save it to the db
+        core.databases.weather[from.toLowerCase()].locate = locate;
+        core.write_db("weather");
+        if (callback) {
+          callback(args);
+        }
+      } else {
+        core.say(from, to, from + ": I had a problem setting your location, please try again in a minute (location api call failed)");
+        if (callback) {
+          callback(false);
+        }
+        return;
       }
+    });
+  },
 
-      // this is even worse
-      request(weather.weathAPI + 'weather?units=' + core.databases.weather[args.from.toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args.from.toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args.from.toLowerCase()].locate.longitude, function(e, r, body) {
-        if (body) {
-          if (debug) {
-            console.log(body);
-          }
-          try {
-            var weath = JSON.parse(body);
-          } catch (e) {
-            console.log("api error: " + e);
-            core.say(args.from, args.to, args.from + ": I had a problem fetching weather, please try again in a minute (weather api call failed)");
-          }
-          var to_say = args.from + ': [\u000310' + (core.databases.weather[args.from.toLowerCase()].locate.line2 || core.databases.weather[args.from.toLowerCase()].locate.country || core.databases.weather[args.from.toLowerCase()].locate.name) + '\u000f (\u000311' + weath.sys.country + '\u000f)] [\u000304' + weath.main.temp + '°' + core.databases.weather[args.from.toLowerCase()].locale[1] + '\u000f (\u000307' + weath.main.humidity + '% humidity\u000f)] [\u000311Wind: ' + weath.wind.speed + ' ' + core.databases.weather[args.from.toLowerCase()].locale[2] + ' at ' + weath.wind.deg + '°\u000f] [\u000306' + weath.weather[0].description.charAt(0).toUpperCase() + weath.weather[0].description.slice(1) + '\u000f]';
-          core.say(args.from, args.to, to_say);
-        } else {
+  weatherWorker: function(args) {
+    if (!args) {
+      core.say(args.from, args.to, args.from + ": something went wrong, try again later");
+    }
+
+    // this is even worse
+    request(weather.weathAPI + 'weather?units=' + core.databases.weather[args.from.toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args.from.toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args.from.toLowerCase()].locate.longitude, function(e, r, body) {
+      if (body) {
+        if (debug) {
+          console.log(body);
+        }
+        try {
+          var weath = JSON.parse(body);
+        } catch (e) {
+          console.log("api error: " + e);
           core.say(args.from, args.to, args.from + ": I had a problem fetching weather, please try again in a minute (weather api call failed)");
         }
-      });
-    }
+        var to_say = args.from + ': [\u000310' + (core.databases.weather[args.from.toLowerCase()].locate.line2 || core.databases.weather[args.from.toLowerCase()].locate.country || core.databases.weather[args.from.toLowerCase()].locate.name) + '\u000f (\u000311' + weath.sys.country + '\u000f)] [\u000304' + weath.main.temp + '°' + core.databases.weather[args.from.toLowerCase()].locale[1] + '\u000f (\u000307' + weath.main.humidity + '% humidity\u000f)] [\u000311Wind: ' + weath.wind.speed + ' ' + core.databases.weather[args.from.toLowerCase()].locale[2] + ' at ' + weath.wind.deg + '°\u000f] [\u000306' + weath.weather[0].description.charAt(0).toUpperCase() + weath.weather[0].description.slice(1) + '\u000f]';
+        core.say(args.from, args.to, to_say);
+      } else {
+        core.say(args.from, args.to, args.from + ": I had a problem fetching weather, please try again in a minute (weather api call failed)");
+      }
+    });
   },
 
   forecastWorker: function(args, days) {
