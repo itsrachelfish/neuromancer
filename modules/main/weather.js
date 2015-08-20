@@ -130,7 +130,7 @@ var weather = {
 
   forecastWorker: function(args, days) {
     if (!args) {
-      core.say(args.from, args.to, args.from ": something went wrong, try again later");
+      core.say(args.from, args.to, args.from + ": something went wrong, try again later");
     }
 
     request(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + core.databases.weather[args.from.toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args.from.toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args.from.toLowerCase()].locate.longitude, function(e, r, body) {
