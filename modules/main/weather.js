@@ -105,7 +105,7 @@ var weather = {
 
     weatherWorker: function(args) {
       if (!args) {
-        core.say(args.from, args.to, args.from ": something went wrong, try again later");
+        core.say(args.from, args.to, args.from + ": something went wrong, try again later");
       }
 
       // this is even worse
