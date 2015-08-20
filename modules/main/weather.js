@@ -100,7 +100,7 @@ var weather = {
           }
           return;
         }
-      }
+      });
     },
 
     weatherWorker: function(args) {
@@ -127,46 +127,46 @@ var weather = {
         }
       });
     }
-    },
+  },
 
-    forecastWorker: function(args, days) {
-      if (!args) {
-        core.say(args.from, args.to, args.from ": something went wrong, try again later");
-      }
+  forecastWorker: function(args, days) {
+    if (!args) {
+      core.say(args.from, args.to, args.from ": something went wrong, try again later");
+    }
 
-      request(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + core.databases.weather[args.from.toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args.from.toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args.from.toLowerCase()].locate.longitude, function(e, r, body) {
-        if (body) {
-          if (debug) {
-            console.log(body);
-          }
-          try {
-            var daily = JSON.parse(body);
-          } catch (e) {
-            console.log("api error: " + e);
-            core.say(args.from, args.to, args.from + ": I had a problem fetching weather, please try again in a minute (weather api call failed)");
-          }
-          // this is gross I know
-          core.say(args.from, args.to, 'Forecast for \u000310' + (core.databases.weather[args.from.toLowerCase()].locate.line2 || core.databases.weather[args.from.toLowerCase()].locate.country || core.databases.weather[args.from.toLowerCase()].locate.name) + '\u000f (\u000311' + daily.city.country + '\u000f)');
-          daily.list.forEach(function(day, index) {
-            if (debug) {
-              console.log(JSON.stringify(day))
-            }
-            var to_say = (new Date(day.dt * 1000).toString().slice(0, 3)) + ': \u000304' + day.temp.min.toFixed(1) + '°' + core.databases.weather[from.toLowerCase()].locale[1] + '\u000f - \u000305' + day.temp.max.toFixed(1) + '°' + core.databases.weather[args.from.toLowerCase()].locale[1] + ' \u000307' + day.humidity + '% humidity \u000311' + day.speed.toFixed(1) + core.databases.weather[args.from.toLowerCase()].locale[2] + ' wind\u000f (\u000306' + day.weather[0].main + '\u000f)';
-            core.say(args.from, args.to, to_say);
-          });
-        } else {
-          core.say(args.from, args.to, from + ": I had a problem fetching weather, please try again in a minute (weather api call failed)");
+    request(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + core.databases.weather[args.from.toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args.from.toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args.from.toLowerCase()].locate.longitude, function(e, r, body) {
+      if (body) {
+        if (debug) {
+          console.log(body);
         }
-      });
-    },
+        try {
+          var daily = JSON.parse(body);
+        } catch (e) {
+          console.log("api error: " + e);
+          core.say(args.from, args.to, args.from + ": I had a problem fetching weather, please try again in a minute (weather api call failed)");
+        }
+        // this is gross I know
+        core.say(args.from, args.to, 'Forecast for \u000310' + (core.databases.weather[args.from.toLowerCase()].locate.line2 || core.databases.weather[args.from.toLowerCase()].locate.country || core.databases.weather[args.from.toLowerCase()].locate.name) + '\u000f (\u000311' + daily.city.country + '\u000f)');
+        daily.list.forEach(function(day, index) {
+          if (debug) {
+            console.log(JSON.stringify(day))
+          }
+          var to_say = (new Date(day.dt * 1000).toString().slice(0, 3)) + ': \u000304' + day.temp.min.toFixed(1) + '°' + core.databases.weather[from.toLowerCase()].locale[1] + '\u000f - \u000305' + day.temp.max.toFixed(1) + '°' + core.databases.weather[args.from.toLowerCase()].locale[1] + ' \u000307' + day.humidity + '% humidity \u000311' + day.speed.toFixed(1) + core.databases.weather[args.from.toLowerCase()].locale[2] + ' wind\u000f (\u000306' + day.weather[0].main + '\u000f)';
+          core.say(args.from, args.to, to_say);
+        });
+      } else {
+        core.say(args.from, args.to, from + ": I had a problem fetching weather, please try again in a minute (weather api call failed)");
+      }
+    });
+  },
 
-    weather: function(from, to, message) {
-      weather.worker(from, to, message, false);
-    },
+  weather: function(from, to, message) {
+    weather.worker(from, to, message, false);
+  },
 
-    forecast: function(from, to, message) {
-      weather.worker(from, to, message, true);
-    },
+  forecast: function(from, to, message) {
+    weather.worker(from, to, message, true);
+  },
 };
 
 module.exports = {
