@@ -80,6 +80,10 @@ var weather = {
   },
 
   locWorker: function(string, args, days, callback) {
+    if (!args) {
+      core.say("Something went wrong, try again later");
+    }
+
     request(weather.locAPI + string.join('%20') + "%22", function(e, r, body) {
       if (body) {
         if (debug) {
@@ -88,13 +92,13 @@ var weather = {
         var data = JSON.parse(body).query;
         var locate = (data.count > 1) ? data.results.Result[0] : data.results.Result;
         // and save it to the db
-        core.databases.weather[from.toLowerCase()].locate = locate;
+        core.databases.weather[args.from.toLowerCase()].locate = locate;
         core.write_db("weather");
         if (callback) {
           callback(args);
         }
       } else {
-        core.say(from, to, from + ": I had a problem setting your location, please try again in a minute (location api call failed)");
+        core.say(args.from, args.to, args.from + ": I had a problem setting your location, please try again in a minute (location api call failed)");
         if (callback) {
           callback(false);
         }
@@ -105,7 +109,7 @@ var weather = {
 
   weatherWorker: function(args) {
     if (!args) {
-      core.say(args.from, args.to, args.from + ": something went wrong, try again later");
+      core.say("Something went wrong, try again later");
     }
 
     // this is even worse
@@ -130,7 +134,7 @@ var weather = {
 
   forecastWorker: function(args, days) {
     if (!args) {
-      core.say(args.from, args.to, args.from + ": something went wrong, try again later");
+      core.say("Something went wrong, try again later");
     }
 
     request(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + core.databases.weather[args.from.toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args.from.toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args.from.toLowerCase()].locate.longitude, function(e, r, body) {
