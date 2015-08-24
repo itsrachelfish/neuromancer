@@ -1,6 +1,6 @@
 var color = require("irc-colors");
 var request = require("request");
-var debug = true;
+var debug = false;
 var core;
 
 var youtube = {
