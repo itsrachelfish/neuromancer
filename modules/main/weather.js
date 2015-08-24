@@ -83,7 +83,7 @@ var weather = {
 
   locWorker: function(str, args, days, callback) {
     if (!args) {
-      core.say("Something went wrong, try again later");
+      core.say(args["from"], args["to"], "Something went wrong, try again later");
     }
 
     if (debug) {
@@ -115,7 +115,7 @@ var weather = {
 
   weatherWorker: function(args) {
     if (!args) {
-      core.say("Something went wrong, try again later");
+      core.say(args["from"], args["to"], "Something went wrong, try again later");
     }
 
     // this is even worse
@@ -140,7 +140,7 @@ var weather = {
 
   forecastWorker: function(args, days) {
     if (!args) {
-      core.say("Something went wrong, try again later");
+      core.say(args["from"], args["to"], "Something went wrong, try again later");
     }
 
     console.log(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + core.databases.weather[args["from"].toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args["from"].toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args["from"].toLowerCase()].locate.longitude);

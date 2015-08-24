@@ -42,8 +42,8 @@ var emote = {
   },
 
   id: function(from, to, message) {
-    var x = ~~ (Math.random() * 4) + 0;
-    var y = ~~ (Math.random() * 999) + 0;
+    var x = ~~(Math.random() * 4) + 0;
+    var y = ~~(Math.random() * 999) + 0;
 
     if (y >= 750) {
       var dbladez = [
@@ -60,7 +60,7 @@ var emote = {
   },
 
   ld: function(from, to, message) {
-    var x = ~~ (Math.random() * 29) + 0;
+    var x = ~~(Math.random() * 29) + 0;
 
     if (x == 9) {
       core.say(from, to, color.bold("There are no legal drugs."));
@@ -75,7 +75,7 @@ var emote = {
 
   intense: function(from, to, message) {
     core.say(from, to, color.bold("[" + message + " intensifies]"));
-  }
+  },
 };
 
 module.exports = {

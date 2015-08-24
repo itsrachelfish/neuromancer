@@ -67,7 +67,7 @@ var remind = {
       core.databases.remind[from.toLowerCase()].forEach(function(entry, index, object) {
         if (args.d == index) {
           remind.delReminder(entry);
-          core.say(from, from, "Reminder #" + index + " deleted")
+          core.say(from, from, "Reminder #" + index + " deleted");
         }
       });
       return;
@@ -134,7 +134,7 @@ var remind = {
           args: args,
           uid: uid,
           rule: rule,
-        }
+        };
 
         if (debug) {
           console.log("now: " + JSON.stringify(now));
@@ -145,7 +145,7 @@ var remind = {
       }
 
       remind.addReminder(reminder);
-      core.say(from, from, "Okay, will remind at " + JSON.stringify(then) + " UTC");
+      //core.say(from, from, "Okay, will remind at " + JSON.stringify(then) + " UTC");
       return;
     }
   },
