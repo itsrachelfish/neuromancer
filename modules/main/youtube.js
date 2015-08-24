@@ -20,7 +20,7 @@ var youtube = {
         return;
       }
 
-      request('https://www.youtube.com/watch?v='+text.match(/(youtube.com\/watch\S*v=|youtu.be\/)([\w-]+)/)[2], function(e,r,b) {
+      request('https://www.youtube.com/watch?v='+message.match(/(youtube.com\/watch\S*v=|youtu.be\/)([\w-]+)/)[2], function(e,r,b) {
         if (debug) {
           console.log(e);
           console.log(r);
