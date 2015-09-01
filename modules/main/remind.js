@@ -38,7 +38,7 @@ var remind = {
           opts.push('-');
         }
         if (entry.args.f) {
-          opts.push("f")
+          opts.push("f");
         } else {
           opts.push('-');
         }
@@ -99,7 +99,7 @@ var remind = {
           args: args,
           uid: uid,
           rule: rule,
-        }
+        };
 
         if (debug) {
           console.log("recurrenceRule: " + JSON.stringify(rule));
@@ -145,7 +145,7 @@ var remind = {
       }
 
       remind.addReminder(reminder);
-      //core.say(from, from, "Okay, will remind at " + JSON.stringify(then) + " UTC");
+      core.say(from, from, "Okay, will remind at " + JSON.stringify(then) + " UTC");
       return;
     }
   },
@@ -270,6 +270,10 @@ var remind = {
           then.setSeconds(seconds);
 
           entry.time = then;
+
+          if(now > then) { // this should fix things right up
+            return;
+          }
 
           // schedule the reminder
           if (entry.args.r) { // if it's recurring
