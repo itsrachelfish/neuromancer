@@ -7,7 +7,6 @@ using a uniform distribution.
 ## Syntax
 
 ```js
-math.randomInt()                // generate a random integer between 0 and 1
 math.randomInt(max)             // generate a random integer between 0 and max
 math.randomInt(min, max)        // generate a random integer between min and max
 math.randomInt(size)            // generate a matrix with random integer between 0 and 1
@@ -20,20 +19,19 @@ math.randomInt(size, min, max)  // generate a matrix with random integer between
 Parameter | Type | Description
 --------- | ---- | -----------
 `size` | Array &#124; Matrix | If provided, an array or matrix with given size and filled with random values is returned
-`min` | Number | Minimum boundary for the random value, included
-`max` | Number | Maximum boundary for the random value, excluded
+`min` | number | Minimum boundary for the random value, included
+`max` | number | Maximum boundary for the random value, excluded
 
 ### Returns
 
 Type | Description
 ---- | -----------
-Number &#124; Array &#124; Matrix | A random integer value
+number &#124; Array &#124; Matrix | A random integer value
 
 
 ## Examples
 
 ```js
-math.randomInt();       // returns a random integer between 0 and 1
 math.randomInt(100);    // returns a random integer between 0 and 100
 math.randomInt(30, 40); // returns a random integer between 30 and 40
 math.randomInt([2, 3]); // returns a 2x3 matrix with random integers between 0 and 1

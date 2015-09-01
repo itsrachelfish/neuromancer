@@ -60,7 +60,8 @@ describe('xgcd', function() {
     assert.deepEqual(xgcd(65, math.bignumber(40)), [math.bignumber(5), math.bignumber(-3), math.bignumber(5)]);
   });
 
-  it.skip ('should calculate xgcd for edge cases with negative values', function () {
+  // FIXME: xgcd for negative values
+  it.skip('should calculate xgcd for edge cases with negative values', function () {
     assert.deepEqual([1, -2, 1], xgcd(2, 5));
     assert.deepEqual([1, -2, -1], xgcd(2, -5));
     assert.deepEqual([1, 2, 1], xgcd(-2, 5));
@@ -107,9 +108,9 @@ describe('xgcd', function() {
     assert.throws(function () {xgcd(math.complex(1,3),2); }, TypeError, 'Function xgcd(complex, number) not supported');
   });
 
-  it('should throw an error when used with a string', function() {
-    assert.throws(function () {xgcd('a', 2); }, TypeError, 'Function xgcd(string, number) not supported');
-    assert.throws(function () {xgcd(2, 'a'); }, TypeError, 'Function xgcd(number, string) not supported');
+  it('should convert to a number when used with a string', function() {
+    assert.deepEqual(xgcd('65', '40'), [5, -3, 5]);
+    assert.throws(function () {xgcd(2, 'a'); }, /Cannot convert "a" to a number/);
   });
 
   it('should throw an error when used with a unit', function() {
@@ -118,6 +119,11 @@ describe('xgcd', function() {
 
   it('should throw an error when used with a matrix', function() {
     assert.throws(function () { xgcd([5,2,3], [25,3,6]); }, TypeError, 'Function xgcd(array, array) not supported');
+  });
+
+  it('should LaTeX xgcd', function () {
+    var expression = math.parse('xgcd(2,3)');
+    assert.equal(expression.toTex(), '\\mathrm{xgcd}\\left(2,3\\right)');
   });
 
 });

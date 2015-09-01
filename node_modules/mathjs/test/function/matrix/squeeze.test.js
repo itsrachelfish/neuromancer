@@ -28,7 +28,12 @@ describe('squeeze', function() {
   });
 
   it('should throw an error if called with an invalid number of arguments', function() {
-    assert.throws(function () {squeeze()}, error.ArgumentsError);
-    assert.throws(function () {squeeze(1,2)}, error.ArgumentsError);
+    assert.throws(function () {squeeze()}, /TypeError: Too few arguments/);
+    assert.throws(function () {squeeze(1,2)}, /TypeError: Too many arguments/);
+  });
+
+  it('should LaTeX squeeze', function () {
+    var expression = math.parse('squeeze([[0],[0]])');
+    assert.equal(expression.toTex(), '\\mathrm{squeeze}\\left(\\begin{bmatrix}0\\\\0\\\\\\end{bmatrix}\\right)');
   });
 });

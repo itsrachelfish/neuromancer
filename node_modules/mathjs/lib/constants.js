@@ -1,34 +1,40 @@
 'use strict';
 
-module.exports = function (math, config) {
-  var object = require('./util/object');
-  var bignumber = require('./util/bignumber');
-  var Complex = require('./type/Complex');
-  var BigNumber = math.type.BigNumber;
+var object = require('./utils/object');
+var bigConstants = require('./utils/bignumber/constants');
+
+function factory (type, config, load, typed, math) {
+  // listen for changed in the configuration, automatically reload
+  // constants when needed
+  math.on('config', function (curr, prev) {
+    if (curr.number !== prev.number) {
+      factory(type, config, load, typed, math);
+    }
+  });
 
   math['true']     = true;
   math['false']    = false;
   math['null']     = null;
-  math['uninitialized'] = require('./util/array').UNINITIALIZED;
+  math['uninitialized'] = require('./utils/array').UNINITIALIZED;
 
   if (config.number === 'bignumber') {
-    math['Infinity'] = new BigNumber(Infinity);
-    math['NaN']      = new BigNumber(NaN);
+    math['Infinity'] = new type.BigNumber(Infinity);
+    math['NaN']      = new type.BigNumber(NaN);
 
-    object.lazy(math, 'pi',  function () {return bignumber.pi(config.precision)});
-    object.lazy(math, 'tau', function () {return bignumber.tau(config.precision)});
-    object.lazy(math, 'e',   function () {return bignumber.e(config.precision)});
-    object.lazy(math, 'phi', function () {return bignumber.phi(config.precision)}); // golden ratio, (1+sqrt(5))/2
+    object.lazy(math, 'pi',  function () {return bigConstants.pi(type.BigNumber)});
+    object.lazy(math, 'tau', function () {return bigConstants.tau(type.BigNumber)});
+    object.lazy(math, 'e',   function () {return bigConstants.e(type.BigNumber)});
+    object.lazy(math, 'phi', function () {return bigConstants.phi(type.BigNumber)}); // golden ratio, (1+sqrt(5))/2
 
     // uppercase constants (for compatibility with built-in Math)
     object.lazy(math, 'E',       function () {return math.e;});
-    object.lazy(math, 'LN2',     function () {return new BigNumber(2).ln();});
-    object.lazy(math, 'LN10',    function () {return new BigNumber(10).ln()});
-    object.lazy(math, 'LOG2E',   function () {return new BigNumber(1).div(new BigNumber(2).ln());});
-    object.lazy(math, 'LOG10E',  function () {return new BigNumber(1).div(new BigNumber(10).ln())});
+    object.lazy(math, 'LN2',     function () {return new type.BigNumber(2).ln();});
+    object.lazy(math, 'LN10',    function () {return new type.BigNumber(10).ln()});
+    object.lazy(math, 'LOG2E',   function () {return new type.BigNumber(1).div(new type.BigNumber(2).ln());});
+    object.lazy(math, 'LOG10E',  function () {return new type.BigNumber(1).div(new type.BigNumber(10).ln())});
     object.lazy(math, 'PI',      function () {return math.pi});
-    object.lazy(math, 'SQRT1_2', function () {return new BigNumber('0.5').sqrt()});
-    object.lazy(math, 'SQRT2',   function () {return new BigNumber(2).sqrt()});
+    object.lazy(math, 'SQRT1_2', function () {return new type.BigNumber('0.5').sqrt()});
+    object.lazy(math, 'SQRT2',   function () {return new type.BigNumber(2).sqrt()});
   }
   else {
     math['Infinity'] = Infinity;
@@ -51,8 +57,12 @@ module.exports = function (math, config) {
   }
 
   // complex i
-  math.i = new Complex(0, 1);
+  math.i = new type.Complex(0, 1);
 
   // meta information
   math.version = require('./version');
-};
+}
+
+exports.factory = factory;
+exports.lazy = false;  // no lazy loading of constants, the constants themselves are lazy when needed
+exports.math = true;   // request access to the math namespace

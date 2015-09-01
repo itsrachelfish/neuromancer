@@ -42,9 +42,14 @@ describe('flatten', function() {
   });
 
   it('should throw an error on invalid arguments', function () {
-    assert.throws(function () {flatten()}, /ArgumentsError/);
-    assert.throws(function () {flatten([],2)}, /ArgumentsError/);
-    assert.throws(function () {flatten("str")}, /TypeError/);
+    assert.throws(function () {flatten()}, /TypeError: Too few arguments/);
+    assert.throws(function () {flatten([],2)}, /TypeError: Too many arguments/);
+    assert.throws(function () {flatten("str")}, /TypeError: Unexpected type of argument/);
+  });
+
+  it('should LaTeX flatten', function () {
+    var expression = math.parse('flatten([[1,2],[3,4]])');
+    assert.equal(expression.toTex(), '\\mathrm{flatten}\\left(\\begin{bmatrix}1&2\\\\3&4\\\\\\end{bmatrix}\\right)');
   });
 
 });
