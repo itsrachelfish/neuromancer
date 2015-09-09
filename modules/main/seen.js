@@ -37,7 +37,7 @@ var seen = {
     }
     if (core.databases.seen[commands[0].toLowerCase()]) {
       if (last && core.databases.seen[commands[0].toLowerCase()].l) {
-        core.say(from, to, "Last heard from \u000308" + commands[0] + '\u000f ' + seen.readable_time(Date.now() - core.databases.seen[commands[0].toLowerCase()].d) + ' ago with ' + color.yellow('"' + core.databases.seen[commands[0].toLowerCase()].l + '"'));
+        core.say(from, to, "Last heard from \u000308" + commands[0] + '\u000f ' + seen.readable_time(Date.now() - core.databases.seen[commands[0].toLowerCase()].d) + ' ago with' + color.yellow('"' + core.databases.seen[commands[0].toLowerCase()].l + '"'));
       } else {
         core.say(from, to, "Last heard from \u000308" + commands[0] + '\u000f ' + seen.readable_time(Date.now() - core.databases.seen[commands[0].toLowerCase()].d) + ' ago');
       }
