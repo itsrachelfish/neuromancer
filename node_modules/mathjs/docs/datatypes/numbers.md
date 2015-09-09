@@ -1,10 +1,13 @@
 # Numbers
 
-Math.js supports two types of numbers:
+Math.js supports three types of numbers:
 
 - Number for fast floating point arithmetic, described on this page.
-- BigNumber for arbitrary precision arithmetic, describe on the page
+- BigNumber for arbitrary precision arithmetic, described on the page
   [BigNumbers](bignumbers.md).
+- Fraction, which stores numbers in terms of a numerator and denominators, 
+  described on the page [Fractions](fractions.md).
+
 
 ## Configuration
 
@@ -16,7 +19,8 @@ can be configured when instantiating math.js:
 
 ```js
 math.config({
-  number: 'number' // Default type of number: 'number' (default) or 'bignumber'
+  number: 'number' // Default type of number: 
+                   // 'number' (default), 'bignumber', or 'fraction'
 });
 ```
 
@@ -26,7 +30,7 @@ Math.js uses the built-in JavaScript Number type. A Number is a floating point
 number with a limited precision of 64 bits, about 16 digits. The largest integer
 number which can be represented by a JavaScript Number
 is `+/- 9007199254740992` (`+/- 2^53`). Because of the limited precision of
-floating point numbers, round-off errors can occur during calculations.
+floating point numbers round-off errors can occur during calculations.
 This can be easily demonstrated:
 
 ```js
@@ -36,7 +40,7 @@ math.add(0.1, 0.2);   // 0.30000000000000004
 ```
 
 In most cases, round-off errors don't matter: they have no significant
-impact on the results. However it looks ugly when displaying output to a user.
+impact on the results. However, it looks ugly when displaying output to a user.
 A solution is to limit the precision just below the actual precision of 16
 digits in the displayed output:
 

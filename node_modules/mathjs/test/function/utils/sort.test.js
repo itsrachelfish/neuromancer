@@ -33,19 +33,24 @@ describe('sort', function() {
   });
 
   it('should throw an error if called with a multi dimensional matrix', function() {
-    assert.throws(function() { math.sort(math.matrix([[1,2],[3,4]])) }, /Only one dimensional matrices supported/);
+    assert.throws(function() { math.sort(math.matrix([[1,2],[3,4]])) }, /One dimensional matrix expected/);
   });
 
   it('should throw an error if called with unsupported type', function() {
     assert.throws(function() { math.sort(2) });
     assert.throws(function() { math.sort('string') });
-    assert.throws(function() { math.sort([], 'string') });
+    assert.throws(function() { math.sort([], 'string') }, /String "asc" or "desc" expected/);
     assert.throws(function() { math.sort([], {}) });
   });
 
   it('should throw an error if called with invalid number of arguments', function() {
     assert.throws(function() { math.sort([], 'asc', 'foo') });
     assert.throws(function() { math.sort() });
+  });
+
+  it('should LaTeX sort', function () {
+    var expression = math.parse('sort([3,2,1])');
+    assert.equal(expression.toTex(), '\\mathrm{sort}\\left(\\begin{bmatrix}3\\\\2\\\\1\\\\\\end{bmatrix}\\right)');
   });
 
 });

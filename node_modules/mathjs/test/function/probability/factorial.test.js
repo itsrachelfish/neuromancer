@@ -30,7 +30,7 @@ describe('factorial', function() {
     assert.deepEqual(bigfactorial(bignumber(11)), bignumber(39917000));
     assert.deepEqual(bigfactorial(bignumber(22)), bignumber(1.124e+21));
 
-    bigmath.config({number: null, precision: 20});
+    bigmath.config({precision: 20});
     assert.deepEqual(bigfactorial(bignumber(5)), bignumber(120));
     assert.deepEqual(bigfactorial(bignumber(19)), bignumber(121645100408832000));
     assert.deepEqual(bigfactorial(bignumber(20)), bignumber(2432902008176640000));
@@ -88,5 +88,9 @@ describe('factorial', function() {
     assert.throws(function() { factorial('a string'); });
   });
 
+  it('should LaTeX factorial', function () {
+    var expression = math.parse('factorial(6)');
+    assert.equal(expression.toTex(), '\\left(6\\right)!');
+  });
 
 });

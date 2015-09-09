@@ -83,6 +83,11 @@ describe('concat', function() {
 
   });
 
+  it('should concatenate strings', function() {
+    assert.strictEqual(math.concat('a', 'b'), 'ab');
+    assert.strictEqual(math.concat('a', 'b', 'c'), 'abc');
+  });
+
   it('should throw an error in case of invalid requested dimension number', function() {
     assert.throws(function () {math.concat([1, 2], [3,4], 2.3)}, /Integer number expected for dimension/);
     assert.throws(function () {math.concat([1, 2], [3,4], 1)}, /Index out of range \(1 > 0\)/);
@@ -94,11 +99,16 @@ describe('concat', function() {
   });
 
   it('should throw an error in case of invalid type of argument', function() {
-    assert.throws(function () {math.concat(math.complex(2,3))}, math.error.UnsupportedTypeError);
+    assert.throws(function () {math.concat(math.complex(2,3))}, /TypeError: Unexpected type of argument/);
   });
 
   it('should throw an error when called without matrices as argument', function() {
     assert.throws(function () {math.concat(2)}, /At least one matrix expected/);
+  });
+
+  it('should LaTeX concat', function () {
+    var expression = math.parse('concat([1],[2])');
+    assert.equal(expression.toTex(), '\\mathrm{concat}\\left(\\begin{bmatrix}1\\\\\\end{bmatrix},\\begin{bmatrix}2\\\\\\end{bmatrix}\\right)');
   });
 
 });

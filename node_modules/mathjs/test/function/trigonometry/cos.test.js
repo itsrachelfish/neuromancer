@@ -108,8 +108,13 @@ describe('cos', function() {
   });
 
   it('should throw an error in case of invalid number of arguments', function() {
-    assert.throws(function () {cos()}, error.ArgumentsError);
-    assert.throws(function () {cos(1, 2)}, error.ArgumentsError);
+    assert.throws(function () {cos()}, /TypeError: Too few arguments/);
+    assert.throws(function () {cos(1, 2)}, /TypeError: Too many arguments/);
+  });
+
+  it('should LaTeX cos', function () {
+    var expression = math.parse('cos(1)');
+    assert.equal(expression.toTex(), '\\cos\\left(1\\right)');
   });
 
 });
