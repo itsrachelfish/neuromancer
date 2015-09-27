@@ -2,7 +2,7 @@ var color = require("irc-colors");
 var core;
 
 var emote = {
-  commands: ["dunno", "downy", "lv", "id", "ld", "intense", "doubledowny", "tripledowny", "rainbowdowny"],
+  commands: ["dunno", "downy", "lv", "id", "ld", "intense", "doubledowny", "tripppledowny", "rainbowdowny"],
   core: false,
 
   dunno: function(from, to, message) {
@@ -25,7 +25,7 @@ var emote = {
     emote.downy(from, to, message);
   },
 
-  trippledowny: function(from, to, message) {
+  tripppledowny: function(from, to, message) {
     emote.downy(from, to, message);
     emote.downy(from, to, message);
     emote.downy(from, to, message);
