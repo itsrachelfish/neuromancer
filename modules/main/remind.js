@@ -5,7 +5,7 @@ var schedule = require("node-schedule");
 var sms = require("mtextbelt");
 var config = require("../../etc/remind.js");
 var core;
-var debug = false;
+var debug = true;
 
 var remind = {
   commands: ["remind"],
