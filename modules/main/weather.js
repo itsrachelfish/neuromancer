@@ -8,6 +8,8 @@ var weather = {
   commands: ["weather", "forecast"],
   locAPI: 'http://query.yahooapis.com/v1/public/yql?format=json&q=select%20*%20from%20geo.placefinder%20where%20text=%22',
   weathAPI: 'http://api.openweathermap.org/data/2.5/',
+  weathAPIKey: '8abe6f18b24dbf4fb6bc9bfbd6b47688',
+
   //TODO: clean this up and make it more readable
   worker: function(from, to, message, forecast) {
     if (debug) {
@@ -119,7 +121,7 @@ var weather = {
     }
 
     // this is even worse
-    request(weather.weathAPI + 'weather?units=' + core.databases.weather[args["from"].toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args["from"].toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args["from"].toLowerCase()].locate.longitude, function(e, r, body) {
+    request(weather.weathAPI + 'weather?units=' + core.databases.weather[args["from"].toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args["from"].toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args["from"].toLowerCase()].locate.longitude + "&APPID=" + weathAPIKey, function(e, r, body) {
       if (body) {
         if (debug) {
           console.log(body);
@@ -145,7 +147,7 @@ var weather = {
 
     console.log(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + core.databases.weather[args["from"].toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args["from"].toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args["from"].toLowerCase()].locate.longitude);
 
-    request(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + core.databases.weather[args["from"].toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args["from"].toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args["from"].toLowerCase()].locate.longitude, function(e, r, body) {
+    request(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + core.databases.weather[args["from"].toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args["from"].toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args["from"].toLowerCase()].locate.longitude + "&APPID=" + weathAPIKey, function(e, r, body) {
       if (body) {
         if (debug) {
           console.log(body);
