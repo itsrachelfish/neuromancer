@@ -121,7 +121,7 @@ var weather = {
     }
 
     // this is even worse
-    request(weather.weathAPI + 'weather?units=' + core.databases.weather[args["from"].toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args["from"].toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args["from"].toLowerCase()].locate.longitude + "&APPID=" + weathAPIKey, function(e, r, body) {
+    request(weather.weathAPI + 'weather?units=' + core.databases.weather[args["from"].toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args["from"].toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args["from"].toLowerCase()].locate.longitude + "&APPID=" + weather.weathAPIKey, function(e, r, body) {
       if (body) {
         if (debug) {
           console.log(body);
@@ -147,7 +147,7 @@ var weather = {
 
     console.log(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + core.databases.weather[args["from"].toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args["from"].toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args["from"].toLowerCase()].locate.longitude);
 
-    request(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + core.databases.weather[args["from"].toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args["from"].toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args["from"].toLowerCase()].locate.longitude + "&APPID=" + weathAPIKey, function(e, r, body) {
+    request(weather.weathAPI + 'forecast/daily?cnt=' + days + '&units=' + core.databases.weather[args["from"].toLowerCase()].locale[0] + '&lat=' + core.databases.weather[args["from"].toLowerCase()].locate.latitude + '&lon=' + core.databases.weather[args["from"].toLowerCase()].locate.longitude + "&APPID=" + weather.weathAPIKey, function(e, r, body) {
       if (body) {
         if (debug) {
           console.log(body);
