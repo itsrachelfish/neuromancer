@@ -15,27 +15,27 @@ var weather2 = {
     });
     
     // if they don't have a db entry yet
-    if (!core.databases.weather[from.toLowerCase()]) {
-      core.databases.weather[from.toLowerCase()] = {};
-      core.databases.weather[from.toLowerCase()]["locale"] = "imperial"; // default to imperial
+    if (!core.databases.weather2[from.toLowerCase()]) {
+      core.databases.weather2[from.toLowerCase()] = {};
+      core.databases.weather2[from.toLowerCase()]["locale"] = "imperial"; // default to imperial
     }
     
     // if they don't have a saved location and they're not trying to set a new one
-    if (!core.databases.weather[from.toLowerCase()]["cityID"] && !args._[0]) {
+    if (!core.databases.weather2[from.toLowerCase()]["cityID"] && !args._[0]) {
       core.say(from, to, from + ": I need a location. Postal codes usually work, if that fails try <city> <country>");
       return;
     }
     
     if (args.c) { // if they want results in metric
-      core.databases.weather[from.toLowerCase()]["locale"] = "metric";
+      core.databases.weather2[from.toLowerCase()]["locale"] = "metric";
     }
     
     if (args.i) { // if they want results in imperial
-      core.databases.weather[from.toLowerCase()]["locale"] = "imperial";
+      core.databases.weather2[from.toLowerCase()]["locale"] = "imperial";
     }
     
     if (args._[0]) { // if they want to set a new location
-      request(weather.weathAPI + "weather?type=like&q=" + args._[0] + "&units=" + core.databases.weather[from.toLowerCase()]["locale"] + "&APPID=" + core.databases.secrets["OWMAPIKey"], function(e, r, body) {
+      request(weather.weathAPI + "weather?type=like&q=" + args._[0] + "&units=" + core.databases.weather2[from.toLowerCase()]["locale"] + "&APPID=" + core.databases.secrets["OWMAPIKey"], function(e, r, body) {
         if (body) {
           if (debug) {
             console.log(body);
@@ -50,7 +50,7 @@ var weather2 = {
       });
     }
     
-    if (core.databases.weather[from.toLowerCase()]["locale"] == "metric") {
+    if (core.databases.weather2[from.toLowerCase()]["locale"] == "metric") {
       var toSay = from + ": [" + data.name + " (" + data.sys.country + ")]" + " [" + data.main.temp + "°C (" + data.main.humidity + "% humidity)]" + " [Wind: " + data.wind.speed + "m/s from " + data.wind.deg + "°]"
     } else {
       var toSay = from + ": [" + data.name + " (" + data.sys.country + ")]" + " [" + data.main.temp + "°F (" + data.main.humidity + "% humidity)]" + " [Wind: " + data.wind.speed + "mi/h from " + data.wind.deg + "°]"
@@ -66,12 +66,12 @@ var weather2 = {
     });
     
     // if they don't have a db entry yet
-    if (!core.databases.weather[from.toLowerCase()]) {
-      core.databases.weather[from.toLowerCase()] = {};
+    if (!core.databases.weather2[from.toLowerCase()]) {
+      core.databases.weather2[from.toLowerCase()] = {};
     }
     
     // if they don't have a saved location
-    if (!core.databases.weather[from.toLowerCase()]["cityID"] && !args._[0]) {
+    if (!core.databases.weather2[from.toLowerCase()]["cityID"] && !args._[0]) {
       core.say(from, to, from + ": I need a location. Postal codes usually work, if that fails try <city> <country>");
       return;
     }
