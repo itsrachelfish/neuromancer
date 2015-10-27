@@ -2,7 +2,7 @@ var color = require("irc-colors");
 var request = require("request");
 var parseArgs = require("minimist");
 var debug = true;
-var core;
+var core = false;
 
 var weather = {
   commands: ["weather", "forecast"],
@@ -186,7 +186,7 @@ var weather = {
 module.exports = {
   load: function(_core) {
     core = _core;
-    weather.weathAPIKey = core.databases.secrets["weather"];
+    weather.weathAPIKey = core.databases.secrets["OWMAPIKey"];
   },
   unload: function(core) {
     delete weather;
