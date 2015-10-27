@@ -21,7 +21,7 @@ var secrets = {
       if (debug) {
         console.log(key + " = " + data);
       }
-      core.databases.secrets[key] = {key, data}
+      core.databases.secrets[key] = data;
       core.write_db("secrets");
     }
   }
