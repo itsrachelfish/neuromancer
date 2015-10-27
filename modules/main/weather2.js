@@ -49,6 +49,7 @@ var weather2 = {
             }
     
             core.say(from, to, toSay);
+            core.databases.weather2[from.toLowerCase()]["cityID"] = data.id
             return;
           } catch (e) {
             console.log("api error: " + e);
@@ -56,8 +57,32 @@ var weather2 = {
           }
         }
       });
-    }
+      return;
+      
+    } else {
+      request(weather2.weathAPI + "weather?type=like&q=" + core.databases.weather2[from.toLowerCase()]["cityID"] + "&units=" + core.databases.weather2[from.toLowerCase()]["locale"] + "&APPID=" + core.databases.secrets["OWMAPIKey"], function(e, r, body) {
+        if (body) {
+          if (debug) {
+            console.log(body);
+          }
+          try {
+            var data = JSON.parse(body);
+            if (core.databases.weather2[from.toLowerCase()]["locale"] == "metric") {
+              var toSay = from + ": [" + data.name + " (" + data.sys.country + ")]" + " [" + data.main.temp + "°C (" + data.main.humidity + "% humidity)]" + " [Wind: " + data.wind.speed + "m/s from " + data.wind.deg + "°]"
+            } else {
+              var toSay = from + ": [" + data.name + " (" + data.sys.country + ")]" + " [" + data.main.temp + "°F (" + data.main.humidity + "% humidity)]" + " [Wind: " + data.wind.speed + "mi/h from " + data.wind.deg + "°]"
+            }
     
+            core.say(from, to, toSay);
+            return;
+          } catch (e) {
+            console.log("api error: " + e);
+            core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute (weather api call failed)");
+          }
+        }
+      });
+      return;
+    }
     
   },
   
