@@ -1,3 +1,6 @@
+var parseArgs = require("minimist");
+var debug = true;
+
 var secrets = {
   commands: ["secret"],
   
