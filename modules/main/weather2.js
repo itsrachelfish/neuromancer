@@ -35,7 +35,7 @@ var weather2 = {
     }
     
     if (args._[0]) { // if they want to set a new location
-      request(weather.weathAPI + "weather?type=like&q=" + args._[0] + "&units=" + core.databases.weather2[from.toLowerCase()]["locale"] + "&APPID=" + core.databases.secrets["OWMAPIKey"], function(e, r, body) {
+      request(weather2.weathAPI + "weather?type=like&q=" + args._[0] + "&units=" + core.databases.weather2[from.toLowerCase()]["locale"] + "&APPID=" + core.databases.secrets["OWMAPIKey"], function(e, r, body) {
         if (body) {
           if (debug) {
             console.log(body);
