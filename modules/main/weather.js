@@ -8,11 +8,13 @@ var weather = {
   commands: ["weather", "forecast"],
   locAPI: 'http://query.yahooapis.com/v1/public/yql?format=json&q=select%20*%20from%20geo.placefinder%20where%20text=%22',
   weathAPI: 'http://api.openweathermap.org/data/2.5/',
-  weathAPIKey: '8abe6f18b24dbf4fb6bc9bfbd6b47688',
+  weathAPIKey: core.databases.secrets["weather"],
+  //weathAPIKey: '8abe6f18b24dbf4fb6bc9bfbd6b47688',
 
   //TODO: clean this up and make it more readable
   worker: function(from, to, message, forecast) {
     if (debug) {
+      console.log(weather.weathAPIKey);
       console.log(forecast + ' ' + message);
     }
 

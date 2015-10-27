@@ -14,6 +14,7 @@ var secrets = {
       return;
     } else if (args.d) {
       delete core.databases.secrets[args.d];
+      core.write_db("secrets");
     } else if (args.a) {
       var key = args.a.split("=")[0];
       var data = args.a.split("=")[1];
