@@ -60,7 +60,7 @@ var weather2 = {
       return;
       
     } else {
-      request(weather2.weathAPI + "weather?type=like&q=" + core.databases.weather2[from.toLowerCase()]["cityID"] + "&units=" + core.databases.weather2[from.toLowerCase()]["locale"] + "&APPID=" + core.databases.secrets["OWMAPIKey"], function(e, r, body) {
+      request(weather2.weathAPI + "weather?id=" + core.databases.weather2[from.toLowerCase()]["cityID"] + "&units=" + core.databases.weather2[from.toLowerCase()]["locale"] + "&APPID=" + core.databases.secrets["OWMAPIKey"], function(e, r, body) {
         if (body) {
           if (debug) {
             console.log(body);
