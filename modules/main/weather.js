@@ -8,7 +8,7 @@ var weather = {
   commands: ["weather", "forecast"],
   locAPI: 'http://query.yahooapis.com/v1/public/yql?format=json&q=select%20*%20from%20geo.placefinder%20where%20text=%22',
   weathAPI: 'http://api.openweathermap.org/data/2.5/',
-  weathAPIKey: core.databases.secrets["weather"],
+  weathAPIKey: false,
   //weathAPIKey: '8abe6f18b24dbf4fb6bc9bfbd6b47688',
 
   //TODO: clean this up and make it more readable
@@ -187,6 +187,7 @@ var weather = {
 module.exports = {
   load: function(_core) {
     core = _core;
+    weather.weathAPIKey = core.databases.secrets["weather"];
   },
   unload: function(core) {
     delete weather;
