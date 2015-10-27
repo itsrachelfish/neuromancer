@@ -42,6 +42,14 @@ var weather2 = {
           }
           try {
             var data = JSON.parse(body);
+            if (core.databases.weather2[from.toLowerCase()]["locale"] == "metric") {
+              var toSay = from + ": [" + data.name + " (" + data.sys.country + ")]" + " [" + data.main.temp + "°C (" + data.main.humidity + "% humidity)]" + " [Wind: " + data.wind.speed + "m/s from " + data.wind.deg + "°]"
+            } else {
+              var toSay = from + ": [" + data.name + " (" + data.sys.country + ")]" + " [" + data.main.temp + "°F (" + data.main.humidity + "% humidity)]" + " [Wind: " + data.wind.speed + "mi/h from " + data.wind.deg + "°]"
+            }
+    
+            core.say(from, to, toSay);
+            return;
           } catch (e) {
             console.log("api error: " + e);
             core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute (weather api call failed)");
@@ -50,14 +58,7 @@ var weather2 = {
       });
     }
     
-    if (core.databases.weather2[from.toLowerCase()]["locale"] == "metric") {
-      var toSay = from + ": [" + data.name + " (" + data.sys.country + ")]" + " [" + data.main.temp + "°C (" + data.main.humidity + "% humidity)]" + " [Wind: " + data.wind.speed + "m/s from " + data.wind.deg + "°]"
-    } else {
-      var toSay = from + ": [" + data.name + " (" + data.sys.country + ")]" + " [" + data.main.temp + "°F (" + data.main.humidity + "% humidity)]" + " [Wind: " + data.wind.speed + "mi/h from " + data.wind.deg + "°]"
-    }
     
-    core.say(from, to, toSay);
-    return;
   },
   
   forecast2: function(from, to, message) {
