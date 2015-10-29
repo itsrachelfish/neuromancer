@@ -131,6 +131,7 @@ var weather2 = {
               console.log(data.list[0].temp.min);
               console.log(data.list[0].weather[0].description);
             }
+            core.say(from, to, "Forecast for " + data.city.name + ' (' + data.city.country + ')');
             if (core.databases.weather2[from.toLowerCase()].locale == "metric") { // if they're metric
               for (var i = 1; i < data.list.length; i++) {
                 var d = new Date(Number(data.list[i].dt) * 1000);
@@ -179,7 +180,7 @@ var weather2 = {
               console.log(data.list[0].temp.min);
               console.log(data.list[0].weather[0].description);
             }
-            core.say(from, to, "Forecast for " + data.city.name + '(' + data.city.country + ')');
+            core.say(from, to, "Forecast for " + data.city.name + ' (' + data.city.country + ')');
             if (core.databases.weather2[from.toLowerCase()].locale == "metric") { // if they're metric
               for (var i = 1; i < data.list.length; i++) {
                 var d = new Date(Number(data.list[i].dt) * 1000);
