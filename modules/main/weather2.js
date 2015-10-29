@@ -126,26 +126,31 @@ var weather2 = {
           }
           try {
             var data = JSON.parse(body);
+            if (debug) {
+              console.log(data.list[0].dt);
+              console.log(data.list[0].temp.min);
+              console.log(data.list[0].weather[0].description);
+            }
             if (core.databases.weather2[from.toLowerCase()].locale == "metric") { // if they're metric
               for (var i = 1; i < data.list.length; i++) {
                 var d = new Date(data.list[i].dt);
-                var day = d.toDateString()[0]; // dirty as fuck but whatever
+                var day = d.toDateString().split(' ').[0]; // dirty as fuck but whatever
                 var toSay = day + ": ";
                 toSay += data.list[i].temp.min + "°C - " + data.list[i].temp.max + ' ';
                 toSay += data.list[i].humidity + "% humidity ";
                 toSay += data.list[i].speed + "m/s wind ";
-                toSay += '(' + data.list[i].weather.description + ')';
+                toSay += '(' + data.list[i].weather[0].description + ')';
                 core.say(from, to, toSay);
               }
             } else { // or standard
               for (var i = 1; i < data.list.length; i++) {
                 var d = new Date(data.list[i].dt);
-                var day = d.toDateString()[0]; // dirty as fuck but whatever
+                var day = d.toDateString().split(' ').[0]; // dirty as fuck but whatever
                 var toSay = day + ": ";
                 toSay += data.list[i].temp.min + "°F - " + data.list[i].temp.max + ' ';
                 toSay += data.list[i].humidity + "% humidity ";
                 toSay += data.list[i].speed + "m/h wind ";
-                toSay += '(' + data.list[i].weather.description + ')';
+                toSay += '(' + data.list[i].weather[0].description + ')';
                 core.say(from, to, toSay);
               }
 
@@ -169,27 +174,32 @@ var weather2 = {
           }
           try {
             var data = JSON.parse(body);
+            if (debug) {
+              console.log(data.list[0].dt);
+              console.log(data.list[0]temp.min);
+              console.log(data.list[0].weather[0].description);
+            }
             core.say(from, to, "Forecast for " + data.city.name + '(' + data.city.country + ')');
             if (core.databases.weather2[from.toLowerCase()].locale == "metric") { // if they're metric
               for (var i = 1; i < data.list.length; i++) {
-                var d = new Date(data.list[i].dt);
-                var day = d.toDateString()[0]; // dirty as fuck but whatever
+                var d = new Date(Number(data.list[i].dt);
+                var day = d.toDateString().split(' ').[0]; // dirty as fuck but whatever
                 var toSay = day + ": ";
                 toSay += data.list[i].temp.min + "°C - " + data.list[i].temp.max + ' ';
                 toSay += data.list[i].humidity + "% humidity ";
                 toSay += data.list[i].speed + "m/s wind ";
-                toSay += '(' + data.list[i].weather.description + ')';
+                toSay += '(' + data.list[i].weather[0].description + ')';
                 core.say(from, to, toSay);
               }
             } else { // or standard
               for (var i = 1; i < data.list.length; i++) {
                 var d = new Date(data.list[i].dt);
-                var day = d.toDateString(); // dirty as fuck but whatever
+                var day = d.toDateString().split(' ').[0]; // dirty as fuck but whatever
                 var toSay = day + ": ";
                 toSay += data.list[i].temp.min + "°F - " + data.list[i].temp.max + ' ';
                 toSay += data.list[i].humidity + "% humidity ";
                 toSay += data.list[i].speed + "m/h wind ";
-                toSay += '(' + data.list[i].weather.description + ')';
+                toSay += '(' + data.list[i].weather[0].description + ')';
                 core.say(from, to, toSay);
               }
 
