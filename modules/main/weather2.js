@@ -11,7 +11,7 @@ var weather2 = {
 
   weather2: function (from, to, message) {
     var args = parseArgs(message.split(' '), opts = {
-      boolean: ['c', 'i'],
+      boolean: ['c', 'i']
     });
 
     // if they don't have a db entry yet
@@ -51,8 +51,8 @@ var weather2 = {
             core.say(from, to, toSay);
             core.databases.weather2[from.toLowerCase()].cityID = data.id;
             return;
-          } catch (e) {
-            console.log("api error: " + e);
+          } catch (err) {
+            console.log("api error: " + err);
             core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute");
           }
         }
@@ -75,8 +75,8 @@ var weather2 = {
 
             core.say(from, to, toSay);
             return;
-          } catch (e) {
-            console.log("api error: " + e);
+          } catch (err) {
+            console.log("api error: " + err);
             core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
           }
         }
@@ -88,7 +88,7 @@ var weather2 = {
 
   forecast2: function (from, to, message) {
     var args = parseArgs(message.split(' '), opts = {
-      boolean: ['c', 'i'],
+      boolean: ['c', 'i']
     });
 
     // if they don't have a db entry yet
@@ -133,7 +133,7 @@ var weather2 = {
                 toSay += data.list[i].temp.min + "°C - " + data.list[i].temp.max + ' ';
                 tosay += data.list[i].humidity + "% humidity ";
                 toSay += data.list[i].speed + "m/s wind ";
-                toSay += '(' + data.list[i].weather.description ')';
+                toSay += '(' + data.list[i].weather.description + ')';
                 core.say(from, to, toSay);
               }
             } else { // or standard
@@ -144,14 +144,14 @@ var weather2 = {
                 toSay += data.list[i].temp.min + "°F - " + data.list[i].temp.max + ' ';
                 tosay += data.list[i].humidity + "% humidity ";
                 toSay += data.list[i].speed + "m/h wind ";
-                toSay += '(' + data.list[i].weather.description ')';
+                toSay += '(' + data.list[i].weather.description + ')';
                 core.say(from, to, toSay);
               }
 
               core.databases.weather2[from.toLowerCase()].cityID = data.id
               return;
-            } catch (e) {
-              console.log("api error: " + e);
+            } catch (err) {
+              console.log("api error: " + err);
               core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
             }
           }
@@ -175,7 +175,7 @@ var weather2 = {
                 toSay += data.list[i].temp.min + "°C - " + data.list[i].temp.max + ' ';
                 tosay += data.list[i].humidity + "% humidity ";
                 toSay += data.list[i].speed + "m/s wind ";
-                toSay += '(' + data.list[i].weather.description ')';
+                toSay += '(' + data.list[i].weather.description + ')';
                 core.say(from, to, toSay);
               }
             } else { // or standard
@@ -186,14 +186,14 @@ var weather2 = {
                 toSay += data.list[i].temp.min + "°F - " + data.list[i].temp.max + ' ';
                 tosay += data.list[i].humidity + "% humidity ";
                 toSay += data.list[i].speed + "m/h wind ";
-                toSay += '(' + data.list[i].weather.description ')';
+                toSay += '(' + data.list[i].weather.description + ')';
                 core.say(from, to, toSay);
               }
 
               core.databases.weather2[from.toLowerCase()].cityID = data.id
               return;
-            } catch (e) {
-              console.log("api error: " + e);
+            } catch (err) {
+              console.log("api error: " + err);
               core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
             }
           }
