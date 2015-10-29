@@ -154,7 +154,7 @@ var weather2 = {
                 core.say(from, to, toSay);
               }
 
-              core.databases.weather2[from.toLowerCase()].cityID = data.id;
+              core.databases.weather2[from.toLowerCase()].cityID = data.city.id;
               core.write_db("weather2");
               return;
             }
@@ -202,8 +202,6 @@ var weather2 = {
                 toSay += '(' + data.list[i].weather[0].description + ')';
                 core.say(from, to, toSay);
               }
-
-              core.databases.weather2[from.toLowerCase()].cityID = data.id;
               return;
             }
           } catch (err) {
