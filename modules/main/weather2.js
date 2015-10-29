@@ -154,11 +154,10 @@ var weather2 = {
                 toSay += '(' + data.list[i].weather[0].description + ')';
                 core.say(from, to, toSay);
               }
-
-              core.databases.weather2[from.toLowerCase()].cityID = data.city.id;
-              core.write_db("weather2");
-              return;
             }
+            core.databases.weather2[from.toLowerCase()].cityID = data.city.id;
+            core.write_db("weather2");
+            return;
           } catch (err) {
             console.log("api error: " + err);
             core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
