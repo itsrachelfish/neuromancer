@@ -149,7 +149,7 @@ var weather2 = {
               console.log(data.list[0].weather[0].description);
             }
             core.say(from, to, "Forecast for " + data.city.name + ' (' + data.city.country + ')');
-
+            
             for (var i = 1, l = data.list.length; i < l; i++) {
                 weather2.displayRow(data.list[i]);
             }
