@@ -11,7 +11,7 @@ var weather2 = {
 
   weather2: function (from, to, message) {
     var args = parseArgs(message.split(' '), opts = {
-      boolean: ['c', 'i']
+      boolean: ['c', 'i'],
     });
 
     // if they don't have a db entry yet
@@ -88,7 +88,7 @@ var weather2 = {
 
   forecast2: function (from, to, message) {
     var args = parseArgs(message.split(' '), opts = {
-      boolean: ['c', 'i']
+      boolean: ['c', 'i'],
     });
 
     // if they don't have a db entry yet
