@@ -150,11 +150,12 @@ var weather2 = {
 
               core.databases.weather2[from.toLowerCase()].cityID = data.id
               return;
-            } catch (err) {
-              console.log("api error: " + err);
-              core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
             }
+          } catch (err) {
+            console.log("api error: " + err);
+            core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
           }
+
         }
         return;
       }):
@@ -192,10 +193,10 @@ var weather2 = {
 
               core.databases.weather2[from.toLowerCase()].cityID = data.id
               return;
-            } catch (err) {
-              console.log("api error: " + err);
-              core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
             }
+          } catch (err) {
+            console.log("api error: " + err);
+            core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
           }
         }
         return;
