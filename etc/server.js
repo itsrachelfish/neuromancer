@@ -16,7 +16,7 @@ module.exports = {
   //selfSigned: true,
 
   // the bot's nick, username, and realname
-  name: 'fisterroboto',
+  name: 'Neuromancer',
   userName: 'imaBot',
   realName: 'Source available at http://github.com/edwin-pers/neuromancer',
 

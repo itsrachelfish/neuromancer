@@ -1,5 +1,5 @@
 module.exports = {
-  prefix: '<',
+  prefix: '>',
   owner: "epers@primesli.me",
   ownerNick: "Weazzy",
   //owner: "epers@localhost",
