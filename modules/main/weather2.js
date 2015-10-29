@@ -134,7 +134,7 @@ var weather2 = {
             if (core.databases.weather2[from.toLowerCase()].locale == "metric") { // if they're metric
               for (var i = 1; i < data.list.length; i++) {
                 var d = new Date(data.list[i].dt);
-                var day = d.toDateString().split(' ').[0]; // dirty as fuck but whatever
+                var day = d.toDateString().split(' ')[0]; // dirty as fuck but whatever
                 var toSay = day + ": ";
                 toSay += data.list[i].temp.min + "°C - " + data.list[i].temp.max + ' ';
                 toSay += data.list[i].humidity + "% humidity ";
@@ -145,7 +145,7 @@ var weather2 = {
             } else { // or standard
               for (var i = 1; i < data.list.length; i++) {
                 var d = new Date(data.list[i].dt);
-                var day = d.toDateString().split(' ').[0]; // dirty as fuck but whatever
+                var day = d.toDateString().split(' ')[0]; // dirty as fuck but whatever
                 var toSay = day + ": ";
                 toSay += data.list[i].temp.min + "°F - " + data.list[i].temp.max + ' ';
                 toSay += data.list[i].humidity + "% humidity ";
@@ -183,7 +183,7 @@ var weather2 = {
             if (core.databases.weather2[from.toLowerCase()].locale == "metric") { // if they're metric
               for (var i = 1; i < data.list.length; i++) {
                 var d = new Date(Number(data.list[i].dt);
-                var day = d.toDateString().split(' ').[0]; // dirty as fuck but whatever
+                var day = d.toDateString().split(' ')[0]; // dirty as fuck but whatever
                 var toSay = day + ": ";
                 toSay += data.list[i].temp.min + "°C - " + data.list[i].temp.max + ' ';
                 toSay += data.list[i].humidity + "% humidity ";
@@ -194,7 +194,7 @@ var weather2 = {
             } else { // or standard
               for (var i = 1; i < data.list.length; i++) {
                 var d = new Date(data.list[i].dt);
-                var day = d.toDateString().split(' ').[0]; // dirty as fuck but whatever
+                var day = d.toDateString().split(' ')[0]; // dirty as fuck but whatever
                 var toSay = day + ": ";
                 toSay += data.list[i].temp.min + "°F - " + data.list[i].temp.max + ' ';
                 toSay += data.list[i].humidity + "% humidity ";
