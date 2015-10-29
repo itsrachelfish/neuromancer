@@ -87,6 +87,23 @@ var weather2 = {
 
   },
 
+  displayRow: function(row) {
+    var d = new Date(Number(row.dt) * 1000);
+    var day = d.toDateString().split(' ')[0]; // dirty as fuck but whatever
+    var metric = (core.databases.weather2[from.toLowerCase()].locale == "metric") ? true : false;
+
+    var toSay =
+    [
+      day + ":",
+      (metric) ? row.temp.min +  "°C - " + row.temp.max : row.temp.min +  "°F - " + row.temp.max,
+      row.humidity + "% humidity",
+      (metric) ? row.speed + "m/s wind" : row.speed + "m/h wind",
+      '(' + row.weather[0].description + ')',
+    ];
+
+    core.say(from, to, toSay.join(' '));
+  },
+
   forecast2: function (from, to, message) {
     var args = parseArgs(message.split(' '), opts = {
       boolean: ['c', 'i']
@@ -132,33 +149,15 @@ var weather2 = {
               console.log(data.list[0].weather[0].description);
             }
             core.say(from, to, "Forecast for " + data.city.name + ' (' + data.city.country + ')');
-            if (core.databases.weather2[from.toLowerCase()].locale == "metric") { // if they're metric
-              for (var i = 1; i < data.list.length; i++) {
-                var d = new Date(Number(data.list[i].dt) * 1000);
-                var day = d.toDateString().split(' ')[0]; // dirty as fuck but whatever
-                var toSay = day + ": ";
-                toSay += data.list[i].temp.min + "°C - " + data.list[i].temp.max + ' ';
-                toSay += data.list[i].humidity + "% humidity ";
-                toSay += data.list[i].speed + "m/s wind ";
-                toSay += '(' + data.list[i].weather[0].description + ')';
-                core.say(from, to, toSay);
-              }
-            } else { // or standard
-              for (var i = 1; i < data.list.length; i++) {
-                var d = new Date(Number(data.list[i].dt) * 1000);
-                var day = d.toDateString().split(' ')[0]; // dirty as fuck but whatever
-                var toSay = day + ": ";
-                toSay += data.list[i].temp.min + "°F - " + data.list[i].temp.max + ' ';
-                toSay += data.list[i].humidity + "% humidity ";
-                toSay += data.list[i].speed + "m/h wind ";
-                toSay += '(' + data.list[i].weather[0].description + ')';
-                core.say(from, to, toSay);
-              }
 
-              core.databases.weather2[from.toLowerCase()].cityID = data.city.id;
-              core.write_db("weather2");
-              return;
+            for (var i = 1, l = data.list.length; i < l; i++) {
+                weather2.displayRow(data.list[i]);
             }
+
+            core.databases.weather2[from.toLowerCase()].cityID = data.city.id;
+            core.write_db("weather2");
+            return;
+            
           } catch (err) {
             console.log("api error: " + err);
             core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
@@ -181,30 +180,13 @@ var weather2 = {
               console.log(data.list[0].weather[0].description);
             }
             core.say(from, to, "Forecast for " + data.city.name + ' (' + data.city.country + ')');
-            if (core.databases.weather2[from.toLowerCase()].locale == "metric") { // if they're metric
-              for (var i = 1; i < data.list.length; i++) {
-                var d = new Date(Number(data.list[i].dt) * 1000);
-                var day = d.toDateString().split(' ')[0]; // dirty as fuck but whatever
-                var toSay = day + ": ";
-                toSay += data.list[i].temp.min + "°C - " + data.list[i].temp.max + ' ';
-                toSay += data.list[i].humidity + "% humidity ";
-                toSay += data.list[i].speed + "m/s wind ";
-                toSay += '(' + data.list[i].weather[0].description + ')';
-                core.say(from, to, toSay);
-              }
-            } else { // or standard
-              for (var i = 1; i < data.list.length; i++) {
-                var d = new Date(Number(data.list[i].dt) * 1000);
-                var day = d.toDateString().split(' ')[0]; // dirty as fuck but whatever
-                var toSay = day + ": ";
-                toSay += data.list[i].temp.min + "°F - " + data.list[i].temp.max + ' ';
-                toSay += data.list[i].humidity + "% humidity ";
-                toSay += data.list[i].speed + "m/h wind ";
-                toSay += '(' + data.list[i].weather[0].description + ')';
-                core.say(from, to, toSay);
-              }
-              return;
+
+            for (var i = 1, l = data.list.length; i < l; i++) {
+                weather2.displayRow(data.list[i]);
             }
+
+            return;
+
           } catch (err) {
             console.log("api error: " + err);
             core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
