@@ -87,7 +87,7 @@ var weather2 = {
 
   },
 
-  displayRow: function(row) {
+  displayRow: function(row, from, to) {
     var d = new Date(Number(row.dt) * 1000);
     var day = d.toDateString().split(' ')[0]; // dirty as fuck but whatever
     var metric = (core.databases.weather2[from.toLowerCase()].locale == "metric") ? true : false;
@@ -151,7 +151,7 @@ var weather2 = {
             core.say(from, to, "Forecast for " + data.city.name + ' (' + data.city.country + ')');
             
             for (var i = 1, l = data.list.length; i < l; i++) {
-                weather2.displayRow(data.list[i]);
+                weather2.displayRow(data.list[i], from, to);
             }
 
             core.databases.weather2[from.toLowerCase()].cityID = data.city.id;
@@ -182,7 +182,7 @@ var weather2 = {
             core.say(from, to, "Forecast for " + data.city.name + ' (' + data.city.country + ')');
 
             for (var i = 1, l = data.list.length; i < l; i++) {
-                weather2.displayRow(data.list[i]);
+                weather2.displayRow(data.list[i], from, to);
             }
 
             return;
