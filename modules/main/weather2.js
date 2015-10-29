@@ -106,6 +106,7 @@ var weather2 = {
     // these two lines pull out n and remove it from the string
     var days = message.match(/-[1-7]/) ? message.match(/-[1-7]/)[0].slice(1) : '3';
     message = message.replace(/ ?-[0-9]+ ?/, ' ');
+    days = Number(days) + 1;
 
     if (args._[0]) { // if they want to set a new location
       request(weather2.weathAPI + "forecast/daily?type=like&q=" + args._[0] + "&units=" + core.databases.weather2[from.toLowerCase()]["locale"] + "&cnt=" + days + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
@@ -116,12 +117,28 @@ var weather2 = {
           try {
             var data = JSON.parse(body);
             if (core.databases.weather2[from.toLowerCase()]["locale"] == "metric") { // if they're metric
-
+              for (var i = 1; i < data.list.length(); i++) {
+                var d = new Date(data.list[i].dt);
+                var day = d.toDateString()[0]; // dirty as fuck but whatever
+                var toSay = day + ": ";
+                toSay += data.list[i].temp.min + "°C - " + data.list[i].temp.max + ' ';
+                tosay += data.list[i].humidity + "% humidity ";
+                toSay += data.list[i].speed + "m/s wind ";
+                toSay += '(' + data.list[i].weather.description ')';
+                core.say(from, to, toSay);
+              }
             } else { // or standard
-
+              for (var i = 1; i < data.list.length(); i++) {
+                var d = new Date(data.list[i].dt);
+                var day = d.toDateString()[0]; // dirty as fuck but whatever
+                var toSay = day + ": ";
+                toSay += data.list[i].temp.min + "°F - " + data.list[i].temp.max + ' ';
+                tosay += data.list[i].humidity + "% humidity ";
+                toSay += data.list[i].speed + "m/h wind ";
+                toSay += '(' + data.list[i].weather.description ')';
+                core.say(from, to, toSay);
             }
 
-            core.say(from, to, toSay);
             core.databases.weather2[from.toLowerCase()]["cityID"] = data.id
             return;
           } catch (e) {
@@ -140,13 +157,30 @@ var weather2 = {
           }
           try {
             var data = JSON.parse(body);
+            core.say(from, to, "Forecast for " + data.city.name + '(' + data.city.country ')');
             if (core.databases.weather2[from.toLowerCase()]["locale"] == "metric") { // if they're metric
-
+              for (var i = 1; i < data.list.length(); i++) {
+                var d = new Date(data.list[i].dt);
+                var day = d.toDateString()[0]; // dirty as fuck but whatever
+                var toSay = day + ": ";
+                toSay += data.list[i].temp.min + "°C - " + data.list[i].temp.max + ' ';
+                tosay += data.list[i].humidity + "% humidity ";
+                toSay += data.list[i].speed + "m/s wind ";
+                toSay += '(' + data.list[i].weather.description ')';
+                core.say(from, to, toSay);
+              }
             } else { // or standard
-
+              for (var i = 1; i < data.list.length(); i++) {
+                var d = new Date(data.list[i].dt);
+                var day = d.toDateString()[0]; // dirty as fuck but whatever
+                var toSay = day + ": ";
+                toSay += data.list[i].temp.min + "°F - " + data.list[i].temp.max + ' ';
+                tosay += data.list[i].humidity + "% humidity ";
+                toSay += data.list[i].speed + "m/h wind ";
+                toSay += '(' + data.list[i].weather.description ')';
+                core.say(from, to, toSay);
             }
 
-            core.say(from, to, toSay);
             core.databases.weather2[from.toLowerCase()]["cityID"] = data.id
             return;
           } catch (e) {
