@@ -146,17 +146,17 @@ var weather2 = {
                 toSay += data.list[i].speed + "m/h wind ";
                 toSay += '(' + data.list[i].weather.description ')';
                 core.say(from, to, toSay);
-            }
+              }
 
-            core.databases.weather2[from.toLowerCase()].cityID = data.id
-            return;
-          } catch (e) {
-            console.log("api error: " + e);
-            core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
+              core.databases.weather2[from.toLowerCase()].cityID = data.id
+              return;
+            } catch (e) {
+              console.log("api error: " + e);
+              core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
+            }
           }
         }
-      }
-      return;
+        return;
       }):
     } else { // or using the saved location
       request(weather2.weathAPI + "forecast/daily?id=" + core.databases.weather2[from.toLowerCase()]["cityID"] + "&units=" + core.databases.weather2[from.toLowerCase()].locale + "&cnt=" + days + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
@@ -188,19 +188,20 @@ var weather2 = {
                 toSay += data.list[i].speed + "m/h wind ";
                 toSay += '(' + data.list[i].weather.description ')';
                 core.say(from, to, toSay);
-            }
+              }
 
-            core.databases.weather2[from.toLowerCase()].cityID = data.id
-            return;
-          } catch (e) {
-            console.log("api error: " + e);
-            core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
+              core.databases.weather2[from.toLowerCase()].cityID = data.id
+              return;
+            } catch (e) {
+              console.log("api error: " + e);
+              core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
+            }
           }
         }
-      }
-      return;
-    });
-  }
+        return;
+      });
+    }
+  },
 };
 
 module.exports = {
