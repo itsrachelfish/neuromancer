@@ -148,7 +148,7 @@ var weather2 = {
                 core.say(from, to, toSay);
               }
 
-              core.databases.weather2[from.toLowerCase()].cityID = data.id
+              core.databases.weather2[from.toLowerCase()].cityID = data.id;
               return;
             }
           } catch (err) {
@@ -158,7 +158,7 @@ var weather2 = {
 
         }
         return;
-      }):
+      });
     } else { // or using the saved location
       request(weather2.weathAPI + "forecast/daily?id=" + core.databases.weather2[from.toLowerCase()]["cityID"] + "&units=" + core.databases.weather2[from.toLowerCase()].locale + "&cnt=" + days + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
         if (body) {
@@ -167,7 +167,7 @@ var weather2 = {
           }
           try {
             var data = JSON.parse(body);
-            core.say(from, to, "Forecast for " + data.city.name + '(' + data.city.country ')');
+            core.say(from, to, "Forecast for " + data.city.name + '(' + data.city.country + ')');
             if (core.databases.weather2[from.toLowerCase()].locale == "metric") { // if they're metric
               for (var i = 1; i < data.list.length(); i++) {
                 var d = new Date(data.list[i].dt);
@@ -191,7 +191,7 @@ var weather2 = {
                 core.say(from, to, toSay);
               }
 
-              core.databases.weather2[from.toLowerCase()].cityID = data.id
+              core.databases.weather2[from.toLowerCase()].cityID = data.id;
               return;
             }
           } catch (err) {
