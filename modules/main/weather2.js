@@ -132,7 +132,7 @@ var weather2 = {
                 var day = d.toDateString()[0]; // dirty as fuck but whatever
                 var toSay = day + ": ";
                 toSay += data.list[i].temp.min + "°C - " + data.list[i].temp.max + ' ';
-                tosay += data.list[i].humidity + "% humidity ";
+                toSay += data.list[i].humidity + "% humidity ";
                 toSay += data.list[i].speed + "m/s wind ";
                 toSay += '(' + data.list[i].weather.description + ')';
                 core.say(from, to, toSay);
@@ -143,7 +143,7 @@ var weather2 = {
                 var day = d.toDateString()[0]; // dirty as fuck but whatever
                 var toSay = day + ": ";
                 toSay += data.list[i].temp.min + "°F - " + data.list[i].temp.max + ' ';
-                tosay += data.list[i].humidity + "% humidity ";
+                toSay += data.list[i].humidity + "% humidity ";
                 toSay += data.list[i].speed + "m/h wind ";
                 toSay += '(' + data.list[i].weather.description + ')';
                 core.say(from, to, toSay);
@@ -176,7 +176,7 @@ var weather2 = {
                 var day = d.toDateString()[0]; // dirty as fuck but whatever
                 var toSay = day + ": ";
                 toSay += data.list[i].temp.min + "°C - " + data.list[i].temp.max + ' ';
-                tosay += data.list[i].humidity + "% humidity ";
+                toSay += data.list[i].humidity + "% humidity ";
                 toSay += data.list[i].speed + "m/s wind ";
                 toSay += '(' + data.list[i].weather.description + ')';
                 core.say(from, to, toSay);
@@ -187,7 +187,7 @@ var weather2 = {
                 var day = d.toDateString(); // dirty as fuck but whatever
                 var toSay = day + ": ";
                 toSay += data.list[i].temp.min + "°F - " + data.list[i].temp.max + ' ';
-                tosay += data.list[i].humidity + "% humidity ";
+                toSay += data.list[i].humidity + "% humidity ";
                 toSay += data.list[i].speed + "m/h wind ";
                 toSay += '(' + data.list[i].weather.description + ')';
                 core.say(from, to, toSay);
