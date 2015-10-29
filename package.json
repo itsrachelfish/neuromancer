@@ -6,7 +6,6 @@
     "name": "Edwin Pers"
   },
   "dependencies": {
-    "cheerio": "*",
     "cleverbot-node": "*",
     "colors": "*",
     "cowsay": "*",
@@ -20,5 +19,5 @@
     "node-schedule": "*",
     "request": "*",
     "url": "*"
-  },
+  }
 }
