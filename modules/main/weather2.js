@@ -133,7 +133,7 @@ var weather2 = {
             }
             if (core.databases.weather2[from.toLowerCase()].locale == "metric") { // if they're metric
               for (var i = 1; i < data.list.length; i++) {
-                var d = new Date(Number(data.list[i].dt));
+                var d = new Date(Number(data.list[i].dt) * 1000);
                 var day = d.toDateString().split(' ')[0]; // dirty as fuck but whatever
                 var toSay = day + ": ";
                 toSay += data.list[i].temp.min + "°C - " + data.list[i].temp.max + ' ';
@@ -144,7 +144,7 @@ var weather2 = {
               }
             } else { // or standard
               for (var i = 1; i < data.list.length; i++) {
-                var d = new Date(Number(data.list[i].dt));
+                var d = new Date(Number(data.list[i].dt) * 1000);
                 var day = d.toDateString().split(' ')[0]; // dirty as fuck but whatever
                 var toSay = day + ": ";
                 toSay += data.list[i].temp.min + "°F - " + data.list[i].temp.max + ' ';
@@ -182,7 +182,7 @@ var weather2 = {
             core.say(from, to, "Forecast for " + data.city.name + '(' + data.city.country + ')');
             if (core.databases.weather2[from.toLowerCase()].locale == "metric") { // if they're metric
               for (var i = 1; i < data.list.length; i++) {
-                var d = new Date(Number(data.list[i].dt));
+                var d = new Date(Number(data.list[i].dt) * 1000);
                 var day = d.toDateString().split(' ')[0]; // dirty as fuck but whatever
                 var toSay = day + ": ";
                 toSay += data.list[i].temp.min + "°C - " + data.list[i].temp.max + ' ';
@@ -193,7 +193,7 @@ var weather2 = {
               }
             } else { // or standard
               for (var i = 1; i < data.list.length; i++) {
-                var d = new Date(Number(data.list[i].dt));
+                var d = new Date(Number(data.list[i].dt) * 1000);
                 var day = d.toDateString().split(' ')[0]; // dirty as fuck but whatever
                 var toSay = day + ": ";
                 toSay += data.list[i].temp.min + "°F - " + data.list[i].temp.max + ' ';
