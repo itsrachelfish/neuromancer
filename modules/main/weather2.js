@@ -50,6 +50,7 @@ var weather2 = {
 
             core.say(from, to, toSay);
             core.databases.weather2[from.toLowerCase()].cityID = data.id;
+            core.write_db("weather2");
             return;
           } catch (err) {
             console.log("api error: " + err);
@@ -126,7 +127,7 @@ var weather2 = {
           try {
             var data = JSON.parse(body);
             if (core.databases.weather2[from.toLowerCase()].locale == "metric") { // if they're metric
-              for (var i = 1; i < data.list.length(); i++) {
+              for (var i = 1; i < data.list.length; i++) {
                 var d = new Date(data.list[i].dt);
                 var day = d.toDateString()[0]; // dirty as fuck but whatever
                 var toSay = day + ": ";
@@ -137,7 +138,7 @@ var weather2 = {
                 core.say(from, to, toSay);
               }
             } else { // or standard
-              for (var i = 1; i < data.list.length(); i++) {
+              for (var i = 1; i < data.list.length; i++) {
                 var d = new Date(data.list[i].dt);
                 var day = d.toDateString()[0]; // dirty as fuck but whatever
                 var toSay = day + ": ";
@@ -149,6 +150,7 @@ var weather2 = {
               }
 
               core.databases.weather2[from.toLowerCase()].cityID = data.id;
+              core.write_db("weather2");
               return;
             }
           } catch (err) {
@@ -169,7 +171,7 @@ var weather2 = {
             var data = JSON.parse(body);
             core.say(from, to, "Forecast for " + data.city.name + '(' + data.city.country + ')');
             if (core.databases.weather2[from.toLowerCase()].locale == "metric") { // if they're metric
-              for (var i = 1; i < data.list.length(); i++) {
+              for (var i = 1; i < data.list.length; i++) {
                 var d = new Date(data.list[i].dt);
                 var day = d.toDateString()[0]; // dirty as fuck but whatever
                 var toSay = day + ": ";
@@ -180,7 +182,7 @@ var weather2 = {
                 core.say(from, to, toSay);
               }
             } else { // or standard
-              for (var i = 1; i < data.list.length(); i++) {
+              for (var i = 1; i < data.list.length; i++) {
                 var d = new Date(data.list[i].dt);
                 var day = d.toDateString(); // dirty as fuck but whatever
                 var toSay = day + ": ";
