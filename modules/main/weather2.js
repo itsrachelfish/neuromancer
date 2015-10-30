@@ -61,7 +61,7 @@ var weather2 = {
       return;
 
     } else {
-      request(weather2.weathAPI + "weather?id=" + core.databases.weather2[from.toLowerCase()].locale + "&units=" + core.databases.weather2[from.toLowerCase()].locale + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
+      request(weather2.weathAPI + "weather?id=" + core.databases.weather2[from.toLowerCase()].cityID + "&units=" + core.databases.weather2[from.toLowerCase()].locale + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
         if (body) {
           if (debug) {
             console.log(body);
@@ -69,9 +69,9 @@ var weather2 = {
           try {
             var data = JSON.parse(body);
             if (core.databases.weather2[from.toLowerCase()].locale == "metric") {
-              var toSay = from + ": [" + data.name + " (" + data.sys.country + ")]" + " [" + data.main.temp + "°C (" + data.main.humidity + "% humidity)]" + " [Wind: " + data.wind.speed + "m/s from " + data.wind.deg + "°]";
+              var toSay = from + ": [" + color.teal(data.name) + " (" + color.teal(data.sys.country) + ")]" + " [" + color.red(data.main.temp) + "°C (" + color.brown(data.main.humidity) + "% humidity)]" + " [Wind: " + color.teal(data.wind.speed) + "m/s";
             } else {
-              var toSay = from + ": [" + data.name + " (" + data.sys.country + ")]" + " [" + data.main.temp + "°F (" + data.main.humidity + "% humidity)]" + " [Wind: " + data.wind.speed + "mi/h from " + data.wind.deg + "°]";
+              var toSay = from + ": [" + color.teal(data.name) + " (" + color.teal(data.sys.country) + ")]" + " [" + color.red(data.main.temp) + "°F (" + color.brown(data.main.humidity) + "% humidity)]" + " [Wind: " + color.teal(data.wind.speed) + "m/h";
             }
 
             core.say(from, to, toSay);
@@ -95,10 +95,10 @@ var weather2 = {
     var toSay =
     [
       day + ":",
-      (metric) ? row.temp.min +  "°C - " + row.temp.max : row.temp.min +  "°F - " + row.temp.max,
-      row.humidity + "% humidity",
-      (metric) ? row.speed + "m/s wind" : row.speed + "m/h wind",
-      '(' + row.weather[0].description + ')',
+      (metric) ? color.blue(row.temp.min) +  " - " + color.red(row.temp.max) + "°C": color.blue(row.temp.min) +  " - " + color.red(row.temp.max) + "°F",
+      color.brown(row.humidity) + "% humidity",
+      (metric) ? color.teal(row.speed) + " m/s wind" : color.teal(row.speed) + " m/h wind",
+      '(' + color.purple(row.weather[0].description) + ')',
     ];
 
     core.say(from, to, toSay.join(' '));
@@ -167,7 +167,7 @@ var weather2 = {
         return;
       });
     } else { // or using the saved location
-      request(weather2.weathAPI + "forecast/daily?id=" + core.databases.weather2[from.toLowerCase()]["cityID"] + "&units=" + core.databases.weather2[from.toLowerCase()].locale + "&cnt=" + days + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
+      request(weather2.weathAPI + "forecast/daily?id=" + core.databases.weather2[from.toLowerCase()].cityID + "&units=" + core.databases.weather2[from.toLowerCase()].locale + "&cnt=" + days + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
         if (body) {
           if (debug) {
             console.log(body);
