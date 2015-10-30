@@ -46,11 +46,11 @@ var weather2 = {
 
             var toSay = [
               from + ": [",
-              color.teal(data.name + data.sys.country).trim() + ']',
-              '[' + ((metric) ? color.red(data.main.temp).trim() + "°C" : color.red(data.main.temp).trim() + "°F") + ']',
-              '[' + color.green(data.main.humidity + '%').trim() + ' humidity]',
-              '[Wind: ' + ((metric) ? color.teal(data.wind.speed).trim() + " m/s" : color.teal(data.wind.speed).trim() + " m/h") + ']',
-              '[' + color.purple(data.weather[0].description).trim()
+              color.teal(data.name + data.sys.country) + ']',
+              '[' + ((metric) ? color.red(data.main.temp) + "°C" : color.red(data.main.temp) + "°F") + ']',
+              '[' + color.green(data.main.humidity + '%') + ' humidity]',
+              '[Wind: ' + ((metric) ? color.teal(data.wind.speed) + " m/s" : color.teal(data.wind.speed) + " m/h") + ']',
+              '[' + color.purple(data.weather[0].description)
             ];
             core.say(from, to, toSay.join(' '));
             core.databases.weather2[from.toLowerCase()].cityID = data.id;
@@ -76,11 +76,11 @@ var weather2 = {
 
             var toSay = [
               from + ": [",
-              color.teal(data.name + data.sys.country).trim() + ']',
-              '[' + ((metric) ? color.red(data.main.temp).trim() + "°C" : color.red(data.main.temp).trim() + "°F") + ']',
-              '[' + color.green(data.main.humidity + '%').trim() + ' humidity]',
-              '[Wind: ' + ((metric) ? color.teal(data.wind.speed).trim() + " m/s" : color.teal(data.wind.speed).trim() + " m/h") + ']',
-              '[' + color.purple(data.weather[0].description).trim()
+              color.teal(data.name + data.sys.country) + ']',
+              '[' + ((metric) ? color.red(data.main.temp) + "°C" : color.red(data.main.temp) + "°F") + ']',
+              '[' + color.green(data.main.humidity + '%') + ' humidity]',
+              '[Wind: ' + ((metric) ? color.teal(data.wind.speed) + " m/s" : color.teal(data.wind.speed) + " m/h") + ']',
+              '[' + color.purple(data.weather[0].description)
             ];
             core.say(from, to, toSay.join(' '));
             return;
@@ -103,10 +103,10 @@ var weather2 = {
 
     var toSay = [
       day + ":",
-      (metric) ? color.blue(row.temp.min).trim() + " - " + color.red(row.temp.max).trim() + "°C" : color.blue(row.temp.min).trim() + " - " + color.red(row.temp.max).trim() + "°F",
+      (metric) ? color.blue(row.temp.min) + " - " + color.red(row.temp.max) + "°C" : color.blue(row.temp.min) + " - " + color.red(row.temp.max) + "°F",
       color.green(row.humidity) + "% humidity",
-      (metric) ? color.teal(row.speed).trim() + " m/s wind" : color.teal(row.speed).trim() + " m/h wind",
-      '(' + color.purple(row.weather[0].description).trim() + ')',
+      (metric) ? color.teal(row.speed) + " m/s wind" : color.teal(row.speed) + " m/h wind",
+      '(' + color.purple(row.weather[0].description) + ')',
     ];
 
     core.say(from, to, toSay.join(' '));
