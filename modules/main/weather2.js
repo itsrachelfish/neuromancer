@@ -68,14 +68,19 @@ var weather2 = {
           }
           try {
             var data = JSON.parse(body);
-            if (core.databases.weather2[from.toLowerCase()].locale == "metric") {
-              var toSay = from + ": [" + color.teal(data.name) + " (" + color.teal(data.sys.country) + ")]" + " [" + color.red(data.main.temp) + "°C (" + color.brown(data.main.humidity) + "% humidity)]" + " [Wind: " + color.teal(data.wind.speed) + "m/s";
-            } else {
-              var toSay = from + ": [" + color.teal(data.name) + " (" + color.teal(data.sys.country) + ")]" + " [" + color.red(data.main.temp) + "°F (" + color.brown(data.main.humidity) + "% humidity)]" + " [Wind: " + color.teal(data.wind.speed) + "m/h";
-            }
+            var metric = (core.databases.weather2[from.toLowerCase()].locale == "metric") ? true : false;
 
-            core.say(from, to, toSay);
+            var toSay = [
+              from + ": [",
+              color.teal(data.name + data.sys.country).trim() + ']',
+              '[' + ((metric) ? color.red(data.main.temp).trim() + "°C" : color.red(data.main.temp).trim() + "°F") + ']',
+              '[' + color.green(data.main.humidity + '%').trim() + ' humidity]',
+              '[Wind: ' + ((metric) ? color.teal(data.wind.speed).trim() + " m/s" : color.teal(data.wind.speed).trim() + " m/h") + ']',
+              '[' + color.purple(data.weather.description).trim()
+            ];
+            core.say(from, to, toSay.join(' '));
             return;
+
           } catch (err) {
             console.log("api error: " + err);
             core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
@@ -87,18 +92,17 @@ var weather2 = {
 
   },
 
-  displayRow: function(row, from, to) {
+  displayRow: function (row, from, to) {
     var d = new Date(Number(row.dt) * 1000);
     var day = d.toDateString().split(' ')[0]; // dirty as fuck but whatever
     var metric = (core.databases.weather2[from.toLowerCase()].locale == "metric") ? true : false;
 
-    var toSay =
-    [
+    var toSay = [
       day + ":",
-      (metric) ? color.blue(row.temp.min) +  " - " + color.red(row.temp.max) + "°C": color.blue(row.temp.min) +  " - " + color.red(row.temp.max) + "°F",
-      color.brown(row.humidity) + "% humidity",
-      (metric) ? color.teal(row.speed) + " m/s wind" : color.teal(row.speed) + " m/h wind",
-      '(' + color.purple(row.weather[0].description) + ')',
+      (metric) ? color.blue(row.temp.min).trim() + " - " + color.red(row.temp.max).trim() + "°C" : color.blue(row.temp.min).trim() + " - " + color.red(row.temp.max).trim() + "°F",
+      color.green(row.humidity) + "% humidity",
+      (metric) ? color.teal(row.speed).trim() + " m/s wind" : color.teal(row.speed).trim() + " m/h wind",
+      '(' + color.purple(row.weather[0].description).trim() + ')',
     ];
 
     core.say(from, to, toSay.join(' '));
@@ -149,15 +153,15 @@ var weather2 = {
               console.log(data.list[0].weather[0].description);
             }
             core.say(from, to, "Forecast for " + data.city.name + ' (' + data.city.country + ')');
-            
+
             for (var i = 1, l = data.list.length; i < l; i++) {
-                weather2.displayRow(data.list[i], from, to);
+              weather2.displayRow(data.list[i], from, to);
             }
 
             core.databases.weather2[from.toLowerCase()].cityID = data.city.id;
             core.write_db("weather2");
             return;
-            
+
           } catch (err) {
             console.log("api error: " + err);
             core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
@@ -182,7 +186,7 @@ var weather2 = {
             core.say(from, to, "Forecast for " + data.city.name + ' (' + data.city.country + ')');
 
             for (var i = 1, l = data.list.length; i < l; i++) {
-                weather2.displayRow(data.list[i], from, to);
+              weather2.displayRow(data.list[i], from, to);
             }
 
             return;
