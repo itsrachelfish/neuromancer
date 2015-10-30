@@ -42,13 +42,17 @@ var weather2 = {
           }
           try {
             var data = JSON.parse(body);
-            if (core.databases.weather2[from.toLowerCase()].locale == "metric") {
-              var toSay = from + ": [" + data.name + " (" + data.sys.country + ")]" + " [" + data.main.temp + "°C (" + data.main.humidity + "% humidity)]" + " [Wind: " + data.wind.speed + "m/s from " + data.wind.deg + "°]";
-            } else {
-              var toSay = from + ": [" + data.name + " (" + data.sys.country + ")]" + " [" + data.main.temp + "°F (" + data.main.humidity + "% humidity)]" + " [Wind: " + data.wind.speed + "mi/h from " + data.wind.deg + "°]";
-            }
+            var metric = (core.databases.weather2[from.toLowerCase()].locale == "metric") ? true : false;
 
-            core.say(from, to, toSay);
+            var toSay = [
+              from + ": [",
+              color.teal(data.name + data.sys.country).trim() + ']',
+              '[' + ((metric) ? color.red(data.main.temp).trim() + "°C" : color.red(data.main.temp).trim() + "°F") + ']',
+              '[' + color.green(data.main.humidity + '%').trim() + ' humidity]',
+              '[Wind: ' + ((metric) ? color.teal(data.wind.speed).trim() + " m/s" : color.teal(data.wind.speed).trim() + " m/h") + ']',
+              '[' + color.purple(data.weather[0].description).trim()
+            ];
+            core.say(from, to, toSay.join(' '));
             core.databases.weather2[from.toLowerCase()].cityID = data.id;
             core.write_db("weather2");
             return;
@@ -76,7 +80,7 @@ var weather2 = {
               '[' + ((metric) ? color.red(data.main.temp).trim() + "°C" : color.red(data.main.temp).trim() + "°F") + ']',
               '[' + color.green(data.main.humidity + '%').trim() + ' humidity]',
               '[Wind: ' + ((metric) ? color.teal(data.wind.speed).trim() + " m/s" : color.teal(data.wind.speed).trim() + " m/h") + ']',
-              '[' + color.purple(data.weather.description).trim()
+              '[' + color.purple(data.weather[0].description).trim()
             ];
             core.say(from, to, toSay.join(' '));
             return;
