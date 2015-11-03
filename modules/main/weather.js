@@ -1,5 +1,5 @@
 var parseArgs = require("minimist");
-var color = require("irc-colors");
+var irc = require("irc"); // only used for colors.wrap
 var request = require("request");
 var debug = true;
 var core = false;
@@ -49,12 +49,12 @@ var weather = {
           var metric = (core.databases.weather[from.toLowerCase()].locale == "metric") ? true : false;
 
           var toSay = [
-              from + ": [",
-              color.teal(data.name + data.sys.country) + ']',
-              '[' + ((metric) ? color.red(data.main.temp) + "°C" : color.red(data.main.temp) + "°F") + ']',
-              '[' + color.green(data.main.humidity + '%') + ' humidity]',
-              '[Wind: ' + ((metric) ? color.teal(data.wind.speed) + " m/s" : color.teal(data.wind.speed) + " m/h") + ']',
-              '[' + color.purple(data.weather[0].description)
+              from + ":",
+              '[' + irc.colors.wrap('cyan', data.name) + " (" + irc.colors.wrap('cyan', data.sys.country) + ')]',
+              '[' + ((metric) ? irc.colors.wrap('dark_red', data.main.temp) + "°C" : irc.colors.wrap('dark_red', data.main.temp) + "°F") + ']',
+              '[' + irc.colors.wrap('dark_green', data.main.humidity) + '% humidity]',
+              '[Wind: ' + ((metric) ? irc.colors.wrap("orange", data.wind.speed).trim() + " m/s" : irc.colors.wrap("orange", data.wind.speed).trim() + " m/h") + ']',
+              '[' + irc.colors.wrap("magenta", data.weather[0].description).trim() + ']'
             ];
           core.say(from, to, toSay.join(' '));
           core.databases.weather[from.toLowerCase()].cityID = data.id;
@@ -76,10 +76,10 @@ var weather = {
 
     var toSay = [
       day + ":",
-      (metric) ? color.blue(row.temp.min) + " - " + color.red(row.temp.max) + "°C" : color.blue(row.temp.min) + " - " + color.red(row.temp.max) + "°F",
-      color.green(row.humidity) + "% humidity",
-      (metric) ? color.teal(row.speed) + " m/s wind" : color.teal(row.speed) + " m/h wind",
-      '(' + color.purple(row.weather[0].description) + ')',
+      '[' + ((metric) ? irc.colors.wrap('dark_blue', row.temp.min) + " - " + irc.colors.wrap('dark_red', row.temp.max) + "°C]" : irc.colors.wrap('dark_blue', row.temp.min) + " - " + irc.colors.wrap('dark_red', row.temp.max) + "°F]"),
+      '[' + irc.colors.wrap('dark_green', row.humidity) + "% humidity]",
+      '[' + (metric) ? irc.colors.wrap("orange", row.speed) + " m/s wind]" : irc.colors.wrap("orange", row.speed) + " m/h wind]",
+      '[' + irc.colors.wrap("magenta", row.weather[0].description) + ']',
     ];
 
     core.say(from, to, toSay.join(' '));
@@ -87,7 +87,7 @@ var weather = {
 
   forecast: function (from, to, message) {
     var args = parseArgs(message.split(' '), opts = {
-      boolean: ['c', 'i']
+      boolean: ['c', 'i', 'z']
     });
 
     // if they don't have a db entry yet
@@ -116,66 +116,42 @@ var weather = {
     message = message.replace(/ ?-[0-9]+ ?/, ' ');
     days = Number(days) + 1;
 
-    if (args._[0]) { // if they want to set a new location
-      request(weather.weathAPI + "forecast/daily?zip=" + args._[0] + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&cnt=" + days + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
-        if (body) {
-          if (debug) {
-            console.log(body);
-          }
-          try {
-            var data = JSON.parse(body);
-            if (debug) {
-              console.log(data.list[0].dt);
-              console.log(data.list[0].temp.min);
-              console.log(data.list[0].weather[0].description);
-            }
-            core.say(from, to, "Forecast for " + data.city.name + ' (' + data.city.country + ')');
-
-            for (var i = 1, l = data.list.length; i < l; i++) {
-              weather.displayRow(data.list[i], from, to);
-            }
-
-            core.databases.weather[from.toLowerCase()].cityID = data.city.id;
-            core.write_db("weather");
-            return;
-
-          } catch (err) {
-            console.log("api error: " + err);
-            core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
-          }
-
-        }
-        return;
-      });
-    } else { // or using the saved location
-      request(weather.weathAPI + "forecast/daily?id=" + core.databases.weather[from.toLowerCase()].cityID + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&cnt=" + days + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
-        if (body) {
-          if (debug) {
-            console.log(body);
-          }
-          try {
-            var data = JSON.parse(body);
-            if (debug) {
-              console.log(data.list[0].dt);
-              console.log(data.list[0].temp.min);
-              console.log(data.list[0].weather[0].description);
-            }
-            core.say(from, to, "Forecast for " + data.city.name + ' (' + data.city.country + ')');
-
-            for (var i = 1, l = data.list.length; i < l; i++) {
-              weather.displayRow(data.list[i], from, to);
-            }
-
-            return;
-
-          } catch (err) {
-            console.log("api error: " + err);
-            core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
-          }
-        }
-        return;
-      });
+    if (debug) {
+      console.log(weather.weathAPI + (args._[0] ? (args.z ? "forecast/daily?zip=" + args._ : "forecast/daily?type=like&q=" + args._) : ("forecast/daily?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&cnt=" + days + "&APPID=" + core.databases.secrets["OWMAPIKey"])
+      console.log(JSON.stringify(args))
     }
+
+    // nested ternary operators fuck yeah
+    request(weather.weathAPI + (args._[0] ? (args.z ? "forecast/daily?zip=" + args._ : "forecast/daily?type=like&q=" + args._) : ("forecast/daily?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&cnt=" + days + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
+      if (body) {
+        if (debug) {
+          console.log(body);
+        }
+        try {
+          var data = JSON.parse(body);
+          if (debug) {
+            console.log(data.list[0].dt);
+            console.log(data.list[0].temp.min);
+            console.log(data.list[0].weather[0].description);
+          }
+          core.say(from, to, "Forecast for " + data.city.name + ' (' + data.city.country + ')');
+
+          for (var i = 1, l = data.list.length; i < l; i++) {
+            weather.displayRow(data.list[i], from, to);
+          }
+
+          core.databases.weather[from.toLowerCase()].cityID = data.city.id;
+          core.write_db("weather");
+          return;
+
+        } catch (err) {
+          console.log("api error: " + err);
+          core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute.");
+        }
+
+      }
+      return;
+    });
   },
 };
 
