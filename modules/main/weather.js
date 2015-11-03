@@ -51,10 +51,10 @@ var weather = {
           var toSay = [
               from + ":",
               '[' + irc.colors.wrap('cyan', data.name) + " (" + irc.colors.wrap('cyan', data.sys.country) + ')]',
-              '[' + ((metric) ? irc.colors.wrap('dark_red', data.main.temp) + "°C" : irc.colors.wrap('dark_red', data.main.temp) + "°F") + ']',
-              '[' + irc.colors.wrap('dark_green', data.main.humidity) + '% humidity]',
-              '[Wind: ' + ((metric) ? irc.colors.wrap("orange", data.wind.speed).trim() + " m/s" : irc.colors.wrap("orange", data.wind.speed).trim() + " m/h") + ']',
-              '[' + irc.colors.wrap("magenta", data.weather[0].description).trim() + ']'
+              '[' + ((metric) ? irc.colors.wrap('dark_red', Math.round(Number(data.main.temp))) + "°C" : irc.colors.wrap('dark_red', Math.round(Number(data.main.temp))) + "°F") + ']',
+              '[' + irc.colors.wrap('dark_green', Number(data.main.humidity)) + '% humidity]',
+              '[Wind: ' + ((metric) ? irc.colors.wrap("orange", Math.round(Number(data.wind.speed))) + " m/s" : irc.colors.wrap("orange", Math.round(Number(data.wind.speed))) + " m/h") + ']',
+              '[' + irc.colors.wrap("magenta", data.weather[0].description) + ']'
             ];
           core.say(from, to, toSay.join(' '));
           core.databases.weather[from.toLowerCase()].cityID = data.id;
@@ -76,9 +76,9 @@ var weather = {
 
     var toSay = [
       day + ":",
-      '[' + ((metric) ? irc.colors.wrap('dark_blue', row.temp.min) + " - " + irc.colors.wrap('dark_red', row.temp.max) + "°C]" : irc.colors.wrap('dark_blue', row.temp.min) + " - " + irc.colors.wrap('dark_red', row.temp.max) + "°F]"),
-      '[' + irc.colors.wrap('dark_green', row.humidity) + "% humidity]",
-      '[' + ((metric) ? (irc.colors.wrap("orange", row.speed) + " m/s wind]") : (irc.colors.wrap("orange", row.speed) + " m/h wind]")),
+      '[' + ((metric) ? irc.colors.wrap('dark_blue', Math.round(Number(row.temp.min))) + " - " + irc.colors.wrap('dark_red', Math.round(Number(row.temp.max))) + "°C]" : irc.colors.wrap('dark_blue', Math.round(Number(row.temp.min))) + " - " + irc.colors.wrap('dark_red', Math.round(Number(row.temp.max))) + "°F]"),
+      '[' + irc.colors.wrap('dark_green', Math.round(Number(row.humidity))) + "% humidity]",
+      '[' + ((metric) ? (irc.colors.wrap("orange", Math.round(Number(row.speed))) + " m/s wind]") : (irc.colors.wrap("orange", Math.round(Number(row.speed))) + " m/h wind]")),
       '[' + irc.colors.wrap("magenta", row.weather[0].description) + ']',
     ];
 
