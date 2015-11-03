@@ -5,7 +5,7 @@ var debug = true;
 var core = false;
 
 var weather = {
-  commands: ["weather", "forecast2"],
+  commands: ["weather", "forecast"],
 
   weathAPI: 'http://api.openweathermap.org/data/2.5/',
 
@@ -112,7 +112,7 @@ var weather = {
     core.say(from, to, toSay.join(' '));
   },
 
-  forecast2: function (from, to, message) {
+  forecast: function (from, to, message) {
     var args = parseArgs(message.split(' '), opts = {
       boolean: ['c', 'i']
     });
