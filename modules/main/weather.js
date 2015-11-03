@@ -35,7 +35,7 @@ var weather = {
     }
 
     // nested ternary operators fuck yeah
-    request(weather.weathAPI + (args._[0] ? (args.s ? "weather?type=like&q=" : "weather?zip=") : ("weather?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&APPID=" + core.databases.secrets.OWMAPIKey, function (e, r, body) {
+    request(weather.weathAPI + (args._[0] ? (args.s ? "weather?zip=" : "weather?type=like&q=") : ("weather?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&APPID=" + core.databases.secrets.OWMAPIKey, function (e, r, body) {
       if (body) {
         if (debug) {
           console.log(body);
