@@ -4,13 +4,13 @@ var core = false;
 
 var secrets = {
   commands: ["secret"],
-  
+
   secret: function(from, to, message) {
     var args = parseArgs(message.split(' '), opts={
       boolean: ['l'],
       string: ['a'],
     });
-    
+
     if (args.l) {
       core.databases.secrets.forEach(function(entry, index, object) {
         core.say(from, from, "[" + index + "] " + entry.key + " = " + entry.data);
@@ -36,12 +36,12 @@ module.exports = {
     core = _core;
     return;
   },
-  
+
   unload: function() {
     delete secrets;
     delete core;
   },
-  
+
   commands: secrets.commands,
   db: true,
   run: function(command, from, to, message) {
