@@ -35,7 +35,7 @@ var weather = {
     }
 
     if (debug) {
-      console.log(weather.weathAPI + (args._[0] ? (args.s ? "weather?zip=" : "weather?type=like&q=") : ("weather?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&APPID=" + core.databases.secrets.OWMAPIKey)
+      console.log(weather.weathAPI + (args._[0] ? (args.s ? "weather?zip=" + args._: "weather?type=like&q=" + args._) : ("weather?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&APPID=" + core.databases.secrets["OWMAPIKey"])
     }
 
     // nested ternary operators fuck yeah
