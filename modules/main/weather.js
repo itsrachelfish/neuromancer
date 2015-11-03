@@ -5,46 +5,46 @@ var debug = true;
 var core = false;
 
 var weather = {
-    commands: ["weather", "forecast"],
+  commands: ["weather", "forecast"],
 
-    weathAPI: 'http://api.openweathermap.org/data/2.5/',
+  weathAPI: 'http://api.openweathermap.org/data/2.5/',
 
-    weather: function (from, to, message) {
-      var args = parseArgs(message.split(' '), opts = {
-        boolean: ['c', 'i', 's']
-      });
+  weather: function (from, to, message) {
+    var args = parseArgs(message.split(' '), opts = {
+      boolean: ['c', 'i', 's']
+    });
 
-      // if they don't have a db entry yet
-      if (!core.databases.weather[from.toLowerCase()]) {
-        core.databases.weather[from.toLowerCase()] = {};
-        core.databases.weather[from.toLowerCase()].locale = "imperial"; // default to imperial
-      }
+    // if they don't have a db entry yet
+    if (!core.databases.weather[from.toLowerCase()]) {
+      core.databases.weather[from.toLowerCase()] = {};
+      core.databases.weather[from.toLowerCase()].locale = "imperial"; // default to imperial
+    }
 
-      // if they don't have a saved location and they're not trying to set a new one
-      if (!core.databases.weather[from.toLowerCase()].cityID && !args._[0]) {
-        core.say(from, to, from + ": I need a location. By default I search by zipcode, use -s to do a search by name");
-        return;
-      }
+    // if they don't have a saved location and they're not trying to set a new one
+    if (!core.databases.weather[from.toLowerCase()].cityID && !args._[0]) {
+      core.say(from, to, from + ": I need a location. By default I search by zipcode, use -s to do a search by name");
+      return;
+    }
 
-      if (args.c) { // if they want results in metric
-        core.databases.weather[from.toLowerCase()].locale = "metric";
-      }
+    if (args.c) { // if they want results in metric
+      core.databases.weather[from.toLowerCase()].locale = "metric";
+    }
 
-      if (args.i) { // if they want results in imperial
-        core.databases.weather[from.toLowerCase()].locale = "imperial";
-      }
+    if (args.i) { // if they want results in imperial
+      core.databases.weather[from.toLowerCase()].locale = "imperial";
+    }
 
-      // nested ternary operators fuck yeah
-      request(weather.weathAPI + (args._[0] ? (args.s ? "weather?type=like&q=" : "weather?zip=") : ("weather?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
-        if (body) {
-          if (debug) {
-            console.log(body);
-          }
-          try {
-            var data = JSON.parse(body);
-            var metric = (core.databases.weather[from.toLowerCase()].locale == "metric") ? true : false;
+    // nested ternary operators fuck yeah
+    request(weather.weathAPI + (args._[0] ? (args.s ? "weather?type=like&q=" : "weather?zip=") : ("weather?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&APPID=" + core.databases.secrets.OWMAPIKey, function (e, r, body) {
+      if (body) {
+        if (debug) {
+          console.log(body);
+        }
+        try {
+          var data = JSON.parse(body);
+          var metric = (core.databases.weather[from.toLowerCase()].locale == "metric") ? true : false;
 
-            var toSay = [
+          var toSay = [
               from + ": [",
               color.teal(data.name + data.sys.country) + ']',
               '[' + ((metric) ? color.red(data.main.temp) + "°C" : color.red(data.main.temp) + "°F") + ']',
@@ -52,18 +52,17 @@ var weather = {
               '[Wind: ' + ((metric) ? color.teal(data.wind.speed) + " m/s" : color.teal(data.wind.speed) + " m/h") + ']',
               '[' + color.purple(data.weather[0].description)
             ];
-            core.say(from, to, toSay.join(' '));
-            core.databases.weather[from.toLowerCase()].cityID = data.id;
-            core.write_db("weather");
-            return;
-          } catch (err) {
-            console.log("api error: " + err);
-            core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute");
-          }
+          core.say(from, to, toSay.join(' '));
+          core.databases.weather[from.toLowerCase()].cityID = data.id;
+          core.write_db("weather");
+          return;
+        } catch (err) {
+          console.log("api error: " + err);
+          core.say(from, to, from + ": I had a problem fetching weather, please try again in a minute");
         }
-      });
-      return;
-    }
+      }
+    });
+    return;
   },
 
   displayRow: function (row, from, to) {
