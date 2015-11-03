@@ -4,3 +4,4 @@
 
 db/*
 log/*
+node_modules/*

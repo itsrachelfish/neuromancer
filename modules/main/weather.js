@@ -11,7 +11,7 @@ var weather = {
 
   weather: function (from, to, message) {
     var args = parseArgs(message.split(' '), opts = {
-      boolean: ['c', 'i']
+      boolean: ['c', 'i', 's']
     });
 
     // if they don't have a db entry yet
@@ -22,7 +22,7 @@ var weather = {
 
     // if they don't have a saved location and they're not trying to set a new one
     if (!core.databases.weather[from.toLowerCase()].cityID && !args._[0]) {
-      core.say(from, to, from + ": I need a location. Postal codes usually work, if that fails try <city> <country>");
+      core.say(from, to, from + ": I need a location. By default I search by zipcode, use -s to do a search by name");
       return;
     }
 
@@ -35,7 +35,7 @@ var weather = {
     }
 
     if (args._[0]) { // if they want to set a new location
-      request(weather.weathAPI + "weather?type=like&q=" + args._[0] + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
+      request(weather.weathAPI + "weather?zip=" + args._[0] + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
         if (body) {
           if (debug) {
             console.log(body);
@@ -144,7 +144,7 @@ var weather = {
     days = Number(days) + 1;
 
     if (args._[0]) { // if they want to set a new location
-      request(weather.weathAPI + "forecast/daily?type=like&q=" + args._[0] + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&cnt=" + days + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
+      request(weather.weathAPI + "forecast/daily?zip=" + args._[0] + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&cnt=" + days + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
         if (body) {
           if (debug) {
             console.log(body);
