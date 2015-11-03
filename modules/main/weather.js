@@ -11,7 +11,7 @@ var weather = {
 
   weather: function (from, to, message) {
     var args = parseArgs(message.split(' '), opts = {
-      boolean: ['c', 'i', 's']
+      boolean: ['c', 'i', 'z']
     });
 
     // if they don't have a db entry yet
@@ -22,7 +22,7 @@ var weather = {
 
     // if they don't have a saved location and they're not trying to set a new one
     if (!core.databases.weather[from.toLowerCase()].cityID && !args._[0]) {
-      core.say(from, to, from + ": I need a location. By default I search by zipcode, use -s to do a search by name");
+      core.say(from, to, from + ": I need a location. By default I search by name, add -z to search by zipcode");
       return;
     }
 
@@ -35,11 +35,11 @@ var weather = {
     }
 
     if (debug) {
-      console.log(weather.weathAPI + (args._[0] ? (args.s ? "weather?type=like&q=" + args._ : "weather?zip=" + args._) : ("weather?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&APPID=" + core.databases.secrets["OWMAPIKey"])
+      console.log(weather.weathAPI + (args._[0] ? (args.z ? "weather?zip=" + args._ : "weather?type=like&q=" + args._) : ("weather?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&APPID=" + core.databases.secrets["OWMAPIKey"])
     }
 
     // nested ternary operators fuck yeah
-    request(weather.weathAPI + (args._[0] ? (args.s ? ("weather?type=like&q=" + args._) : ("weather?zip=" + args._)) : ("weather?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
+    request(weather.weathAPI + (args._[0] ? (args.z ? "weather?zip=" + args._ : "weather?type=like&q=" + args._) : ("weather?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
       if (body) {
         if (debug) {
           console.log(body);
