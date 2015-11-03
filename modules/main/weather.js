@@ -78,7 +78,7 @@ var weather = {
       day + ":",
       '[' + ((metric) ? irc.colors.wrap('dark_blue', row.temp.min) + " - " + irc.colors.wrap('dark_red', row.temp.max) + "°C]" : irc.colors.wrap('dark_blue', row.temp.min) + " - " + irc.colors.wrap('dark_red', row.temp.max) + "°F]"),
       '[' + irc.colors.wrap('dark_green', row.humidity) + "% humidity]",
-      '[' + (metric) ? irc.colors.wrap("orange", row.speed) + " m/s wind]" : irc.colors.wrap("orange", row.speed) + " m/h wind]",
+      '[' + ((metric) ? (irc.colors.wrap("orange", row.speed) + " m/s wind]") : (irc.colors.wrap("orange", row.speed) + " m/h wind]")),
       '[' + irc.colors.wrap("magenta", row.weather[0].description) + ']',
     ];
 
