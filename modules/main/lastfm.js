@@ -1,3 +1,5 @@
+//this is a legacy module pending a full rewrite
+
 var color = require("irc-colors");
 var request = require("request");
 var core;
@@ -9,6 +11,7 @@ var lastfm = {
     if (message) {
       core.databases.lastfm[from] = message.replace(' ', '')
       core.say(from, to, from + ' associated with lastfm user ' + message)
+      core.write_db("lastfm");
     } else {
       if (core.databases.lastfm[from]) {
         request('http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=' + core.databases.lastfm[from] + '&api_key=1d234424fd93e18d503758bf2714859e&format=json', function(e, r, body) {

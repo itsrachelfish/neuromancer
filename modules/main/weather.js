@@ -48,7 +48,7 @@ var weather = {
           var data = JSON.parse(body);
           var metric = (core.databases.weather[from.toLowerCase()].locale == "metric") ? true : false;
 
-          var toSay = [
+          var toSay = [ // some of these got pretty ugly. fight me
               from + ":",
               '[' + irc.colors.wrap('cyan', data.name) + " (" + irc.colors.wrap('cyan', data.sys.country) + ')]',
               '[' + ((metric) ? irc.colors.wrap('dark_red', Math.round(Number(data.main.temp))) + "°C" : irc.colors.wrap('dark_red', Math.round(Number(data.main.temp))) + "°F") + ']',
