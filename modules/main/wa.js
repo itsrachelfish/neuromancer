@@ -2,7 +2,7 @@ var color = require("irc-colors");
 var request = require("request");
 var core;
 
-var debug = true;
+var debug = false;
 
 var wa = {
   commands: ["wa", "wolfram"],
@@ -29,7 +29,7 @@ var wa = {
       var res = b.match(/<plaintext>[\s\S]*?<\/plaintext>/g).reduce(function (x, y) {
         return (y.replace(/<\/?plaintext>/g, '')) ? x.concat(y.replace(/<\/?plaintext>/g, '').replace(/ +/g, ' ').replace(/&apos;/g, '\'').replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/ \| /g, ' ▶ ').replace(/\n/g, ' | ')) : x;
       }, [])
-      core.say(from, to,'[\u000304Wolfram\u000f] \u000310' + res[0] + '\u000f = \u000312' + res[1]);
+      core.say(from, to, '[\u000304Wolfram\u000f] \u000310' + res[0] + '\u000f = \u000312' + res[1]);
     });
   }
 };
