@@ -2,20 +2,17 @@ var color = require("irc-colors");
 var request = require("request");
 var core;
 
-var debug = false;
+var debug = true;
 
-var wa = {
-  commands: ["wa", "wolfram"],
+var wolfram = {
+  commands: ["wa"],
 
   wa: function (from, to, message) {
-    wa.wolfram(from, to, message);
-  },
-
-  wolfram: function (from, to, message) {
     var url = 'http://api.wolframalpha.com/v2/query?appid=VTRKXL-A9P5Y769P5&format=plaintext&podindex=1,2,3&input=' + encodeURIComponent(message);
 
     if(debug) {
       console.log(url);
+      console.log(from + to + ' ' + message);
     }
 
     request(url, function (e, r, b) {
@@ -30,8 +27,10 @@ var wa = {
         return (y.replace(/<\/?plaintext>/g, '')) ? x.concat(y.replace(/<\/?plaintext>/g, '').replace(/ +/g, ' ').replace(/&apos;/g, '\'').replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/ \| /g, ' ▶ ').replace(/\n/g, ' | ')) : x;
       }, [])
       core.say(from, to, '[\u000304Wolfram\u000f] \u000310' + res[0] + '\u000f = \u000312' + res[1]);
+      return;
     });
-  }
+    return;
+  },
 };
 
 module.exports = {
@@ -40,14 +39,17 @@ module.exports = {
   },
 
   unload: function () {
-    delete wa;
+    delete wolfram;
     delete core;
     delete color;
     delete request;
   },
 
-  commands: wa.commands,
+  commands: wolfram.commands,
   run: function (command, from, to, message) {
-    wa[command](from, to, message);
+    if (debug) {
+      console.log("command " + message + " from " + from + " in " + to);
+    }
+    wolfram[command](from, to, message);
   },
 };
