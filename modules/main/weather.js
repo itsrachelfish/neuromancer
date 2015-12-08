@@ -1,8 +1,12 @@
 var parseArgs = require("minimist");
 var irc = require("irc"); // only used for colors.wrap
 var request = require("request");
-var debug = true;
+
+var config = require("../../etc/weather.js");
+
 var core = false;
+
+var debug = false;
 
 var weather = {
   commands: ["weather", "forecast"],
@@ -34,12 +38,14 @@ var weather = {
       core.databases.weather[from.toLowerCase()].locale = "imperial";
     }
 
+    var url = (weather.weathAPI + (args._[0] ? (args.z ? "weather?zip=" + args._ : "weather?type=like&q=" + args._) : ("weather?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&APPID=" + config.apiKey);
+
     if (debug) {
-      console.log(weather.weathAPI + (args._[0] ? (args.z ? "weather?zip=" + args._ : "weather?type=like&q=" + args._) : ("weather?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&APPID=" + core.databases.secrets["OWMAPIKey"])
+      console.log(url);
     }
 
     // nested ternary operators fuck yeah
-    request(weather.weathAPI + (args._[0] ? (args.z ? "weather?zip=" + args._ : "weather?type=like&q=" + args._) : ("weather?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
+    request(url, function (e, r, body) {
       if (body) {
         if (debug) {
           console.log(body);
@@ -116,13 +122,14 @@ var weather = {
     message = message.replace(/ ?-[0-9]+ ?/, ' ');
     days = Number(days) + 1;
 
+    var url = (weather.weathAPI + (args._[0] ? (args.z ? "forecast/daily?zip=" + args._ : "forecast/daily?type=like&q=" + args._) : ("forecast/daily?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&cnt=" + days + "&APPID=" + config.apiKey);
     if (debug) {
-      console.log(weather.weathAPI + (args._[0] ? (args.z ? "forecast/daily?zip=" + args._ : "forecast/daily?type=like&q=" + args._) : ("forecast/daily?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&cnt=" + days + "&APPID=" + core.databases.secrets["OWMAPIKey"])
+      console.log(url)
       console.log(JSON.stringify(args))
     }
 
     // nested ternary operators fuck yeah
-    request(weather.weathAPI + (args._[0] ? (args.z ? "forecast/daily?zip=" + args._ : "forecast/daily?type=like&q=" + args._) : ("forecast/daily?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&cnt=" + days + "&APPID=" + core.databases.secrets["OWMAPIKey"], function (e, r, body) {
+    request(url, function (e, r, body) {
       if (body) {
         if (debug) {
           console.log(body);
