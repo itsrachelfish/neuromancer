@@ -2,7 +2,7 @@ var color = require("irc-colors");
 var request = require("request");
 var core;
 
-var debug = true;
+var debug = false;
 
 var wolfram = {
   commands: ["wa"],
@@ -12,7 +12,6 @@ var wolfram = {
 
     if(debug) {
       console.log(url);
-      console.log(from + to + ' ' + message);
     }
 
     request(url, function (e, r, b) {
