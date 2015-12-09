@@ -1,10 +1,11 @@
+var reload = require('require-reload')(require);
 var parseArgs = require("minimist");
 var irc = require("irc"); // only used for colors.wrap
 var request = require("request");
 
-var config = require("../../etc/weather.js");
+var config;
 
-var core = false;
+var core;
 
 var debug = false;
 
@@ -165,25 +166,20 @@ var weather = {
 module.exports = {
   load: function (_core) {
     core = _core;
-    return;
+    config = reload("../../etc/weather.js");
   },
 
   unload: function () {
     delete weather;
     delete core;
+    delete reload;
+    delete config;
   },
 
   commands: weather.commands,
   db: true,
   run: function (command, from, to, message) {
-    if (debug) {
-      console.log("==begin debug data==");
-      console.log(command + ' ' + from + to + ' ' + message);
-    }
     weather[command](from, to, message);
-    if (debug) {
-      console.log("==end debug data==");
-    }
     return;
   }
 };

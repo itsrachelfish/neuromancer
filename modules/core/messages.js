@@ -1,6 +1,8 @@
 var reload = require('require-reload')(require);
-var core;
+
 var config;
+
+var core;
 
 var messages = {
   client: false,

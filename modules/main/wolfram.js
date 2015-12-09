@@ -1,14 +1,18 @@
+var reload = require('require-reload')(require);
 var color = require("irc-colors");
 var request = require("request");
+
+var config;
+
 var core;
 
-var debug = false;
+var debug = true;
 
 var wolfram = {
   commands: ["wa"],
 
   wa: function (from, to, message) {
-    var url = 'http://api.wolframalpha.com/v2/query?appid=VTRKXL-A9P5Y769P5&format=plaintext&podindex=1,2,3&input=' + encodeURIComponent(message);
+    var url = 'http://api.wolframalpha.com/v2/query?appid=' + config.apiKey + '&format=plaintext&podindex=1,2,3&input=' + encodeURIComponent(message);
 
     if(debug) {
       console.log(url);
@@ -35,6 +39,7 @@ var wolfram = {
 module.exports = {
   load: function (_core) {
     core = _core;
+    config = reload("../../etc/wolfram.js");
   },
 
   unload: function () {
@@ -42,6 +47,8 @@ module.exports = {
     delete core;
     delete color;
     delete request;
+    delete reload;
+    delete config;
   },
 
   commands: wolfram.commands,
