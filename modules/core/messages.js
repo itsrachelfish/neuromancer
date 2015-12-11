@@ -29,8 +29,6 @@ var messages = {
 
       var command = text.shift();
 
-      from = from.toLowerCase();
-
       // If the module is loaded and the command is valid
       if (typeof core.loaded[module_id] != "undefined" && core.loaded[module_id].commands.indexOf(command) > -1) {
         if (config.logLevel >= 3) {
