@@ -177,7 +177,9 @@ module.exports = {
   },
 
   commands: weather.commands,
+
   db: true,
+
   run: function (command, from, to, message) {
     weather[command](from, to, message);
     return;

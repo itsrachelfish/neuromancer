@@ -1,19 +1,22 @@
+var reload = require('require-reload')(require);
 var colors = require("colors");
-var config = require("../../etc/err.js");
+
+var config;
+
+var core;
+
 var debug = false;
 
 var err = {
-  core: false,
-
-  err: function(error) {
-    if (typeof err.core.logs.err[error.type] == "undefined") {
-      err.core.logs.err[error.type] = [];
+  err: function (error) {
+    if (typeof core.logs.err[error.type] == "undefined") {
+      core.logs.err[error.type] = [];
     }
 
-    err.core.logs.err[error.type].push(error);
+    core.logs.err[error.type].push(error);
     if (debug) {
       console.log(JSON.stringify(error));
-      console.log(JSON.stringify(err.core.logs.err));
+      console.log(JSON.stringify(core.logs.err));
     }
     if (config.toConsole) {
       console.error(("[ERROR][" + error.type + "] ").red + error.title);
@@ -30,19 +33,25 @@ var err = {
         core.say(core.server.name, core.config.ownerNick, "[ERROR] " + error.text);
       }
     }
-    err.core.write_log("err");
-  },
+    core.write_log("err");
+  }
 };
 
 module.exports = {
-  load: function(core) {
-    err.core = core;
-    err.core.merr = err.err;
+  load: function (_core) {
+    config = reload("../../etc/err.js");
+    core = _core;
+    core.merr = err.err;
   },
 
-  unload: function() {
-    err.core.merr = false;
+  unload: function () {
+    core.merr = false;
     delete err;
+    delete core;
+    delete reload;
+    delete config;
+    delete colors;
   },
+
   log: true,
 };

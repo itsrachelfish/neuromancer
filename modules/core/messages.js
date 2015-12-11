@@ -75,10 +75,10 @@ var messages = {
 module.exports = {
   load: function (_core) {
     core = _core;
+    config = reload("../../etc/messages.js");
     core.msend = messages.send;
     core.mrecieve = messages.recieve;
     core.msay = messages.say;
-    config = reload("../../etc/messages.js");
   },
 
   unload: function () {
