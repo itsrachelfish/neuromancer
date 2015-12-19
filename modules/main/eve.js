@@ -6,10 +6,6 @@ var eve = {
 
   eve: function (from, to, message) {
     request("https://api.eveonline.com/server/ServerStatus.xml.aspx/", function (e, r, b) {
-      if (debug) {
-        console.log(b);
-      }
-
       if (b.match(/True/i)) {
         core.say(from, to, "Server is up");
       }
