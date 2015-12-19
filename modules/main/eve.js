@@ -10,7 +10,7 @@ var eve = {
       }
 
       if (b.match(/True/i)) {
-        core.say(from, to, Server is up);
+        core.say(from, to, "Server is up");
       }
     });
   }
