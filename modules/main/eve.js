@@ -1,4 +1,5 @@
 var core;
+var request = require("request");
 
 var eve = {
   commands: ["eve"],
