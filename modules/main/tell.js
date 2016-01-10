@@ -1,10 +1,10 @@
-var color = require("irc-colors");
+var c = require("irc"); // only used for color.wrap
 var core;
 
 var tell = {
   commands: ["tell"],
 
-  tell: function(from, to, message) {
+  tell: function (from, to, message) {
     var args = message.split(' ');
     var reciever = args[0].toLowerCase();
 
@@ -17,17 +17,17 @@ var tell = {
       mes: args.slice(1).join(' '),
       when: Date.now()
     });
-    core.say(from, to, color.green("Okay"));
+    core.say(from, to, c.colors.wrap('dark_green', "Okay"));
 
     //save the db so if the bot/module crashes/whatever we don't lose our new tell
     core.write_db("tell");
   },
 
-  listener: function(from, to, message) {
+  listener: function (from, to, message) {
     var reciever = from.toLowerCase();
     if (core.databases.tell[reciever]) {
-      core.databases.tell[reciever].forEach(function(entry) {
-        var to_say = from + ": " + color.yellow('"' + entry.mes + '"') + ' [' + color.red(entry.from) + '] ' + '[' + color.lime(tell.readable_time(Date.now() - entry.when)) + ']';
+      core.databases.tell[reciever].forEach(function (entry) {
+        var to_say = from + ": " + c.colors.wrap('cyan', '"' + entry.mes + '"') + ' [' + c.colors.wrap('dark_red', entry.from) + '] ' + '[' + c.colors.wrap('dark_green', tell.readable_time(Date.now() - entry.when)) + ']';
         core.say(from, to, to_say);
       });
       delete core.databases.tell[reciever];
@@ -35,7 +35,7 @@ var tell = {
     }
   },
 
-  readable_time: function(time) {
+  readable_time: function (time) {
     var days = Math.floor(time / 86400000),
       hours = Math.floor(time / 3600000) - (days * 24),
       minutes = Math.floor(time / 60000) - (hours * 60) - (days * 1440);
@@ -61,20 +61,20 @@ var tell = {
 };
 
 module.exports = {
-  load: function(_core) {
+  load: function (_core) {
     core = _core;
   },
 
-  unload: function() {
+  unload: function () {
     delete tell;
     delete core;
     delete color;
   },
-  
+
   commands: tell.commands,
   db: true,
   listener: tell.listener,
-  run: function(command, from, to, message) {
+  run: function (command, from, to, message) {
     tell[command](from, to, message);
   },
 };

@@ -1,17 +1,22 @@
 var fs = require("fs");
 
+var config;
+
+var core;
+
+var debug = false;
+
 var log = {
-  core: false,
   commands: ["show_log"],
 
-  read_log: function(sublog, callback) {
+  read_log: function (sublog, callback) {
     var path = "./log/" + sublog + ".json";
-    fs.readFile(path, function(err, data) {
+    fs.readFile(path, function (err, data) {
       if (err) {
         console.error("[ERROR][log]: ".red + sublog + " log could not be read.");
         console.error(path);
         console.error(err);
-        log.core.logs[sublog] = {};
+        core.logs[sublog] = {};
         log.write_log(sublog);
         console.error("[ERROR][log]: ".red + "the log has been init'ed");
         if (callback) {
@@ -21,10 +26,10 @@ var log = {
       }
 
       if (data != "undefined") {
-        log.core.logs[sublog] = JSON.parse(data, "utf8");
+        core.logs[sublog] = JSON.parse(data, "utf8");
         console.log("[log]: ".blue + sublog + " log loaded.");
       } else {
-        log.core.logs[sublog] = {};
+        core.logs[sublog] = {};
         log.write_log(sublog);
         console.log("[log]: ".blue + sublog + " log was empty, init'ing");
       }
@@ -34,9 +39,9 @@ var log = {
     });
   },
 
-  write_log: function(sublog, callback) {
+  write_log: function (sublog, callback) {
     var path = "./log/" + sublog + ".json";
-    fs.writeFile(path, JSON.stringify(log.core.logs[sublog]), "utf8", function(err) {
+    fs.writeFile(path, JSON.stringify(core.logs[sublog]), "utf8", function (err) {
       if (err) {
         console.error("[ERROR][log]: ".red + sublog + " log could not be written.");
         console.error(path);
@@ -52,33 +57,32 @@ var log = {
       callback(false);
     }
   },
-  
-  show_log: function(from, to, message) {
+
+  show_log: function (from, to, message) {
     if (message) {
-      log.core.say(from, to, JSON.stringify(log.core.logs[message]));
+      core.say(from, to, JSON.stringify(core.logs[message]));
     } else {
-      log.core.say(from, to, JSON.stringify(log.core.logs));
+      core.say(from, to, JSON.stringify(core.logs));
     }
   },
 };
 
 module.exports = {
-  load: function(core) {
-    log.core = core;
-    log.core.mread_log = log.read_log;
-    log.core.mwrite_log = log.write_log;
+  load: function (_core) {
+    core = _core;
+    core.mread_log = log.read_log;
+    core.mwrite_log = log.write_log;
   },
 
-  unload: function() {
-    log.core.mread_log = false;
-    log.core.mwrite_log = false;
+  unload: function () {
+    core.mread_log = false;
+    core.mwrite_log = false;
     delete log;
   },
-  
+
   commands: log.commands,
-  run: function(command, from, to, message) {
+  run: function (command, from, to, message) {
     log[command](from, to, message);
   },
   admin: true,
 };
-
