@@ -1,3 +1,3 @@
 module.exports = {
-  logLevel: 1, // higher = more logged
+  logLevel: 1, // higher = more logged to console
 };

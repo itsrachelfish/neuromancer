@@ -2,6 +2,7 @@ var fs = require('fs');
 var colors = require("colors");
 var color = require("irc-colors");
 var request = require("request");
+var c = require("irc");
 
 var core = {
   client: false,
@@ -25,8 +26,8 @@ var core = {
 
   // and these are wrappers to those functions so things can fail gracefully if the respective core module is unloaded or broken
   // yay middlemaning
-  read_db: function(subdb, callback) {
-    if(core.mread_db) {
+  read_db: function (subdb, callback) {
+    if (core.mread_db) {
       core.mread_db(subdb, callback);
     } else {
       core.err({
@@ -41,8 +42,8 @@ var core = {
     }
   },
 
-  write_db: function(subdb, callback) {
-    if(core.mwrite_db) {
+  write_db: function (subdb, callback) {
+    if (core.mwrite_db) {
       core.mwrite_db(subdb, callback);
     } else {
       core.err({
@@ -57,7 +58,7 @@ var core = {
     }
   },
 
-  read_log: function(sublog, callback) {
+  read_log: function (sublog, callback) {
     if (core.mread_log) {
       core.mread_log(sublog, callback);
     } else {
@@ -73,7 +74,7 @@ var core = {
     }
   },
 
-  write_log: function(sublog, callback) {
+  write_log: function (sublog, callback) {
     if (core.mwrite_log) {
       core.mwrite_log(sublog, callback);
     } else {
@@ -89,7 +90,7 @@ var core = {
     }
   },
 
-  recieve: function(module_id, from, to, text, details) {
+  recieve: function (module_id, from, to, text, details) {
     if (core.mrecieve) {
       core.mrecieve(module_id, from, to, text, details);
     } else {
@@ -102,7 +103,7 @@ var core = {
     }
   },
 
-  send: function(type, from, to, message) {
+  send: function (type, from, to, message) {
     if (core.msend) {
       core.msend(type, from, to, message);
     } else {
@@ -115,7 +116,7 @@ var core = {
     }
   },
 
-  say: function(from, to, message) {
+  say: function (from, to, message) {
     if (core.msay) {
       core.msay(from, to, message);
     } else {
@@ -128,7 +129,7 @@ var core = {
     }
   },
 
-  err: function(error) {
+  err: function (error) {
     if (core.merr) {
       core.merr(error);
     } else {
@@ -138,7 +139,7 @@ var core = {
   },
 
   // bootstrap function
-  init: function(client) {
+  init: function (client) {
     if (!core.client) {
       core.client = client;
     }
@@ -147,7 +148,7 @@ var core = {
     var modules = require("./etc/module.js");
 
     // now load the modules
-    modules.core.forEach(function(module) {
+    modules.core.forEach(function (module) {
       core.load({
         type: "core",
         name: module,
@@ -155,8 +156,8 @@ var core = {
     });
 
     // sleep for a few seconds to allow the core modules to fully load before loading secondary modules, this has caused problems in the past, woo async programming
-    setTimeout(function() {
-      modules.main.forEach(function(module) {
+    setTimeout(function () {
+      modules.main.forEach(function (module) {
         core.load({
           type: "main",
           name: module,
@@ -165,12 +166,12 @@ var core = {
     }, 2000);
   },
 
-  load: function(module, callback) {
+  load: function (module, callback) {
     // generate the module id and path from the module name and type
     var module_id = module.type + '/' + module.name;
     var path = "./modules/" + module_id + ".js";
 
-    fs.readFile(path, function(err, data) {
+    fs.readFile(path, function (err, data) {
       if (err) {
         core.err({
           type: "module",
@@ -226,7 +227,7 @@ var core = {
     });
   },
 
-  unload: function(module, callback) {
+  unload: function (module, callback) {
     var module_id = module.type + '/' + module.name;
     var path = "./modules/" + module_id + ".js";
 
@@ -287,7 +288,7 @@ var core = {
     }
   },
 
-  reload: function(module) {
+  reload: function (module) {
     core.unload(module);
     core.load(module);
   },

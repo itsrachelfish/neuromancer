@@ -5,6 +5,10 @@
   "author": {
     "name": "Edwin Pers"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/edwin-pers/neuromancer.git"
+  },
   "dependencies": {
     "cleverbot-node": "*",
     "colors": "*",
@@ -12,7 +16,6 @@
     "fs": "*",
     "http": "*",
     "irc": "*",
-    "irc-colors": "*",
     "mathjs": "*",
     "minimist": "*",
     "mtextbelt": "*",

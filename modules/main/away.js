@@ -1,5 +1,5 @@
-var color = require("irc-colors");
 var core;
+var c = require("irc");
 
 var away = {
   commands: ["away", "rmaway"],
@@ -11,9 +11,9 @@ var away = {
   // away doesn't use a persistant database
   aways: {},
 
-  away: function(from, to, message) {
+  away: function (from, to, message) {
     if (!message) {
-      away.aways[from.toLowerCase()] = "No reason specified";
+      away.aways[from.toLowerCase()] = "null";
       console.log("[away]: ".yellow + from + " has gone away [No reason specified]");
     } else {
       away.aways[from.toLowerCase()] = message;
@@ -22,7 +22,7 @@ var away = {
   },
 
   // allows an admin to delete a spammy away
-  rmaway: function(from, to, message) {
+  rmaway: function (from, to, message) {
     if (core.config.admins.indexOf(from) > -1) {
       if (message.toLowerCase() in away.aways) {
         delete away.aways[message.toLowerCase()];
@@ -30,7 +30,7 @@ var away = {
     }
   },
 
-  listener: function(from, to, message) {
+  listener: function (from, to, message) {
     // one of the problems of async programing is that our listener sees the away-ee leaving
     // this if statement makes it work by ignoring <prefix>away commands when listening for an away-ee's return
     var awaycmd = core.config.prefix + "away";
@@ -48,19 +48,19 @@ var away = {
         }
         var target = message.split(' ')[0].replace(/[:,]/, '');
 
-        if (away.aways[target.toLowerCase()] == "No reason specified") {
-          var to_say = target + " is currently away";
+        if (away.aways[target.toLowerCase()] == "null") {
+          var to_say = c.colors.wrap('dark_green', target) + " is currently away";
         } else {
-          var to_say = target + " is currently away [" + color.blue(away.aways[target.toLowerCase()]) + ']';
+          var to_say = c.colors.wrap('dark_green', target) + " is currently away [" + c.colors.wrap('cyan', away.aways[target.toLowerCase()]) + ']';
         }
-        
+
         core.say(from, to, to_say);
         console.log("[away]: ".yellow + from + ' attempted to contact ' + message.split(' ')[0].replace(':', ''));
       }
     }
   },
 
-  waiting: function(timeout) {
+  waiting: function (timeout) {
     if (away.wait) {
       var timeout = (away.timeout.getTime() - new Date().getTime()) / 1000;
       return timeout;
@@ -72,7 +72,7 @@ var away = {
     var date = new Date();
     away.timeout = new Date(date.getTime() + (timeout * 60 * 1000));
 
-    away.wait = setTimeout(function() {
+    away.wait = setTimeout(function () {
       away.wait = false;
       away.timeout = false;
     }, timeout * 60 * 1000);
@@ -80,19 +80,19 @@ var away = {
 };
 
 module.exports = {
-  load: function(_core) {
+  load: function (_core) {
     core = _core;
   },
 
-  unload: function() {
+  unload: function () {
     delete away;
     delete core;
-    delete color;
+    delete c;
   },
 
   commands: away.commands,
   listener: away.listener,
-  run: function(command, from, to, message) {
+  run: function (command, from, to, message) {
     away[command](from, to, message);
   }
 }
