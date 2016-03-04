@@ -12,8 +12,7 @@ var debug = false;
 var weather = {
   commands: ["weather", "forecast"],
 
-  weathAPI: 'http://api.openweathermap.org/data/2.5/',
-
+  weathAPI: 'http://api.openweathermap.org/data / 2.5 / ',
   weather: function (from, to, message) {
     var args = parseArgs(message.split(' '), opts = {
       boolean: ['c', 'i', 'z']
@@ -39,7 +38,7 @@ var weather = {
       core.databases.weather[from.toLowerCase()].locale = "imperial";
     }
 
-    var url = (weather.weathAPI + (args._[0] ? (args.z ? "weather?zip=" + args._ : "weather?type=like&q=" + args._) : ("weather?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&APPID=" + config.apiKey);
+    var url = (weather.weathAPI + (args._[0] ? (/^[0-9]{5}$/.test(args._[0]) ? "weather?zip=" + args._ : "weather?type=like&q=" + args._) : ("weather?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&APPID=" + config.apiKey);
 
     if (debug) {
       console.log(url);
@@ -123,7 +122,7 @@ var weather = {
     message = message.replace(/ ?-[0-9]+ ?/, ' ');
     days = Number(days) + 1;
 
-    var url = (weather.weathAPI + (args._[0] ? (args.z ? "forecast/daily?zip=" + args._ : "forecast/daily?type=like&q=" + args._) : ("forecast/daily?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&cnt=" + days + "&APPID=" + config.apiKey);
+    var url = (weather.weathAPI + (args._[0] ? (/^[0-9]{5}$/.test(args._[0]) ? "forecast/daily?zip=" + args._ : "forecast/daily?type=like&q=" + args._) : ("forecast/daily?id=" + core.databases.weather[from.toLowerCase()].cityID)) + "&units=" + core.databases.weather[from.toLowerCase()].locale + "&cnt=" + days + "&APPID=" + config.apiKey);
     if (debug) {
       console.log(url)
       console.log(JSON.stringify(args))
