@@ -97,7 +97,7 @@ var core = {
       core.err({
         type: "core",
         title: "messages module is unloaded.",
-        text: message,
+        text: text,
         info: details,
       });
     }
@@ -297,4 +297,4 @@ var core = {
 module.exports = {
   init: core.init,
   err: core.err,
-}
+};

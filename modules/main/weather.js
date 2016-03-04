@@ -12,10 +12,10 @@ var debug = false;
 var weather = {
   commands: ["weather", "forecast"],
 
-  weathAPI: 'http://api.openweathermap.org/data / 2.5 / ',
+  weathAPI: 'http://api.openweathermap.org/data/2.5/',
   weather: function (from, to, message) {
     var args = parseArgs(message.split(' '), opts = {
-      boolean: ['c', 'i', 'z']
+      boolean: ['c', 'i']
     });
 
     // if they don't have a db entry yet
