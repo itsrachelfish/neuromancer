@@ -4,26 +4,6 @@ var core;
 var admin = {
   commands: ["say", "wflogin", "join", "part", "ctcp", "load", "unload", "reload"],
 
-  // TODO: improve this/move into core
-  parse_module: function(module) {
-    module = module.split('.');
-    if (module[0] == 'core')
-      return {
-        type: 'core',
-        name: module[1]
-      };
-    else if (module[0] == 'main')
-      return {
-        type: 'main',
-        name: module[1]
-      };
-    else
-      return {
-        type: 'main',
-        name: module[0]
-      };
-  },
-
   say: function(from, to, message) {
     core.say(from, to, message);
   },
@@ -70,7 +50,11 @@ var admin = {
   },
 
   load: function(from, to, message) {
-    var module = admin.parse_module(message);
+    message = message.split('.');
+    var module = {
+      type: message[0],
+      name: message[1]
+    };
     core.load(module, function(error) {
       if (error) {
         core.say(from, to, '[' + color.red("error") + "]: '" + module.type + '.' + module.name + "' could not be loaded");
@@ -81,7 +65,11 @@ var admin = {
   },
 
   unload: function(from, to, message) {
-    var module = admin.parse_module(message);
+    message = message.split('.');
+    var module = {
+      type: message[0],
+      name: message[1]
+    };
     core.unload(module, function(error) {
       if (error) {
         core.say(from, to, '[' + color.red("error") + "]: '" + module.type + '.' + module.name + "' could not be unloaded");
