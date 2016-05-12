@@ -22,6 +22,7 @@
     "node-schedule": "*",
     "request": "*",
     "url": "*",
-    "require-reload": "*"
+    "require-reload": "*",
+    "google": "*"
   }
 }
