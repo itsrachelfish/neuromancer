@@ -28,7 +28,7 @@ module.exports = {
   load: function(_core) {
     core = _core;
     mathjs.config({
-      matrix: "matrix"
+      Matrix: "Matrix"
     });
   },
 

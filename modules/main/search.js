@@ -9,13 +9,13 @@ var search = {
   commands: ["g", "google"],
 
   google: function(from, to, message) {
-    gsearchapi.resultsPerPage = 1;
-    gsearchapi(message, function(erro, res) {
+    gsearchapi.resultsPerPage = 2;
+    gsearchapi(message, function(err, res) {
       if (err){
         console.error(err);
         core.say(from, to, from + ": The api call failed, please try again");
       }
-      core.say(from, to, from + ": " + res.links[0]);
+      core.say(from, to, from + ": " + res.links[1]["href"]);
     });
   },
 
