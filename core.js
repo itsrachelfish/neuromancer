@@ -149,21 +149,25 @@ var core = {
 
     // now load the modules
     modules.core.forEach(function (module) {
-      core.load({
-        type: "core",
-        name: module,
-      });
+      setTimeout(function() {
+        core.load({
+          type: "core",
+          name: module,
+        });
+      }, 200);
     });
 
     // sleep for a few seconds to allow the core modules to fully load before loading secondary modules, this has caused problems in the past, woo async programming
     setTimeout(function () {
       modules.main.forEach(function (module) {
-        core.load({
-          type: "main",
-          name: module,
-        });
+        setTimeout(function() {
+          core.load({
+            type: "main",
+            name: module,
+          });
+        }, 200);
       });
-    }, 2000);
+    }, 5000);
   },
 
   load: function (module, callback) {
