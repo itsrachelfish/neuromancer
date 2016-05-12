@@ -23,6 +23,7 @@
     "request": "*",
     "url": "*",
     "require-reload": "*",
-    "google": "*"
+    "google": "*",
+    "iconv": "*"
   }
 }

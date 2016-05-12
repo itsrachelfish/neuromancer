@@ -1,21 +1,21 @@
 var request = require("request");
+var gsearchapi = require("google");
+
 var debug = false;
+
 var core;
 
 var search = {
   commands: ["g", "google"],
 
   google: function(from, to, message) {
-    request("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=1&q=" + message, function(e, r, body) {
-      if (body) {
-        if (debug) {
-          console.log(JSON.stringify(JSON.parse(body)));
-          console.log(JSON.stringify(JSON.parse(body).responseData.results[0].unescapedUrl));
-        }
-        core.say(from, to, from + ": " + JSON.parse(body).responseData.results[0].unescapedUrl);
-      } else {
-	  core.say(from, to, from + ": The api call failed, please try again");
+    gsearchapi.resultsPerPage = 1;
+    gsearchapi(message, function(erro, res) {
+      if (err){
+        console.error(err);
+        core.say(from, to, from + ": The api call failed, please try again");
       }
+      core.say(from, to, from + ": " + res.links[0]);
     });
   },
 
