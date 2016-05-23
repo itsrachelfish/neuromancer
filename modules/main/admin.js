@@ -93,7 +93,7 @@ var admin = {
   },
 
   unban: function(from, to, message) {
-    core.client.send("MODE", to, "-b", "*!" + message);
+    core.client.send("MODE", to, "-b", "*!" + message + "@*");
   },
 }
 
