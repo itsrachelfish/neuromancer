@@ -2,7 +2,7 @@ var color = require("irc-colors");
 var core;
 
 var admin = {
-  commands: ["say", "wflogin", "join", "part", "ctcp", "load", "unload", "reload"],
+  commands: ["say", "wflogin", "join", "part", "ctcp", "load", "unload", "reload", "kick", "ban", "unban"],
 
   say: function(from, to, message) {
     core.say(from, to, message);
@@ -83,6 +83,18 @@ var admin = {
     admin.unload(from, to, message);
     admin.load(from, to, message);
   },
+
+  kick: function(from, to, message) {
+    core.send("KICK", to, message, "ur a butt that got kicked by a bot");
+  },
+
+  ban: function(from, to, message) {
+    core.send("MODE", to, "+b", "*!" + message);
+  }
+
+  unban: function(from, to, message) {
+    core.send("MODE", to, "-b", "*!" + message);
+  }
 }
 
 module.exports = {
