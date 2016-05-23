@@ -85,15 +85,15 @@ var admin = {
   },
 
   kick: function(from, to, message) {
-    core.send("KICK", to, message, "ur a butt that got kicked by a bot");
+    core.client.send("KICK", to, message);
   },
 
   ban: function(from, to, message) {
-    core.send("MODE", to, "+b", "*!" + message);
+    core.client.send("MODE", to, "+b", "*!" + message);
   },
 
   unban: function(from, to, message) {
-    core.send("MODE", to, "-b", "*!" + message);
+    core.client.send("MODE", to, "-b", "*!" + message);
   },
 }
 
