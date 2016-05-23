@@ -90,11 +90,11 @@ var admin = {
 
   ban: function(from, to, message) {
     core.send("MODE", to, "+b", "*!" + message);
-  }
+  },
 
   unban: function(from, to, message) {
     core.send("MODE", to, "-b", "*!" + message);
-  }
+  },
 }
 
 module.exports = {
