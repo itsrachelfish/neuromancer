@@ -1,7 +1,7 @@
 var request = require("request");
 var gsearchapi = require("google");
 
-var debug = true;
+var debug = false;
 
 var core;
 
@@ -18,10 +18,12 @@ var search = {
       if (debug) {
         console.log(JSON.stringify(res.links));
       }
-      if (res.links[0]["description"] == ""){
+      if (res.links[0]["link"] != ""){
+        core.say(from, to, from + ": " + res.links[0]["href"]);
+      } else if (res.links[1]["link"] != ""){
         core.say(from, to, from + ": " + res.links[1]["href"]);
       } else {
-        core.say(from, to, from + ": " + res.links[0]["href"]);
+        core.say(from, to, from + ": No results");
       }
     });
   },
