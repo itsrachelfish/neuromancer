@@ -28,7 +28,13 @@ var wolfram = {
       }
       var res = b.match(/<plaintext>[\s\S]*?<\/plaintext>/g).reduce(function (x, y) {
         return (y.replace(/<\/?plaintext>/g, '')) ? x.concat(y.replace(/<\/?plaintext>/g, '').replace(/ +/g, ' ').replace(/&apos;/g, '\'').replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/ \| /g, ' ▶ ').replace(/\n/g, ' | ')) : x;
-      }, [])
+      }, []);
+      
+      if(res.length > 420)
+      {
+        res = res.substr(0, 420) + '...';
+      }
+      
       core.say(from, to, '[\u000304Wolfram\u000f] \u000310' + res[0] + '\u000f = \u000312' + res[1]);
       return;
     });
